@@ -3,7 +3,7 @@
 
     angular
         .module('app.controllers.headercontroller', [])
-        .controller('headerController', headerController)
+        .controller('headerController', headerController);
 
     /** @ngInject */
     function headerController($scope, userService, $window, $state){

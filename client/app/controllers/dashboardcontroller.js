@@ -3,7 +3,7 @@
 
     angular
         .module('app.controllers.dashboardcontroller', [])
-        .controller('dashboardController', dashboardController)
+        .controller('dashboardController', dashboardController);
 
     /** @ngInject */
     function dashboardController($scope){

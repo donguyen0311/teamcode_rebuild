@@ -3,7 +3,7 @@
 
     angular
         .module('app.services.autheninterceptorservice', [])
-        .factory('authInterceptor', authInterceptor)
+        .factory('authInterceptor', authInterceptor);
 
     /** @ngInject */
     function authInterceptor($q, $window, $state, $location) {

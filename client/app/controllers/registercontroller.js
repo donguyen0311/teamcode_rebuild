@@ -3,7 +3,7 @@
 
     angular
         .module('app.controllers.registercontroller', [])
-        .controller('registerController', registerController)
+        .controller('registerController', registerController);
 
     /** @ngInject */
     function registerController($scope){

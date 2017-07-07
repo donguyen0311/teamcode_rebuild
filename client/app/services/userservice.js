@@ -3,7 +3,7 @@
 
     angular
         .module('app.services.userservice', [])
-        .factory('userService', userService)
+        .factory('userService', userService);
 
     /** @ngInject */
     function userService($http, $q, $cookies, $window) {

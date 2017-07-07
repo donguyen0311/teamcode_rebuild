@@ -3,7 +3,7 @@
 
     angular
         .module('app.controllers.editorcontroller', [])
-        .controller('editorController', editorController)
+        .controller('editorController', editorController);
 
     /** @ngInject */
     function editorController($scope){

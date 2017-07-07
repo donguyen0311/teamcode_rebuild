@@ -3,7 +3,7 @@
 
     angular
         .module('app.controllers.logincontroller', [])
-        .controller('loginController', loginController)
+        .controller('loginController', loginController);
 
     /** @ngInject */
     function loginController($scope, userService, $state) {

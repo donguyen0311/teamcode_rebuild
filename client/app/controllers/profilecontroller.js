@@ -3,7 +3,7 @@
 
     angular
         .module('app.controllers.profilecontroller', [])
-        .controller('profileController', profileController)
+        .controller('profileController', profileController);
 
     /** @ngInject */
     function profileController($scope, userService) {
