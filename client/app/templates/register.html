@@ -1,0 +1,63 @@
+<div class="register">
+    <div class="card">
+        <div class="card-header">
+            <span>Sign up for TeamCode</span>
+        </div>
+        <hr>
+        <div class="card-block">
+            <form name="formSignup" ng-submit="vm.login()">
+                <div class="form-group" ng-class="{ 'has-error': formSignup.username.$error.required && formSignup.username.$dirty || formSignup.username.$error.maxlength && formSignup.username.$dirty || formSignup.username.$invalid && formSignup.username.$dirty }">
+                    <label for="username">Username</label>
+                    <input  type="text" 
+                            class="form-control" 
+                            id="username"
+                            name="username"
+                            ng-required="true"
+                            ng-maxlength="100"
+                            placeholder="Pick a username"
+                            ng-model="vm.user.username">
+                </div>
+                <div class="form-group" ng-class="{ 'has-error': formSignup.email.$error.required && formSignup.email.$dirty || formSignup.email.$error.maxlength && formSignup.email.$dirty || formSignup.email.$invalid && formSignup.email.$dirty }">
+                    <label for="email">Email</label>
+                    <input  type="email" 
+                            class="form-control" 
+                            id="email"
+                            name="email"
+                            ng-required="true"
+                            ng-maxlength="100"
+                            ng-model="vm.user.email"
+                            placeholder="Your email address"
+                            ng-pattern='/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/'>
+                </div>
+                <div class="form-group" ng-class="{ 'has-error': formSignup.password.$error.required && formSignup.password.$dirty || formSignup.password.$error.maxlength && formSignup.password.$dirty }">
+                    <label for="password">Password</label>
+                    <input  type="password" 
+                            class="form-control" 
+                            id="password"   
+                            name="password"
+                            ng-maxlength="50"
+                            ng-model="vm.user.password"
+                            placeholder="Create a password"
+                            ng-required="true">
+                </div>
+                <div class="form-group" ng-class="{ 'has-error': formSignup.confirm_password.$error.required && formSignup.confirm_password.$dirty || formSignup.confirm_password.$error.maxlength && formSignup.confirm_password.$dirty || vm.user.password != vm.user.confirm_password }">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input  type="password" 
+                            class="form-control" 
+                            id="confirm_password"   
+                            name="confirm_password"
+                            ng-maxlength="50"
+                            ng-model="vm.user.confirm_password"
+                            placeholder="Same as password"
+                            ng-required="true">
+                </div>
+                <p>Use at least one letter, one numeral, and seven characters.</p>
+                <button type="submit" 
+                        class="btn btn-success btn-block"
+                        name="action"
+                        ng-disabled="formSignup.$invalid">Sign up</button>
+            </form>
+            <p class="login-account">Already have an account? <a ui-sref="blank.login">Sign in</a></p>
+        </div>
+    </div>
+</div>

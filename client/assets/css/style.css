@@ -1,0 +1,236 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    font-family: Roboto, sans-serif;
+}
+
+.navbar-inner {
+    -webkit-box-shadow: 0 3px 3px rgba(0,0,0,0.175);
+    box-shadow: 0 3px 3px rgba(0,0,0,0.175);
+}
+
+.navbar {
+    margin-bottom: 5px;
+}
+
+.register-account, .login-account {
+    text-align: center;
+    margin-top: 5px;
+}
+
+.login, .register {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.card {
+    width: 35%;
+    height: auto;
+    margin: 0 auto;
+    position: absolute;
+    padding: 30px;
+    /*top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);*/
+    border: 1px solid #e7e7e7;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 3px 3px rgba(0,0,0,0.175);
+    box-shadow: 0 3px 3px rgba(0,0,0,0.175);
+}
+
+.block-project {
+    padding: 20px;
+    margin-top: 20px;
+    border: 1px solid #e7e7e7;
+    border-radius: 5px;
+}
+
+.title-content-tab {
+    margin-top: 15px; 
+    font-size: 23px;
+}
+
+.card .card-header {
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 15px;
+}
+
+/*.toolbardemoBasicUsage md-toolbar md-icon.md-default-theme {
+  color: white; 
+}*/
+
+#particles {
+    width: 100%;
+    height: calc(100% - 58px);
+    overflow: hidden;
+    background: #fff;
+    position: absolute;
+    z-index: 1;
+}
+
+#intro {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    padding: 0 20px;
+    width: 100%;
+    text-align: center;
+    color: #353030;
+}
+
+#intro h1::after {
+    content: '';
+    width: 100px;
+    display: block;
+    background: #353030;
+    height: 5px;
+    margin: 20px auto;
+    line-height: 1.1;
+}
+
+p.real-time {
+    margin: 0 0 30px 0;
+    font-size: 30px;
+}
+
+ul#dropdown.dropdown-content li>a {
+    color: black;
+}
+
+@-webkit-keyframes blink {
+    0% {
+        opacity: 1.0;
+    }
+    50% {
+        opacity: 0.0;
+    }
+    100% {
+        opacity: 1.0;
+    }
+}
+
+@-moz-keyframes blink {
+    0% {
+        opacity: 1.0;
+    }
+    50% {
+        opacity: 0.0;
+    }
+    100% {
+        opacity: 1.0;
+    }
+}
+
+@-o-keyframes blink {
+    0% {
+        opacity: 1.0;
+    }
+    50% {
+        opacity: 0.0;
+    }
+    100% {
+        opacity: 1.0;
+    }
+}
+
+@keyframes blink {
+    0% {
+        opacity: 1.0;
+    }
+    50% {
+        opacity: 0.0;
+    }
+    100% {
+        opacity: 1.0;
+    }
+}
+
+
+#cursor:after {
+    content: " ";
+    display: inline-block;
+    position: relative;
+    height: 60px;
+    top: 8px;
+    margin-left: 3px;
+    margin-right: 7px;
+    width: 6px;
+    background: #353030;
+    animation: blink 1s step-start 0s infinite;
+    -webkit-animation: blink 1s step-start 0s infinite;
+}
+
+#intro h1 {
+    font-size: 70px;
+}
+
+@media only screen and (max-width: 1000px) {
+    h1 {
+        font-size: 70px;
+    }
+    .card {
+        width: 60%;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    h1 {
+        font-size: 48px;
+    }
+
+    h1::after {
+        height: 5px;
+    }
+    #cursor:after {
+        height: 50px;
+        width: 5px;
+        top: 8px;
+    }
+}
+
+@media only screen and (max-width: 568px) {
+    #intro {
+        padding: 0 10px;
+    }
+
+    h1 {
+        font-size: 30px;
+    }
+
+    h1::after {
+        height: 3px;
+    }
+    #cursor:after {
+        height: 35px;
+        width: 3px;
+        top: 8px;
+    }
+
+    p.real-time {
+        font-size: 18px;
+    }
+
+    .btn-custom {
+        font-size: 16px;
+    }
+    .card {
+        width: 70%;
+    }
+}
+
+@media only screen and (max-width: 320px) {
+    h1 {
+        font-size: 27px;
+    }
+
+    h1::after {
+        height: 1px;
+    }
+
+    .card {
+        width: 80%;
+    }
+}

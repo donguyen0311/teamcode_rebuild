@@ -1,0 +1,93 @@
+const express = require('express');
+var router = express.Router();
+const config = require('./config/default');
+const User = require('./models/user');
+const fs = require('fs');
+const jwt = require('jsonwebtoken');
+
+// router.get('/', (req, res) => {
+//     res.render('index');
+// });
+
+var middlewareAuth = function (req, res, next) {
+    var token = req.body.token || req.query.token || req.headers['x-access-token'];
+    if (token) {
+        jwt.verify(token, config.secret_key, (err, decoded) => {
+            if (err) {
+                return res.json({ success: false, message: 'Failed to authenticate token.' });
+            }
+            else {
+                req.decoded = decoded;
+                next();
+            }
+        })
+    }
+    else {
+        return res.status(403).send({
+            success: false,
+            message: 'No token provied.'
+        })
+    }
+}
+
+router.get('/', (req, res) => {
+    res.json({ message: 'Welcome to API' });
+});
+
+router.get('/users/:email', middlewareAuth, (req, res) => {
+//console.log(req.decoded._doc.name);
+    User.findOne({
+        email: req.body.email
+    }, (err, user) => {
+        if (!user) {
+            res.json({ success: false, message: 'Email not found.' });
+        }
+        res.json({ 
+            success: true, 
+            message: 'Your user info', 
+            user: user
+        });
+    })
+});
+
+router.post('/authenticate', (req, res) => {
+    User.findOne({
+        email: req.body.email
+    }, (err, user) => {
+        if (err) throw err;
+
+        if (!user) {
+            res.json({ success: false, message: 'Authentication failed. Email not found.' });
+        } 
+        else if (user) {
+            if (user.password != req.body.password) {
+                res.json({ success: false, message: 'Authentication failed. Wrong password.' })
+            }
+            else {
+                var token = jwt.sign(user, config.secret_key, { expiresIn: "1d" });
+                res.json({
+                    success: true,
+                    message: 'Your key',
+                    token: token
+                });
+            }
+        }
+    })
+});
+
+router.get('/setup', (req, res) => {
+    var nick = new User({
+        username: 'dont',
+        email: 'donguyen0311@gmail.com',
+        password: '123456',
+        admin: true
+    });
+
+    nick.save((err) => {
+        if (err) throw err;
+        console.log('User saved successfully');
+        res.json({ success: true });
+    })
+});
+
+module.exports = router;
