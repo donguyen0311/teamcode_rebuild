@@ -5,7 +5,7 @@
         </div>
         <hr>
         <div class="card-block">
-            <form name="formSignup" ng-submit="vm.login()">
+            <form name="formSignup" ng-submit="vm.register()">
                 <div class="form-group" ng-class="{ 'has-error': formSignup.username.$error.required && formSignup.username.$dirty || formSignup.username.$error.maxlength && formSignup.username.$dirty || formSignup.username.$invalid && formSignup.username.$dirty }">
                     <label for="username">Username</label>
                     <input  type="text" 

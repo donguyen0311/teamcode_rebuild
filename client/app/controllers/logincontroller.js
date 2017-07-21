@@ -24,7 +24,7 @@
                     }
                 }, function error(error) {
                    if (error) {
-                       $state.go('structure.login');
+                       $state.go('blank.login');
                    }
                 });
         }

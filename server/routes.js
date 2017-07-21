@@ -4,6 +4,7 @@ const config = require('./config/default');
 const User = require('./models/user');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
+const md5 = require('md5');
 
 // router.get('/', (req, res) => {
 //     res.render('index');
@@ -60,7 +61,7 @@ router.post('/authenticate', (req, res) => {
             res.json({ success: false, message: 'Authentication failed. Email not found.' });
         } 
         else if (user) {
-            if (user.password != req.body.password) {
+            if (user.password != md5(req.body.password)) {
                 res.json({ success: false, message: 'Authentication failed. Wrong password.' })
             }
             else {
@@ -75,19 +76,47 @@ router.post('/authenticate', (req, res) => {
     })
 });
 
-router.get('/setup', (req, res) => {
-    var nick = new User({
-        username: 'dont',
-        email: 'donguyen0311@gmail.com',
-        password: '123456',
-        admin: true
-    });
+router.post('/register', (req, res) => {
+    User.findOne({
+        email: req.body.email
+    }, (err, user) => {
+        if (err) console.log(err);
 
-    nick.save((err) => {
-        if (err) throw err;
-        console.log('User saved successfully');
-        res.json({ success: true });
-    })
+        if (user) {
+            res.json({ success: false, message: 'Email already exists.' });
+        }
+        else if (req.body.password !== req.body.confirm_password) {
+            res.json({ success: false, message: 'Password doesn\'t match.' });
+        }
+        else {
+            var newUser = new User({
+                username: req.body.username,
+                email: req.body.email,
+                password: md5(req.body.password),
+                admin: req.body.admin
+            });
+            newUser.save((err) => {
+                if (err) console.log(err);
+                res.json({ success: true, message: 'Register successfully.' })
+            });
+        }
+    });
+    
 });
+
+// router.get('/setup', (req, res) => {
+//     var nick = new User({
+//         username: 'dont',
+//         email: 'donguyen0311@gmail.com',
+//         password: '123456',
+//         admin: true
+//     });
+
+//     nick.save((err) => {
+//         if (err) throw err;
+//         console.log('User saved successfully');
+//         res.json({ success: true });
+//     })
+// });
 
 module.exports = router;

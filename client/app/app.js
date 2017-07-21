@@ -26,6 +26,9 @@
                     'root': {
                         templateUrl: 'app/templates/blank.html',
                     }
+                },
+                resolve: {
+                    isAuthenticate : _isAuthenticate
                 }
             })
             .state('structure', {
@@ -118,6 +121,16 @@
             });
         // Send to login if the URL was not found
         $urlRouterProvider.otherwise("/");
+
+        /** @ngInject */
+        function _isAuthenticate(userService, $state, $timeout) {
+            if (userService.isAuthenticate()) {
+                $timeout(function () {
+                    $state.go('structure.home');
+                });
+            }
+        }
+
     }
 
 }());

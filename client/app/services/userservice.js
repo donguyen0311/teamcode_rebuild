@@ -41,6 +41,7 @@
             $http
                 .post('/api/authenticate', data)
                 .then(function success(response) {
+                    console.log(response);
                     if (response.data.success) {
                         $window.sessionStorage.token = response.data.token;
                         $window.sessionStorage.email = data.email;
@@ -52,8 +53,16 @@
             return deferred.promise;
         }
 
-        function register() {
+        function register(data) {
             var deferred = $q.defer();
+            $http
+                .post('/api/register', data)
+                .then(function sucess(response) {
+                    console.log(response);
+                    deferred.resolve(response.data);
+                }, function error(error) {
+                    deferred.reject(error);
+                });
             return deferred.promise;
         }
 
