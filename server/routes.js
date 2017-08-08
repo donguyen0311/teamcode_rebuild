@@ -15,15 +15,16 @@ var middlewareAuth = function (req, res, next) {
     if (token) {
         jwt.verify(token, config.secret_key, (err, decoded) => {
             if (err) {
-                return res.json({ success: false, message: 'Failed to authenticate token.' });
-            }
-            else {
+                return res.json({
+                    success: false,
+                    message: 'Failed to authenticate token.'
+                });
+            } else {
                 req.decoded = decoded;
                 next();
             }
-        })
-    }
-    else {
+        });
+    } else {
         return res.status(403).send({
             success: false,
             message: 'No token provied.'
@@ -32,23 +33,29 @@ var middlewareAuth = function (req, res, next) {
 }
 
 router.get('/', (req, res) => {
-    res.json({ message: 'Welcome to API' });
+    res.json({
+        message: 'Welcome to API'
+    });
 });
 
 router.get('/users/:email', middlewareAuth, (req, res) => {
-//console.log(req.decoded._doc.name);
+    //console.log(req.decoded._doc.name);
     User.findOne({
-        email: req.body.email
+        email: req.params.email
     }, (err, user) => {
         if (!user) {
-            res.json({ success: false, message: 'Email not found.' });
+            return res.json({
+                success: false,
+                message: 'Email not found.'
+            });
         }
-        res.json({ 
-            success: true, 
-            message: 'Your user info', 
+        user.password = null;
+        return res.json({
+            success: true,
+            message: 'Your user info',
             user: user
         });
-    })
+    });
 });
 
 router.post('/authenticate', (req, res) => {
@@ -58,17 +65,23 @@ router.post('/authenticate', (req, res) => {
         if (err) throw err;
 
         if (!user) {
-            res.json({ success: false, message: 'Authentication failed. Email not found.' });
-        } 
-        else if (user) {
+            return res.json({
+                success: false,
+                message: 'Authentication failed. Email not found.'
+            });
+        } else if (user) {
             if (user.password != md5(req.body.password)) {
-                res.json({ success: false, message: 'Authentication failed. Wrong password.' })
-            }
-            else {
-                var token = jwt.sign(user, config.secret_key, { expiresIn: "1d" });
-                res.json({
+                return res.json({
+                    success: false,
+                    message: 'Authentication failed. Wrong password.'
+                });
+            } else {
+                var token = jwt.sign(user, config.secret_key, {
+                    expiresIn: "1d"
+                });
+                return res.json({
                     success: true,
-                    message: 'Your key',
+                    message: 'Login successfully.',
                     token: token
                 });
             }
@@ -83,12 +96,16 @@ router.post('/register', (req, res) => {
         if (err) console.log(err);
 
         if (user) {
-            res.json({ success: false, message: 'Email already exists.' });
-        }
-        else if (req.body.password !== req.body.confirm_password) {
-            res.json({ success: false, message: 'Password doesn\'t match.' });
-        }
-        else {
+            return res.json({
+                success: false,
+                message: 'Email already exists.'
+            });
+        } else if (req.body.password !== req.body.confirm_password) {
+            return res.json({
+                success: false,
+                message: 'Password doesn\'t match.'
+            });
+        } else {
             var newUser = new User({
                 username: req.body.username,
                 email: req.body.email,
@@ -97,11 +114,14 @@ router.post('/register', (req, res) => {
             });
             newUser.save((err) => {
                 if (err) console.log(err);
-                res.json({ success: true, message: 'Register successfully.' })
+                return res.json({
+                    success: true,
+                    message: 'Register successfully.'
+                })
             });
         }
     });
-    
+
 });
 
 // router.get('/setup', (req, res) => {

@@ -4,6 +4,7 @@
             <span>Sign in to TeamCode</span>
         </div>
         <hr>
+        <div uib-alert ng-repeat="alert in vm.alerts" ng-class="'alert-' + (alert.type || 'warning')" dismiss-on-timeout="5000" close="vm.closeAlert($index)">{{alert.msg}}</div>
         <div class="card-block">
             <form name="formSignin" ng-submit="vm.login()">
                 <div class="form-group" ng-class="{ 'has-error': formSignin.email.$error.required && formSignin.email.$dirty || formSignin.email.$error.maxlength && formSignin.email.$dirty || formSignin.email.$invalid && formSignin.email.$dirty }">

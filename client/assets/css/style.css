@@ -26,7 +26,7 @@ html, body {
 }
 
 .card {
-    width: 35%;
+    width: 30%;
     height: auto;
     margin: 0 auto;
     position: absolute;
@@ -167,7 +167,7 @@ ul#dropdown.dropdown-content li>a {
     font-size: 70px;
 }
 
-@media only screen and (max-width: 1000px) {
+@media only screen and (max-width: 1100px) {
     h1 {
         font-size: 70px;
     }

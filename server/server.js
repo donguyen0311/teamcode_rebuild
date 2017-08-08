@@ -14,7 +14,10 @@ const routes = require('./routes');
 
 mongoose.connect(config.database_url, {
     useMongoClient: true
-});
+}).then(
+    () => console.log('Connected Database'),
+    err => { throw err; }
+);;
 
 app.set('secretKey', config.secret_key);
 
@@ -35,7 +38,7 @@ app.use('/bundles', express.static(path.join(__dirname, '../client/bundles')));
 app.use('/api', routes);
 
 app.get('/', (req, res) => {
-    res.render('index');
+    return res.render('index');
 });
 
 app.listen(config.port, config.hostname, () => {
