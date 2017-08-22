@@ -6,6 +6,7 @@
             'ngAnimate',
             'ngSanitize',
             'ngCookies',
+            'dndLists',
             'ui.bootstrap',
             // 'ngMaterial',
             'ui.router',

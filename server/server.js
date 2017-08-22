@@ -9,15 +9,20 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
 const ejs = require('ejs');
+const subdomain = require('express-subdomain');
 const routes = require('./routes');
+const routesDocker = require('./routesDocker');
 
 mongoose.connect(config.database_url, {
     useMongoClient: true
 }).then(
     () => console.log('Connected Database'),
-    err => { throw err; }
-);;
+    err => {
+        throw err;
+    }
+);
 
 app.set('secretKey', config.secret_key);
 
@@ -25,7 +30,10 @@ app.set('views', path.join(__dirname, '../client'));
 app.engine('html', ejs.renderFile);
 app.set('view engine', 'html');
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(helmet());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(logger('dev'));
@@ -36,6 +44,8 @@ app.use('/node_modules', express.static(path.join(__dirname, '../node_modules'))
 app.use('/libs', express.static(path.join(__dirname, '../client/libs')));
 app.use('/bundles', express.static(path.join(__dirname, '../client/bundles')));
 app.use('/api', routes);
+
+// app.use(subdomain('*', routesDocker));
 
 app.get('/', (req, res) => {
     return res.render('index');

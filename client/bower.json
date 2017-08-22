@@ -26,6 +26,7 @@
     "angular-bootstrap": "^2.5.0",
     "angular-sanitize": "^1.6.4",
     "angular-ui-router": "^1.0.5",
-    "angular-material": "^1.1.4"
+    "angular-material": "^1.1.4",
+    "angular-drag-and-drop-lists": "^2.1.0"
   }
 }

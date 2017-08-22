@@ -13,9 +13,22 @@
             authentication: authentication,
             logout: logout, 
             getUserInfo: getUserInfo,
-            isAuthenticate: isAuthenticate
+            isAuthenticate: isAuthenticate,
+            uploadImage: uploadImage
         };
         return services;
+
+        function uploadImage(fd) {
+            var deferred = $q.defer();
+            $http
+                .put('/api/users/image', fd, { transformRequest: angular.identity, headers: { 'Content-Type': undefined } })
+                .then(function success(response) {
+                    deferred.resolve(response.data);
+                }, function error(error) {
+                    deferred.reject(error);
+                });
+            return deferred.promise;
+        }
 
         function isAuthenticate() {
             if ($window.sessionStorage.token && $window.sessionStorage.email) {
@@ -29,9 +42,9 @@
             $http
                 .get('/api/users/' + email)
                 .then(function success(response) {
-                    console.log(response);
+                    deferred.resolve(response.data);
                 }, function error(error) {
-                    console.log(error);
+                    deferred.reject(error);
                 });
             return deferred.promise;
         }

@@ -22,7 +22,7 @@ gulp.task('angular', () => {
             this.emit('end');
         })
         .pipe(gulp.dest('client/bundles'))
-})
+});
 
 gulp.task('watch', () => {
     return gulp.watch(['client/app/**/app.js', 'client/app/**/*.js'], ['angular']);
