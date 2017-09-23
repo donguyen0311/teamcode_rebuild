@@ -20,7 +20,7 @@ var sha512 = (password) => {
     var key = crypto.pbkdf2Sync(password, salt, 100000, 512, 'sha512'); /** Hashing algorithm sha512 with 100000 rounds and digest 512 */
     return {
         salt: salt,
-        passwordHash: key.toString('hex')
+        password_encrypt: key.toString('hex')
     };
 };
 exports.sha512 = sha512;
@@ -29,12 +29,12 @@ exports.sha512 = sha512;
  * @function
  * @param {string} password - List of required fields.
  * @param {string} salt - Data to be validated.
- * @param {string} passwordHash - List of required fields.
+ * @param {string} password_encrypt - List of required fields.
  * @returns {boolean} result
  */
-var compareSync = (password, salt, passwordHash) => {
+var compareSync = (password, salt, password_encrypt) => {
     var key = crypto.pbkdf2Sync(password, salt, 100000, 512, 'sha512');
-    return (key.toString('hex') === passwordHash) ? true : false;
+    return (key.toString('hex') === password_encrypt) ? true : false;
 };
 exports.compareSync = compareSync;
 
@@ -49,12 +49,12 @@ exports.compareSync = compareSync;
  * @function
  * @param {string} password - List of required fields.
  * @param {string} salt - Data to be validated.
- * @param {string} passwordHash - List of required fields.
+ * @param {string} password_encrypt - List of required fields.
  * @param {callbackFunction} callback - Callback.
  */
-var compare = (password, salt, passwordHash, callback) => {
+var compare = (password, salt, password_encrypt, callback) => {
     var key = crypto.pbkdf2Sync(password, salt, 100000, 512, 'sha512');
-    var result =  (key.toString('hex') === passwordHash) ? true : false;
+    var result =  (key.toString('hex') === password_encrypt) ? true : false;
     if(typeof callback === 'function') {
         callback(result);
     }
