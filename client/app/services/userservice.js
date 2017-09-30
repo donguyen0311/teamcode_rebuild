@@ -52,7 +52,7 @@
         function login(data) {
             var deferred = $q.defer();
             $http
-                .post('/api/authenticate', data)
+                .post('/api/login', data)
                 .then(function success(response) {
                     console.log(response);
                     if (response.data.success) {
@@ -81,6 +81,13 @@
 
         function authentication() {
             var deferred = $q.defer();
+            $http
+                .get('/api/authenticate')
+                .then(function success(response) {
+                    deferred.resolve(response.data);
+                }, function error(error) {
+                    deferred.reject(error);
+                });
             return deferred.promise;
         }
 

@@ -7,19 +7,27 @@
             'ngSanitize',
             'ngCookies',
             'dndLists',
-            'ui.bootstrap',
-            // 'ngMaterial',
+            'ngAria',
+            // 'ui.bootstrap',
+            'ngMaterial',
+            'ngMessages',
             'ui.router',
             'app.controllers',
             'app.directives',
             'app.services'
         ])
-        .config(mainConfig);
+        .config(mainConfig)
+        // Using $state within a template
+        .run(function ($rootScope, $state, $stateParams) {
+            $rootScope.$state = $state;
+            $rootScope.$stateParams = $stateParams;
+
+        });
 
     /** @ngInject */
     function mainConfig($stateProvider, $locationProvider, $urlRouterProvider, $httpProvider) {
         $httpProvider.interceptors.push('authInterceptor');
-        
+
         $stateProvider
             .state('blank', {
                 abstract: true,
@@ -29,7 +37,7 @@
                     }
                 },
                 resolve: {
-                    isAuthenticate : _isAuthenticate
+                    isAuthenticated : _isAuthenticated
                 }
             })
             .state('structure', {
@@ -83,11 +91,19 @@
                         controller: 'headerController',
                         controllerAs: 'vm'
                     },
+                    'sidebar': {
+                        templateUrl: 'app/templates/sidebar.html',
+                        controller: 'sidebarController',
+                        controllerAs: 'vm'
+                    },
                     'content': {
                         templateUrl: 'app/templates/profile.html',
                         controller: 'profileController',
                         controllerAs: 'vm'
                     }
+                },
+                resolve: {
+                    redirectIfNotAuthenticated: _redirectIfNotAuthenticated
                 }
             })
             .state('structure.dashboard', {
@@ -98,11 +114,19 @@
                         controller: 'headerController',
                         controllerAs: 'vm'
                     },
+                    'sidebar': {
+                        templateUrl: 'app/templates/sidebar.html',
+                        controller: 'sidebarController',
+                        controllerAs: 'vm'
+                    },
                     'content': {
                         templateUrl: 'app/templates/dashboard.html',
                         controller: 'dashboardController',
                         controllerAs: 'vm'
                     }
+                },
+                resolve: {
+                    redirectIfNotAuthenticated: _redirectIfNotAuthenticated
                 }
             })
             .state('structure.editor', {
@@ -124,7 +148,7 @@
         $urlRouterProvider.otherwise("/");
 
         /** @ngInject */
-        function _isAuthenticate(userService, $state, $timeout) {
+        function _isAuthenticated(userService, $state, $timeout) {
             if (userService.isAuthenticate()) {
                 $timeout(function () {
                     $state.go('structure.home');
@@ -132,6 +156,22 @@
             }
         }
 
+        /** @ngInject */
+        function _redirectIfNotAuthenticated(userService, $state, $timeout) {
+            userService
+                .authentication()
+                .then((response) => {
+                    if(!response.success) {
+                        $timeout(function () {
+                            $state.go('blank.login');
+                        });
+                    }
+                }, (error) => {
+                    $timeout(function () {
+                        $state.go('blank.login');
+                    });
+                });
+        }
     }
 
 }());

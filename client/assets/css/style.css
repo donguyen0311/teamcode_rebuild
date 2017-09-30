@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     width: 100%;
     height: 100%;
     font-family: Roboto, sans-serif;
@@ -9,21 +10,31 @@ ul {
     margin: 0;
 }
 
+li {
+    list-style-type: none;
+}
+
+a {
+    text-decoration: none;
+}
+
 .navbar-inner {
-    -webkit-box-shadow: 0 3px 3px rgba(0,0,0,0.175);
-    box-shadow: 0 3px 3px rgba(0,0,0,0.175);
+    -webkit-box-shadow: 0 3px 3px rgba(0, 0, 0, 0.175);
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.175);
 }
 
 .navbar {
     margin-bottom: 5px;
 }
 
-.register-account, .login-account {
+.register-account,
+.login-account {
     text-align: center;
     margin-top: 5px;
 }
 
-.login, .register {
+.login,
+.register {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -41,8 +52,8 @@ ul {
     transform: translate(-50%, -50%);*/
     border: 1px solid #e7e7e7;
     border-radius: 5px;
-    -webkit-box-shadow: 0 3px 3px rgba(0,0,0,0.175);
-    box-shadow: 0 3px 3px rgba(0,0,0,0.175);
+    -webkit-box-shadow: 0 3px 3px rgba(0, 0, 0, 0.175);
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.175);
 }
 
 .block-project {
@@ -53,7 +64,7 @@ ul {
 }
 
 .title-content-tab {
-    margin-top: 15px; 
+    margin-top: 15px;
     font-size: 23px;
 }
 
@@ -63,13 +74,14 @@ ul {
     margin-bottom: 15px;
 }
 
+
 /*.toolbardemoBasicUsage md-toolbar md-icon.md-default-theme {
   color: white; 
 }*/
 
 #particles {
     width: 100%;
-    height: calc(100% - 58px);
+    height: calc(100% - 64px);
     overflow: hidden;
     background: #fff;
     position: absolute;
@@ -164,7 +176,6 @@ img {
     }
 }
 
-
 #cursor:after {
     content: " ";
     display: inline-block;
@@ -183,6 +194,118 @@ img {
     font-size: 70px;
 }
 
+[ng-click]:hover {
+    cursor: pointer;
+}
+
+md-content.md-default-theme {
+    background-color: #eee;
+}
+
+md-sidenav.md-sidenav-list {
+    z-index: 1;
+}
+
+@media (max-width: 620px) {
+    md-sidenav.md-sidenav-list {
+        max-width: 100%;
+        width: 100%;
+    }
+}
+
+md-sidenav.md-sidenav-list md-list {
+    border-right: 1px solid #d5d5d5;
+}
+
+md-sidenav>md-toolbar.md-tall {
+    padding: 15px;
+    height: auto;
+    max-height: 150px;
+}
+
+md-sidenav md-divider {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+md-sidenav.md-sidenav-list md-list-item.md-2-line .md-list-item-text,
+md-sidenav.md-sidenav-list md-list-item.md-2-line>.md-no-style .md-list-item-text {
+    margin-bottom: 10px;
+}
+
+md-sidenav.md-navigation-drawer md-list-item.md-2-line .md-list-item-text,
+md-sidenav.md-navigation-drawer md-list-item.md-2-line>.md-no-style .md-list-item-text {
+    padding-top: 6px;
+    /* padding-bottom: 6px; */
+}
+
+md-sidenav.md-navigation-drawer,
+md-sidenav.md-navigation-drawer.md-locked-open {
+    width: 256px;
+    min-width: 256px;
+    max-width: 256px;
+}
+
+md-backdrop+md-sidenav.md-sidenav-list {
+    z-index: 3;
+}
+
+md-sidenav:not(.md-sidenav-list) md-icon {
+    fill: #737373;
+    position: relative;
+}
+
+md-sidenav:not(.md-sidenav-list) .md-avatar {
+    height: 64px;
+    width: 64px;
+}
+
+
+/* More closely matches https://www.google.com/design/spec/components/lists.html#lists-specs */
+
+md-list-item.md-3-line md-divider[md-inset] {
+    left: 70px;
+}
+
+.md-avatar>svg {
+    border-radius: 50%;
+}
+
+
+/* Hide backdrop for internal sidenav */
+
+md-content md-backdrop {
+    display: none;
+}
+
+
+/* Shrink inputs */
+
+.edit-app md-input-container {
+    padding-bottom: 0;
+    line-height: 30px;
+    font-size: 14px;
+}
+
+.edit-app md-input-container:first-of-type {
+    margin-top: -16px;
+}
+
+
+/* fade animation */
+
+.animate-show {
+    transition: 0.75s ease-out all;
+    opacity: 1;
+}
+
+.animate-show.ng-hide {
+    height: 0;
+    min-height: 0;
+    opacity: 0;
+    overflow: hidden;
+}
+
 @media only screen and (max-width: 1100px) {
     h1 {
         font-size: 70px;
@@ -196,7 +319,6 @@ img {
     h1 {
         font-size: 48px;
     }
-
     h1::after {
         height: 5px;
     }
@@ -207,15 +329,13 @@ img {
     }
 }
 
-@media only screen and (max-width: 568px) {
+@media only screen and (max-width: 569px) {
     #intro {
         padding: 0 10px;
     }
-
     h1 {
         font-size: 30px;
     }
-
     h1::after {
         height: 3px;
     }
@@ -224,11 +344,9 @@ img {
         width: 3px;
         top: 8px;
     }
-
     p.real-time {
         font-size: 18px;
     }
-
     .btn-custom {
         font-size: 16px;
     }
@@ -241,11 +359,9 @@ img {
     h1 {
         font-size: 27px;
     }
-
     h1::after {
         height: 1px;
     }
-
     .card {
         width: 80%;
     }
@@ -277,14 +393,17 @@ button.btn {
     border-radius: 0 !important;
 }
 
+
 /**
  * The dnd-list should always have a min-height,
  * otherwise you can't drop to it once it's empty
  */
+
 .simpleDemo ul[dnd-list] {
     min-height: 42px;
     padding-left: 0px;
 }
+
 
 /**
  * The dndDraggingSource class will be applied to
@@ -292,15 +411,18 @@ button.btn {
  * sense to hide it to give the user the feeling
  * that he's actually moving it.
  */
+
 .simpleDemo ul[dnd-list] .dndDraggingSource {
     display: none;
 }
+
 
 /**
  * An element with .dndPlaceholder class will be
  * added to the dnd-list while the user is dragging
  * over it.
  */
+
 .simpleDemo ul[dnd-list] .dndPlaceholder {
     background-color: #ddd;
     display: block;
@@ -320,9 +442,11 @@ button.btn {
     /* margin-bottom: -1px; */
 }
 
+
 /**
  * Show selected elements in green
  */
+
 .simpleDemo ul[dnd-list] li.selected {
     background-color: #dff0d8;
     color: #3c763d;

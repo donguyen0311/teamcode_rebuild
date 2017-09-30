@@ -5,6 +5,7 @@
         .module('app.controllers', [
             'app.controllers.maincontroller',
             'app.controllers.headercontroller',
+            'app.controllers.sidebarcontroller',
             'app.controllers.logincontroller',
             'app.controllers.registercontroller',
             'app.controllers.profilecontroller',

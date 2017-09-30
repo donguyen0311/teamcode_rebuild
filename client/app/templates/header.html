@@ -1,4 +1,4 @@
-<nav class="navbar navbar-default navbar-inner" role="navigation">
+<!-- <nav class="navbar navbar-default navbar-inner" role="navigation">
     <div class="navbar-header">
         <button type="button" class="navbar-toggle" ng-click="vm.isNavCollapsed = !vm.isNavCollapsed">
             <span class="sr-only">Toggle navigation</span>
@@ -27,4 +27,42 @@
             </li>
         </ul>
     </div>
-</nav>
+</nav> -->
+<div layout="column" layout-fill class="md-whiteframe-z2">
+    <md-toolbar class="md-whiteframe-glow-z1 site-content-toolbar _md _md-toolbar-transitions md-menu-toolbar" md-colors="{background: 'default-background-hue-3'}">
+        <div class="md-toolbar-tools docs-toolbar-tools">
+            <md-button class="md-icon-button" aria-label="Menu" ng-click="vm.toggleLeft()" ng-if="!vm.isAuthenticate()">
+                <md-icon md-svg-icon="assets/images/icons/ic_menu_black_24px.svg"></md-icon>
+            </md-button>
+            <h2 md-truncate flex>TeamCode</h2>
+            <!-- not Authenticate -->
+            <md-button hide-xs ng-if="!vm.isAuthenticate()">
+                <a ui-sref="blank.login">Login</a>
+            </md-button>
+            <md-button hide-xs ng-if="!vm.isAuthenticate()">
+                <a ui-sref="blank.register">Register</a>
+            </md-button>
+            <!-- Authenticated -->
+            <md-button ng-click="vm.logout()" ng-if="vm.isAuthenticate()">
+                <a>Logout</a>
+            </md-button>         
+        </div>
+
+    </md-toolbar>
+    <md-sidenav class="md-sidenav-left" md-component-id="left" md-whiteframe="4" ng-if="!vm.isAuthenticate()">
+
+        <md-toolbar md-colors="{background: 'default-background-hue-3'}">
+            <h1 class="md-toolbar-tools">TeamCode</h1>
+        </md-toolbar>
+
+        <md-content layout-margin layout="column" layout-align="center" ng-if="!vm.isAuthenticate()">
+            <md-button md-colors="{color: 'default-background-hue-3'}">
+                <a ui-sref="blank.login">Login</a>
+            </md-button>
+            <md-button md-colors="{color: 'default-background-hue-3'}">
+                <a ui-sref="blank.register">Register</a>
+            </md-button>
+        </md-content>
+
+    </md-sidenav>
+</div>

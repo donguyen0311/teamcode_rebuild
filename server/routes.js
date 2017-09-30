@@ -55,7 +55,8 @@ router.get('/users/:email', middlewareAuth, (req, res) => {
     User.findOne({
         email: req.params.email
     }, {
-        password: false
+        password: false,
+        salt: false
     }, (err, user) => {
         if (!user) {
             return res.json({
@@ -78,7 +79,28 @@ router.put('/users/image', upload.any(), (req, res) => {
     });
 });
 
-router.post('/authenticate', (req, res) => {
+router.get('/authenticate', middlewareAuth, (req, res) => {
+    User.findOne({
+        email: req.decoded.email
+    }, (err, user) => {
+        if (err) throw err;
+
+        if (!user) {
+            return res.json({
+                success: false,
+                message: 'Authentication failed. Email not found.'
+            });
+        }
+        else {
+            return res.json({
+                success: true,
+                message: 'Authentication successful.'
+            });
+        }
+    });
+});
+
+router.post('/login', (req, res) => {
     User.findOne({
         email: req.body.email
     }, (err, user) => {
@@ -88,22 +110,22 @@ router.post('/authenticate', (req, res) => {
             return res.json({
                 success: false,
                 //message: 'Authentication failed. Email not found.'
-                message: 'Authentication failed. Invalid Email or Password.'
+                message: 'Login failed. Invalid Email or Password.'
             });
         } else if (user) {
-            if (user.password != md5(req.body.password)) {
+            if (helper.compareSync(req.body.password, user.salt, user.password)) {
                 return res.json({
                     success: false,
                     // message: 'Authentication failed. Wrong password.'
-                    message: 'Authentication failed. Invalid Email or Password.'
+                    message: 'Login failed. Invalid Email or Password.'
                 });
             } else {
-                var token = jwt.sign(user, config.secret_key, {
+                var token = jwt.sign( {email: user.email} , config.secret_key, {
                     expiresIn: "1d"
                 });
                 return res.json({
                     success: true,
-                    message: 'Login successfully.',
+                    message: 'Login success.',
                     token: token
                 });
             }
@@ -128,10 +150,12 @@ router.post('/register', (req, res) => {
                 message: 'Password doesn\'t match.'
             });
         } else {
+            var password_sha512 = helper.sha512(req.body.password);
             var newUser = new User({
                 username: req.body.username,
                 email: req.body.email,
-                password: md5(req.body.password),
+                password: password_sha512.password_encrypt,
+                salt: password_sha512.salt,
                 admin: req.body.admin
             });
             newUser.save((err) => {

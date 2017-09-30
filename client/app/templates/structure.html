@@ -1,2 +1,5 @@
 <div ui-view="header"></div>
-<div ui-view="content"></div>
+<div layout="row" layout-xs="column">
+    <div ui-view="sidebar" flex-xs="3"></div>
+    <div ui-view="content" flex></div>
+</div>

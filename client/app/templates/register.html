@@ -1,64 +1,62 @@
-<div class="register">
-    <div class="card">
-        <div class="card-header">
-            <span>Sign up for TeamCode</span>
-        </div>
-        <hr>
-        <div uib-alert ng-repeat="alert in vm.alerts" ng-class="'alert-' + (alert.type || 'warning')" dismiss-on-timeout="5000" close="vm.closeAlert($index)">{{alert.msg}}</div>
-        <div class="card-block">
-            <form name="formSignup" ng-submit="vm.register()">
-                <div class="form-group" ng-class="{ 'has-error': formSignup.username.$error.required && formSignup.username.$dirty || formSignup.username.$error.maxlength && formSignup.username.$dirty || formSignup.username.$invalid && formSignup.username.$dirty }">
-                    <label for="username">Username</label>
-                    <input  type="text" 
-                            class="form-control" 
-                            id="username"
-                            name="username"
-                            ng-required="true"
-                            ng-maxlength="100"
-                            placeholder="Pick a username"
-                            ng-model="vm.user.username">
-                </div>
-                <div class="form-group" ng-class="{ 'has-error': formSignup.email.$error.required && formSignup.email.$dirty || formSignup.email.$error.maxlength && formSignup.email.$dirty || formSignup.email.$invalid && formSignup.email.$dirty }">
-                    <label for="email">Email</label>
-                    <input  type="email" 
-                            class="form-control" 
-                            id="email"
-                            name="email"
-                            ng-required="true"
-                            ng-maxlength="100"
-                            ng-model="vm.user.email"
-                            placeholder="Your email address"
-                            ng-pattern='/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/'>
-                </div>
-                <div class="form-group" ng-class="{ 'has-error': formSignup.password.$error.required && formSignup.password.$dirty || formSignup.password.$error.maxlength && formSignup.password.$dirty }">
-                    <label for="password">Password</label>
-                    <input  type="password" 
-                            class="form-control" 
-                            id="password"   
-                            name="password"
-                            ng-maxlength="50"
-                            ng-model="vm.user.password"
-                            placeholder="Create a password"
-                            ng-required="true">
-                </div>
-                <div class="form-group" ng-class="{ 'has-error': formSignup.confirm_password.$error.required && formSignup.confirm_password.$dirty || formSignup.confirm_password.$error.maxlength && formSignup.confirm_password.$dirty || vm.user.password != vm.user.confirm_password }">
-                    <label for="confirm_password">Confirm Password</label>
-                    <input  type="password" 
-                            class="form-control" 
-                            id="confirm_password"   
-                            name="confirm_password"
-                            ng-maxlength="50"
-                            ng-model="vm.user.confirm_password"
-                            placeholder="Same as password"
-                            ng-required="true">
-                </div>
-                <p>Use at least one letter, one numeral, and seven characters.</p>
-                <button type="submit" 
-                        class="btn btn-success btn-block"
-                        name="action"
-                        ng-disabled="formSignup.$invalid">Sign up</button>
-            </form>
-            <p class="login-account">Already have an account? <a ui-sref="blank.login">Sign in</a></p>
-        </div>
-    </div>
+<div class="register" class="md-padding" layout="row">
+    <md-content flex-xs="70" flex-sm="70" flex-md="50" flex-gt-md="30">
+        <md-card>
+            <md-card-title>
+                <md-card-title-text>
+                    <span class="md-headline">Sign up for TeamCode</span>
+                </md-card-title-text>
+            </md-card-title>
+            <md-card-content>
+                <form name="formSignup" ng-submit="vm.register()">
+                    <div layout-gt-sm="column">
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>Username</label>
+                            <input type="text" id="username" name="username" minlength="5" md-maxlength="100" ng-model="vm.user.username" required>
+                            <div ng-messages="formSignup.username.$error" role="alert">
+                                <div ng-message-exp="['required', 'minlength', 'md-maxlength']">
+                                    Your password must be between 5 and 100 characters long.
+                                </div>
+                            </div>
+                        </md-input-container>
+
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>Email</label>
+                            <input type="email" minlength="10" md-maxlength="100" required id="email" name="email" ng-model="vm.user.email" ng-pattern='/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/'>
+                            <div ng-messages="formSignup.email.$error" role="alert">
+                                <div ng-message-exp="['required', 'minlength', 'md-maxlength', 'pattern']">
+                                    Your email must be between 10 and 100 characters long and look like an e-mail address.
+                                </div>
+                            </div>
+                        </md-input-container>
+
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>Password</label>
+                            <input type="password" id="password" name="password" minlength="1" md-maxlength="100" ng-model="vm.user.password" required>
+                            <div ng-messages="formSignup.email.$error" role="alert">
+                                <div ng-message-exp="['required', 'minlength', 'md-maxlength']">
+                                    Your password must be between 1 and 100 characters long.
+                                </div>
+                            </div>
+                        </md-input-container>
+
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>Confirm Password</label>
+                            <input type="password" id="confirm_password" name="confirm_password" minlength="1" md-maxlength="100" ng-model="vm.user.confirm_password" required>
+                            <div ng-messages="formSignup.confirm_password.$error" role="alert">
+                                <div ng-message-exp="['required', 'minlength', 'md-maxlength']">
+                                    Your password must be between 1 and 100 characters long.
+                                </div>
+                            </div>
+                        </md-input-container>
+
+                        <div layout="column">
+                            <md-button type="submit" name="action" class="md-block md-raised" ng-disabled="formSignup.$invalid">Sign up</md-button>
+                        </div>
+                    </div>
+                </form>
+                <p class="register-account md-body-1">Already have an account? <a ui-sref="blank.login">Sign in</a></p>
+
+            </md-card-content>
+        </md-card>
+    </md-content>
 </div>

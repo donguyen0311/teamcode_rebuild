@@ -1,94 +1,43 @@
-<br>
-<div class="container">
-    <div class="row">
-        <div class="col-xs-3">
-            <img src="assets/images/no_image.png" class="img-responsive img-rounded center-block" ng-click="vm.changeImage()">
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="text-center">
-                        <h3>{{ vm.user.name || vm.user.username }}</h3>
-                    </div>
-                </div>
-            </div>
+<md-content flex layout-padding>
+    <div layout="row" layout-xs="column">
+        <div flex="25" flex-xs="100">
+            <md-card>
+                <img src="assets/images/no_image.png" class="md-card-image" alt="image" ng-click="vm.changeImage()">
+                <md-card-content>
+                    <h2>{{ vm.user.name || vm.user.username }}</h2>
+                </md-card-content>
+            </md-card>
         </div>
-        <div class="col-xs-9">
-            <uib-tabset active="activeJustified" justified="true">
-                <uib-tab index="0" heading="Overview">
-                    <div class="row">
-                        <div class="col-xs-12 title-content-tab">Popular</div>
-                        <div class="col-xs-12 col-sm-6">
-                            <div class="block-project">
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam molestias deleniti atque ipsa. Est, aspernatur.
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6">
-                            <div class="block-project">
-                                Lorem ipsulorem12m Lorem ipsum dolor sit amet, consectetur adipisicing elit. Odio repellendus itaque quasi! tur adipisicing elit. Magnam molestias deleniti atque ipsa. Est, aspernatur.
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6">
-                            <div class="block-project">
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et harum delectus voluptatibus aspernatur officiis illo corporis consequuntur, natus nihil porro sit temporibus unde. Atque.
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6">
-                            <div class="block-project">
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sed voluptate officiis et. Consequuntur.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam molestias deleniti atque ipsa. Est, aspernatur.
-                            </div>
-                        </div>
-                    </div>
-                </uib-tab>
-                <uib-tab index="1" heading="Information">
-                    <div class="row">
-                        <div class="col-xs-12 title-content-tab"></div>
-                        <table class="table table-hover">
-                            
-                        </table>
-                    </div>   
-                </uib-tab>
-                <uib-tab index="2" heading="Projects ({{ vm.countProject }})">
-                    <br>
-                    <div class="col-xs-12">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search for project">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">Search</button>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-6">
-                        <div class="block-project">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam molestias deleniti atque ipsa. Est, aspernatur.
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-6">
-                        <div class="block-project">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam molestias deleniti atque ipsa. Est, aspernatur.
-                        </div>
-                    </div>
-                </uib-tab>
-                <uib-tab index="3" heading="Contributes ({{ vm.countContribute }})">
-                    <br>
-                    <div class="col-xs-12">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search for contribute">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">Search</button>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-6">
-                        <div class="block-project">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam molestias deleniti atque ipsa. Est, aspernatur.
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-6">
-                        <div class="block-project">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam molestias deleniti atque ipsa. Est, aspernatur.
-                        </div>
-                    </div>
-                </uib-tab>
-            </uib-tabset>
+        <div flex="75" flex-xs="100">
+            <md-card>
+                <md-card-content>
+                    <md-tabs md-dynamic-height md-border-bottom>
+                        <md-tab label="My Tasks">
+                            <md-content class="md-padding">
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid tempore quo expedita, quaerat exercitationem nulla natus vel repudiandae, voluptatem reiciendis illum cupiditate veritatis esse. Quam, atque eaque, voluptas laboriosam maxime asperiores quaerat esse repellendus a incidunt pariatur delectus animi! Consequuntur sequi nisi accusamus, illo cupiditate, ea sint provident incidunt nemo, cumque reprehenderit veritatis aut blanditiis eos ullam minus repudiandae dicta consequatur eligendi debitis. Vel molestiae provident delectus neque eum, architecto, perspiciatis labore, at eius eaque soluta alias quia nihil totam qui. Possimus maxime iusto quis. Provident, quis iure. Qui molestiae nulla, illo, molestias omnis doloribus ipsam vero iste quod sint totam maiores repellendus expedita dolor sapiente assumenda cupiditate odio repudiandae. Eius temporibus assumenda eligendi odit perferendis omnis accusantium. Debitis totam in consequuntur, blanditiis amet doloremque, sit voluptatum, deleniti sapiente inventore saepe. Culpa earum sequi dolorum tempora provident totam temporibus, excepturi consequuntur sint eos est? Ea, quaerat nulla tenetur veritatis architecto modi rem nobis ab cupiditate vel doloribus porro? Assumenda quaerat accusantium sit reprehenderit atque vitae consectetur repellendus nobis, maiores quia obcaecati sapiente officiis fugiat, adipisci numquam ab nostrum rem expedita totam et iste aliquam! Atque assumenda obcaecati tempore, aspernatur ex nemo similique dolore ratione id. Nam doloribus ipsam id omnis!
+                                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Optio voluptate animi laborum modi laboriosam distinctio ad, amet impedit quibusdam eveniet consequuntur vitae corrupti veritatis quos neque velit perspiciatis, eum iste illo ab, deserunt libero laudantium. Modi cupiditate voluptate, quod fugit tenetur cum ad amet natus repellat aliquid enim doloremque aut quasi nostrum! Harum a itaque officiis maiores eligendi libero vel est, minima sit saepe doloribus facilis ipsa, repellendus enim, optio veniam voluptate ullam amet laudantium. Obcaecati voluptatibus omnis aperiam porro ea eos natus officiis, ipsa corrupti mollitia ipsum non nam delectus qui labore at quas perspiciatis eligendi, placeat nemo aut necessitatibus nihil ad? Qui, itaque, vitae et ratione fugit dolorum ipsa beatae repudiandae ea facere quis odit, vero optio suscipit voluptatibus eum. Reiciendis tempora beatae exercitationem illum tenetur, repellat optio obcaecati nobis commodi quibusdam rerum debitis adipisci natus nesciunt magnam ex necessitatibus? Accusantium asperiores laboriosam quam ratione vitae aspernatur ad, laborum cumque soluta sed itaque id tenetur delectus fugit aperiam corrupti commodi dicta repudiandae architecto maxime. Labore similique nihil sit quibusdam provident. Beatae mollitia sint numquam maiores magni eum officia totam fuga, itaque harum quibusdam consectetur? Cupiditate exercitationem nobis odio beatae debitis nemo dicta ipsam temporibus porro illo, laborum voluptatibus.    
+                            </md-content>
+                        </md-tab>
+                        <md-tab label="Information">
+                            <md-content class="md-padding">
+                                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Beatae enim dicta accusantium, a porro maiores esse nisi facere nam expedita, ipsam saepe. Fugiat voluptates iure alias nihil aut? Impedit provident ad veritatis laboriosam laudantium molestias voluptates similique id explicabo fugiat repellendus qui odit quam, reiciendis dolorum et quas quisquam? Sequi numquam autem aliquid eaque harum, quidem hic ut aliquam distinctio magni ab, vitae adipisci! Perferendis esse atque distinctio impedit officiis tenetur nihil odio? Deleniti maxime similique sed quasi exercitationem voluptatibus sint. Officiis, corrupti blanditiis cum adipisci, commodi est sed nemo recusandae amet hic omnis laboriosam reiciendis quasi molestias quidem animi porro tenetur, maxime doloremque illo quae neque vero delectus dolorum? Cumque minus impedit voluptatem quo labore, temporibus quod. Placeat ducimus culpa, illo esse molestiae praesentium pariatur quasi quibusdam officiis, voluptates quae, non neque architecto harum deleniti quo! Sunt optio harum pariatur nobis? Sapiente cupiditate veniam eligendi deserunt placeat quod quidem ipsum hic cum incidunt maxime aut provident dolorem, perferendis voluptatum nihil fuga iure inventore assumenda nulla consequuntur! Temporibus quos eligendi, alias illum dicta vero soluta ad sapiente id libero eum consequuntur maiores atque molestiae quae omnis, earum non consectetur nihil! Sunt nam aspernatur culpa iure quisquam commodi ullam officia velit!
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam beatae ex nam ipsa mollitia autem provident voluptatibus est natus magni quibusdam hic at laboriosam soluta qui, alias fugiat illum aut numquam quaerat! Totam quidem praesentium dolor ex exercitationem impedit ab iure accusantium ad dolores natus explicabo officiis voluptas a omnis cumque nulla quaerat, sapiente iusto voluptatum labore? Distinctio voluptatem temporibus vel maiores ipsam amet modi, sint consequatur doloribus eos ipsum tempora non sit. Voluptatum quaerat cupiditate perferendis maiores fuga dolorum impedit eum pariatur nemo quia, libero magni dignissimos nobis facilis exercitationem itaque, enim suscipit iusto. Unde numquam hic neque molestiae laboriosam molestias, eum sint repellendus soluta suscipit omnis voluptate aliquid culpa fugit tempora illo. Deserunt at quam, corporis ut ipsam incidunt, aspernatur officia consequuntur, saepe debitis similique repellendus facere temporibus eveniet distinctio! Dolores tempora, saepe accusantium consequatur fugit, quae doloribus quaerat obcaecati eligendi expedita eum? Tempore laborum doloribus ea neque nulla quibusdam aliquam quia. Sequi minima asperiores natus recusandae facilis placeat autem illo, aperiam nostrum magnam quo praesentium error vitae, cupiditate eveniet ipsam quas ab, dicta eum hic beatae impedit unde? Repellat, facilis. Saepe facere obcaecati exercitationem at sequi beatae! Officiis dolorum reiciendis odit animi ut? Sint non nihil obcaecati.
+                            </md-content>
+                        </md-tab>
+                        <md-tab label="Projects ({{ vm.countProject }})">
+                            <md-content class="md-padding">
+                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sunt adipisci rem placeat, eligendi dolor quas eaque, sit, reiciendis pariatur commodi blanditiis exercitationem. Minima iusto sit accusantium reprehenderit, dolorem assumenda accusamus culpa sapiente, eaque aut vero, laudantium inventore officia magni enim consectetur? Aut recusandae dolorum et quia impedit soluta neque dolor laudantium officiis, provident dolores sit iure velit a maiores repellendus illo ipsam mollitia harum veniam? Cupiditate tempora voluptatem natus iste, iusto iure id vero, quaerat delectus ipsa, a molestiae blanditiis aliquid. Ipsam tempore alias debitis similique molestias assumenda neque dolorum laboriosam, placeat animi amet est! Delectus iure esse quos sapiente, magni voluptates eos maxime explicabo mollitia accusamus voluptas doloremque reprehenderit soluta labore. Expedita nulla dolor, quisquam perspiciatis corporis beatae! Doloremque hic, illum unde deserunt culpa nesciunt est suscipit autem optio libero quod blanditiis reprehenderit quis accusantium expedita exercitationem non dolor? Magni rerum hic officia sapiente temporibus mollitia, laboriosam blanditiis velit fugit? Quasi sit nisi tempora quod, consequuntur officia pariatur laudantium nemo. Fugit iste reprehenderit, beatae nulla quidem nostrum? Reprehenderit natus corporis placeat fuga quasi quos, aliquid ut voluptas maxime minus harum! Expedita esse maiores consectetur exercitationem eveniet facilis quis eaque earum enim qui officiis ullam ex sed, architecto repellendus vero!
+                            </md-content>
+                        </md-tab>
+                        <md-tab label="Contributes ({{ vm.countContribute }})">
+                            <md-content class="md-padding">
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem fugiat ratione illo ea iusto ipsa alias hic minus quo perferendis, quibusdam eos eveniet pariatur fuga natus et. Vero est laudantium accusantium nam eum delectus ducimus molestias obcaecati reiciendis unde laboriosam consequatur magnam dicta ullam vel iusto corrupti perspiciatis, quis animi consequuntur, pariatur repudiandae repellendus magni! Nam autem cupiditate id magni unde quam corrupti architecto debitis facere ipsam perferendis neque accusantium laudantium asperiores iste quasi blanditiis totam, ex placeat similique reprehenderit commodi? Animi necessitatibus nam rem sed, minus suscipit. Aspernatur ad molestiae, iusto iure unde nam officia facilis nobis veritatis dolorem dolores! Soluta ipsam, totam eius impedit sunt laudantium, quod inventore facere dolor ad sequi unde officia, reprehenderit quo similique sed aliquam deserunt pariatur perferendis suscipit fugiat? Quidem eveniet consequatur eaque voluptatem et maxime, itaque sint, atque ab dolores vitae? Cupiditate mollitia iste id facere incidunt quaerat non quidem dolorem corrupti delectus saepe corporis, optio deserunt excepturi fugiat voluptatem et labore nisi minima ratione blanditiis eaque. Esse in nulla fugit quo autem. Aperiam quam facilis impedit dolorum cupiditate. Ad libero aliquam reiciendis neque voluptatem aperiam dolor quisquam aut accusamus nobis debitis illo mollitia dolore dignissimos laborum, nisi quo sapiente tempore error.
+                            </md-content>
+                        </md-tab>
+                    </md-tabs>
+
+                </md-card-content>
+            </md-card>
         </div>
     </div>
-</div>
+</md-content>

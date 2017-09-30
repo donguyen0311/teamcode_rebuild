@@ -1,0 +1,77 @@
+<md-sidenav layout="column" class="md-sidenav-left md-navigation-drawer" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
+    <md-toolbar class="md-hue-2 md-tall">
+        <span flex></span>
+        <div layout="row" layout-align="start center">
+            <!-- <md-icon class="md-avatar" md-svg-icon="avatars:svg-1"></md-icon> -->
+            <span flex></span>
+        </div>
+        <span flex></span>
+        <div class="md-body-2">Firstname Lastname</div>
+        <div class="md-body-1">email@domainname.com</div>
+    </md-toolbar>
+    <md-list class="md-dense">
+        <md-list-item class="md-2-line" role="link" ng-click="$state.go('structure.dashboard')">
+            <md-icon md-svg-icon="assets/images/icons/ic_dashboard_black_24px.svg" aria-label="dashboard"></md-icon>
+            <div class="md-list-item-text">
+                <span class="md-body-2">Dashboard</span>
+            </div>
+        </md-list-item>
+        <md-list-item class="md-2-line" role="link" ng-click="$state.go('structure.project')">
+            <md-icon md-svg-icon="{{item.icon}}" aria-label="{{item.title}}"></md-icon>
+            <div class="md-list-item-text">
+                <span class="md-body-2">Projects</span>
+            </div>
+        </md-list-item>
+        <md-list-item class="md-2-line" role="link" ng-click="$state.go('structure.dashboard')">
+            <md-icon md-svg-icon="{{item.icon}}" aria-label="{{item.title}}"></md-icon>
+            <div class="md-list-item-text">
+                <span class="md-body-2">Kanban</span>
+            </div>
+        </md-list-item>
+        <md-list-item class="md-2-line" role="link" ng-click="$state.go('structure.dashboard')">
+            <md-icon md-svg-icon="{{item.icon}}" aria-label="{{item.title}}"></md-icon>
+            <div class="md-list-item-text">
+                <span class="md-body-2">Users</span>
+            </div>
+        </md-list-item>
+        <md-list-item class="md-2-line" role="link" ng-click="$state.go('structure.dashboard')">
+            <md-icon md-svg-icon="{{item.icon}}" aria-label="{{item.title}}"></md-icon>
+            <div class="md-list-item-text">
+                <span class="md-body-2">Dashboard</span>
+            </div>
+        </md-list-item>
+        <md-list-item class="md-2-line" role="link" ng-click="$state.go('structure.dashboard')">
+            <md-icon md-svg-icon="{{item.icon}}" aria-label="{{item.title}}"></md-icon>
+            <div class="md-list-item-text">
+                <span class="md-body-2">Dashboard</span>
+            </div>
+        </md-list-item>
+        <md-list-item class="md-2-line" role="link" ng-click="$state.go('structure.dashboard')">
+            <md-icon md-svg-icon="{{item.icon}}" aria-label="{{item.title}}"></md-icon>
+            <div class="md-list-item-text">
+                <span class="md-body-2">Dashboard</span>
+            </div>
+        </md-list-item>
+
+        <md-divider></md-divider>
+        <md-subheader class="md-no-sticky">Management</md-subheader>
+        <md-list-item class="md-2-line" role="link" ng-click="$state.go('structure.profile')">
+            <md-icon md-svg-icon="assets/images/icons/ic_info_outline_black_24px.svg" aria-label="profile"></md-icon>
+            <div class="md-list-item-text">
+                <span class="md-body-2">Profile</span>
+            </div>
+        </md-list-item>
+        <md-list-item class="md-2-line" role="link" ng-click="$state.go('structure.setting')">
+            <md-icon md-svg-icon="assets/images/icons/ic_settings_black_24px.svg" aria-label="setting"></md-icon>
+            <div class="md-list-item-text">
+                <span class="md-body-2">Setting</span>
+            </div>
+        </md-list-item>
+        <md-list-item class="md-2-line" role="link" ng-click="vm.logout()">
+            <md-icon md-svg-icon="assets/images/icons/ic_exit_to_app_black_24px.svg" aria-label="logout"></md-icon>
+            <div class="md-list-item-text">
+                <span class="md-body-2">Logout</span>
+            </div>
+        </md-list-item>
+    </md-list>
+</md-sidenav>

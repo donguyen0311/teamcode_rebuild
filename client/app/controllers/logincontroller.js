@@ -6,7 +6,7 @@
         .controller('loginController', loginController);
 
     /** @ngInject */
-    function loginController($scope, userService, $state, $timeout) {
+    function loginController($scope, userService, $state, $timeout, toastService) {
         var vm = this;
 
         vm.alerts = [];
@@ -15,30 +15,19 @@
 
         function init() {
             vm.login = login;
-            vm.closeAlert = closeAlert;
         }
         
-        function closeAlert (index) {
-            vm.alerts.splice(index, 1);
-        }
-
         function login() {
             userService
                 .login(vm.user)
                 .then(function success(data) {
                     if (data.success) {
-                        vm.alerts.push({
-                            type: 'success',
-                            msg: data.message
-                        });
+                        toastService.showToast(data.message, 'top right', 2000);
                         $timeout(() => {
                             $state.go('structure.profile');
                         }, 2000);
                     } else {
-                        vm.alerts.push({
-                            type: 'danger',
-                            msg: data.message
-                        });
+                        toastService.showToast(data.message, 'top right', 5000);
                     }
                 }, function error(error) {
                     if (error) {

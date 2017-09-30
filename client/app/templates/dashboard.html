@@ -1,11 +1,84 @@
-<div class="container-fluid">
+<md-content flex layout-padding>
+    <div layout="row">
+        <div flex="25">
+            <md-card>
+                <h1 class="md-headline" layout="row" layout-align="center center">TO DO</h1>
+                <md-divider></md-divider>
+                <md-card-content>
+                    <md-list dnd-list="models.lists.A">
+                        <md-list-item class="md-3-line" ng-repeat="item in models.lists.A" dnd-draggable="item" dnd-moved="models.lists.A.splice($index, 1)"
+                            dnd-effect-allowed="move" dnd-selected="models.selected = item" ng-class="{'selected': models.selected === item}">
+                            <div class="md-list-item-text">
+                                <h3>{{item.label}} - {{item.name}}</h3>
+                            </div>
+                        </md-list-item>
+                    </md-list>
+                    <div layout="column">
+                        <md-button class="md-block md-raised">Add new task...</md-button>
+                    </div>
+                </md-card-content>
+            </md-card>
+        </div>
+        <div flex="25">
+            <md-card>
+                <h1 class="md-headline" layout="row" layout-align="center center">IN PROCESSING</h1>
+                <md-divider></md-divider>
+                <md-card-content>
+                    <md-list dnd-list="models.lists.B" dnd-inserted="insertedEvent('inserted at', index, external, type)">
+                        <md-list-item class="md-3-line" ng-repeat="item in models.lists.B" dnd-draggable="item" dnd-moved="models.lists.B.splice($index, 1)"
+                            dnd-effect-allowed="move" dnd-selected="models.selected = item" ng-class="{'selected': models.selected === item}"
+                            dnd-type="'item'">
+                            <div class="md-list-item-text">
+                                <h3>{{item.label}} - {{item.name}}</h3>
+                            </div>
+                        </md-list-item>
+                    </md-list>
+                </md-card-content>
+            </md-card>
+        </div>
+        <div flex="25">
+            <md-card>
+                <h1 class="md-headline" layout="row" layout-align="center center">CODE REVIEW</h1>
+                <md-divider></md-divider>
+                <md-card-content>
+                    <md-list dnd-list="models.lists.C">
+                        <md-list-item class="md-3-line" ng-repeat="item in models.lists.C" dnd-draggable="item" dnd-moved="models.lists.C.splice($index, 1)"
+                            dnd-effect-allowed="move" dnd-selected="models.selected = item" ng-class="{'selected': models.selected === item}">
+                            <div class="md-list-item-text">
+                                <h3>{{item.label}} - {{item.name}}</h3>
+                            </div>
+                        </md-list-item>
+                    </md-list>
+                </md-card-content>
+            </md-card>
+        </div>
+        <div flex="25">
+            <md-card>
+                <h1 class="md-headline" layout="row" layout-align="center center">DONE</h1>
+                <md-divider></md-divider>
+                <md-card-content>
+                    <md-list dnd-list="models.lists.D">
+                        <md-list-item class="md-3-line" ng-repeat="item in models.lists.D" dnd-draggable="item" dnd-moved="models.lists.D.splice($index, 1)"
+                            dnd-effect-allowed="move" dnd-selected="models.selected = item" ng-class="{'selected': models.selected === item}">
+                            <div class="md-list-item-text">
+                                <h3>{{item.label}} - {{item.name}}</h3>
+                            </div>
+                        </md-list-item>
+                    </md-list>
+                </md-card-content>
+            </md-card>
+        </div>
+    </div>
+</md-content>
+
+<!-- <div class="container-fluid">
     <div class="row simpleDemo">
         <div class="col-sm-3 col-md-2 hidden-xs sidebar">
             sidebar
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
             <div class="row">
-                <nav class="navbar navbar-default">
+                <nav class="navbar navbar-defamd-listt">
                     <div class="container-fluid">
                         <div class="navbar-header">
                             <a class="navbar-brand" href="#">sda</a>
@@ -14,68 +87,68 @@
                 </nav>
             </div>
             <div class="col-sm-3">
-                <div class="panel panel-default">
+                <div class="panel panel-defamd-listt">
                     <div class="panel-heading">
                         <h3 class="panel-title">Todo</h3>
                     </div>
                     <div class="panel-body">
-                        <ul dnd-list="models.lists.A">
-                            <li ng-repeat="item in models.lists.A" dnd-draggable="item" dnd-moved="models.lists.A.splice($index, 1)" dnd-effect-allowed="move"
+                        <md-list dnd-list="models.lists.A">
+                            <md-list-item ng-repeat="item in models.lists.A" dnd-draggable="item" dnd-moved="models.lists.A.splice($index, 1)" dnd-effect-allowed="move"
                                 dnd-selected="models.selected = item" ng-class="{'selected': models.selected === item}">
                                 {{item.label}} - {{item.name}}
-                            </li>
-                        </ul>
-                        <button class="btn btn-default">Add new task...</button>
+                            </md-list-item>
+                        </md-list>
+                        <button class="btn btn-defamd-listt">Add new task...</button>
                     </div>
                 </div>
 
             </div>
             <div class="col-sm-3">
-                <div class="panel panel-default">
+                <div class="panel panel-defamd-listt">
                     <div class="panel-heading">
                         <h3 class="panel-title">Doing</h3>
                     </div>
                     <div class="panel-body">
-                        <ul dnd-list="models.lists.B" dnd-inserted="insertedEvent('inserted at', index, external, type)">
-                            <li ng-repeat="item in models.lists.B" dnd-draggable="item" dnd-moved="models.lists.B.splice($index, 1)" dnd-effect-allowed="move"
+                        <md-list dnd-list="models.lists.B" dnd-inserted="insertedEvent('inserted at', index, external, type)">
+                            <md-list-item ng-repeat="item in models.lists.B" dnd-draggable="item" dnd-moved="models.lists.B.splice($index, 1)" dnd-effect-allowed="move"
                                 dnd-selected="models.selected = item" ng-class="{'selected': models.selected === item}" dnd-type="'item'">
                                 {{item.label}} - {{item.name}}
-                            </li>
-                        </ul>
+                            </md-list-item>
+                        </md-list>
                     </div>
                 </div>
             </div>
             <div class="col-sm-3">
-                <div class="panel panel-default">
+                <div class="panel panel-defamd-listt">
                     <div class="panel-heading">
                         <h3 class="panel-title">Error</h3>
                     </div>
                     <div class="panel-body">
-                        <ul dnd-list="models.lists.C">
-                            <li ng-repeat="item in models.lists.C" dnd-draggable="item" dnd-moved="models.lists.C.splice($index, 1)" dnd-effect-allowed="move"
+                        <md-list dnd-list="models.lists.C">
+                            <md-list-item ng-repeat="item in models.lists.C" dnd-draggable="item" dnd-moved="models.lists.C.splice($index, 1)" dnd-effect-allowed="move"
                                 dnd-selected="models.selected = item" ng-class="{'selected': models.selected === item}">
                                 {{item.label}} - {{item.name}}
-                            </li>
-                        </ul>
+                            </md-list-item>
+                        </md-list>
                     </div>
                 </div>
             </div>
             <div class="col-sm-3">
-                <div class="panel panel-default">
+                <div class="panel panel-defamd-listt">
                     <div class="panel-heading">
                         <h3 class="panel-title">Done</h3>
                     </div>
                     <div class="panel-body">
-                        <ul dnd-list="models.lists.D">
-                            <li ng-repeat="item in models.lists.D" dnd-draggable="item" dnd-moved="models.lists.D.splice($index, 1)" dnd-effect-allowed="move"
+                        <md-list dnd-list="models.lists.D">
+                            <md-list-item ng-repeat="item in models.lists.D" dnd-draggable="item" dnd-moved="models.lists.D.splice($index, 1)" dnd-effect-allowed="move"
                                 dnd-selected="models.selected = item" ng-class="{'selected': models.selected === item}">
                                 {{item.label}} - {{item.name}}
-                            </li>
-                        </ul>
+                            </md-list-item>
+                        </md-list>
                     </div>
                 </div>
             </div>
-            <!-- <pre>{{modelAsJson}}</pre> -->
+            <pre>{{modelAsJson}}</pre>
         </div>
     </div>
-</div>
+</div> -->
