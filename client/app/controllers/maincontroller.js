@@ -8,7 +8,7 @@
     /** @ngInject */
     function mainController($scope, $cookies) {
         var vm = this;
-        
+
         init();
 
         function init() {

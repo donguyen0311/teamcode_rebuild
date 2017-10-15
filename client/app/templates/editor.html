@@ -1,1 +1,34 @@
-editor
+<md-content flex layout-padding>
+    <div layout="column" layout-xs="column">
+        <!-- <div flex="20" flex-xs="100">
+            <js-tree tree-plugins="state,types,contextmenu,unique,sort,wholerow,conditionalselect,dnd" tree-contextmenu="true" tree-contextmenuaction="contextMenuAction"
+            tree-types="typesConfig" tree-state-key="stateTree" tree-events="select_node:nodeSelected;rename_node:nodeRename;create_node:nodeCreate;delete_node:nodeDelete;move_node:nodeMove;copy_node:nodeCopy"
+            tree-core="coreConfig" tree-ajax="/tree/all"></js-tree>
+        </div>
+        <div flex="80" flex-xs="100">
+            lorem1000
+        </div> -->
+        <div style="height: calc(100vh - 96px)">
+            <div ui-layout="{ flow : 'column' }">
+                <div ui-layout-container size="250px" min-size="200px" style="overflow-x: hidden">
+                    <js-tree tree-plugins="state,types,contextmenu,unique,sort,wholerow,conditionalselect,dnd" tree-contextmenu="true" tree-contextmenuaction="contextMenuAction"
+                        tree-types="typesConfig" tree-state-key="stateTree" tree-events="select_node:nodeSelected;rename_node:nodeRename;create_node:nodeCreate;delete_node:nodeDelete;move_node:nodeMove;copy_node:nodeCopy"
+                        tree-core="coreConfig" tree-ajax="api/trees/all"></js-tree>
+                </div>
+                <div ui-layout-container min-size="300px">
+                    <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect md-swipe-content>
+                        <md-tab ng-repeat="tab in tabs" ng-disabled="tab.disabled" label="{{tab.title}}">
+                            <div class="demo-tab tab{{$index%4}}" style="padding: 25px; text-align: center;">
+                                <div ng-bind="tab.content"></div>
+                                <br/>
+                                <md-button class="md-primary md-raised" ng-click="removeTab( tab )" ng-disabled="tabs.length <= 1">Remove Tab</md-button>
+                            </div>
+                        </md-tab>
+                    </md-tabs>
+                    <div ui-codemirror="{ onLoad : codemirrorLoaded }" ui-codemirror-opts="editorOptions" ui-refresh="true"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</md-content>

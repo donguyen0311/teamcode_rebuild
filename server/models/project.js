@@ -1,31 +1,47 @@
 const mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-
-var contributorSchema = new Schema({
-    username: String,
-    permission: String,
-    status: String,
-    time_join: Date
-});
-
-var taskSchema = new Schema({
-    task_name: String,
-    task_status: String,
-    user_create: String,
-    user_do: String,
-    content: String,
-    note: String
-}, {
-    timestamps: true
-});
+const User = require('./user');
+const Task = require('./task');
+const Company = require('./company');
 
 var projectSchema = new Schema({
-    projectname: {
+    project_name: {
         type: String,
         required: true
     },
-    contributors: [contributorSchema],
-    tasks: [taskSchema]
+    budget: {
+        type: Number,
+        required: true
+    },
+    deadline: {
+        type: Date,
+        required: true
+    },
+    description: {
+        type: String,
+        required: false
+    },
+    language_programming: {
+        type: [String],
+        required: false
+    },
+    level: {
+        type: Number,
+        required: false
+    },
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'Company',
+        required: true
+    },
+    created_by: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    tasks: [{type: Schema.Types.ObjectId, ref: 'Task'}]
+}, {
+    timestamps: true
 });
 
 module.exports = mongoose.model('Project', projectSchema);

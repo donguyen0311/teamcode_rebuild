@@ -13,6 +13,7 @@ const helmet = require('helmet');
 const ejs = require('ejs');
 const subdomain = require('express-subdomain');
 const routes = require('./routes');
+
 const routesDocker = require('./routesDocker');
 
 mongoose.connect(config.database_url, {
@@ -51,6 +52,10 @@ app.get('/', (req, res) => {
     return res.render('index');
 });
 
-app.listen(config.port, config.hostname, () => {
+var server = app.listen(config.port, config.hostname, () => {
     console.log(`Listening on ${config.hostname}:${config.port}`);
 });
+
+// socket route
+const io = socket.listen(server);
+require('./routes/routeSocket')(io);

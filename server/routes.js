@@ -9,18 +9,12 @@ const jwt = require('jsonwebtoken');
 const md5 = require('md5');
 const multer = require('multer');
 const path = require('path');
+const routeUser = require('./routes/routeUser');
+const routeCompany = require('./routes/routeCompany');
+const routeProject = require('./routes/routeProject');
+const routeTask = require('./routes/routeTask');
 
-let upload = multer({
-    storage: multer.diskStorage({
-        destination: (req, file, callback) => {
-            callback(null, path.join(__dirname, '..', 'client/assets/images'));
-        },
-        filename: (req, file, callback) => {
-            //originalname is the uploaded file's name with extn
-            callback(null, file.originalname);
-        }
-    })
-});
+const routeTree = require('./routes/routeTree'); 
 
 var middlewareAuth = function (req, res, next) {
     var token = req.body.token || req.query.token || req.headers['x-access-token'];
@@ -44,38 +38,15 @@ var middlewareAuth = function (req, res, next) {
     }
 };
 
+router.use('/users', middlewareAuth, routeUser);
+router.use('/projects', middlewareAuth, routeProject);
+router.use('/companies', middlewareAuth, routeCompany);
+router.use('/tasks', middlewareAuth, routeTask);
+router.use('/trees', routeTree);
+
 router.get('/', (req, res) => {
     res.json({
         message: 'Welcome to API'
-    });
-});
-
-router.get('/users/:email', middlewareAuth, (req, res) => {
-    //console.log(req.decoded._doc.name);
-    User.findOne({
-        email: req.params.email
-    }, {
-        password: false,
-        salt: false
-    }, (err, user) => {
-        if (!user) {
-            return res.json({
-                success: false,
-                message: 'Email not found.'
-            });
-        }
-        return res.json({
-            success: true,
-            message: 'Your user info',
-            user: user
-        });
-    });
-});
-
-router.put('/users/image', upload.any(), (req, res) => {
-    res.status(200).json({
-        code: 200,
-        message: "Upload Sucess"
     });
 });
 
@@ -113,7 +84,7 @@ router.post('/login', (req, res) => {
                 message: 'Login failed. Invalid Email or Password.'
             });
         } else if (user) {
-            if (helper.compareSync(req.body.password, user.salt, user.password)) {
+            if (!helper.compareSync(req.body.password, user.salt, user.password)) {
                 return res.json({
                     success: false,
                     // message: 'Authentication failed. Wrong password.'
@@ -155,8 +126,7 @@ router.post('/register', (req, res) => {
                 username: req.body.username,
                 email: req.body.email,
                 password: password_sha512.password_encrypt,
-                salt: password_sha512.salt,
-                admin: req.body.admin
+                salt: password_sha512.salt
             });
             newUser.save((err) => {
                 if (err) console.log(err);
