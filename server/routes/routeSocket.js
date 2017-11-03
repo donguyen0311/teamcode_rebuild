@@ -12,5 +12,9 @@ module.exports = (io) => {
             console.log('a user disconnected');
         });
 
+        socket.on('Task:changeTaskPosition', (data) => {
+            console.log(data);
+            socket.broadcast.emit('Task:updateTaskPosition', data);
+        });
     });
 };
