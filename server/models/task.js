@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 const User = require('./user');
+const Project = require('./project');
 
 taskSchema = new Schema({
     task_name: {
@@ -15,6 +16,10 @@ taskSchema = new Schema({
         type: String,
         required: true
     },
+    position: {
+        type: Number,
+        required: true
+    },
     description: {
         type: String,
         required: false
@@ -22,6 +27,9 @@ taskSchema = new Schema({
     note: {
         type: String,
         required: false
+    },
+    project_id: { 
+        type: Schema.Types.ObjectId, ref: 'Project' 
     },
     responsible_user: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     created_by: {

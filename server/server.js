@@ -27,7 +27,7 @@ mongoose.connect(config.database_url, {
 
 app.set('secretKey', config.secret_key);
 
-app.set('views', path.join(__dirname, '../client'));
+app.set('views', path.join(__dirname, '../client_teamcode/build'));
 app.engine('html', ejs.renderFile);
 app.set('view engine', 'html');
 
@@ -46,11 +46,18 @@ app.use('/libs', express.static(path.join(__dirname, '../client/libs')));
 app.use('/bundles', express.static(path.join(__dirname, '../client/bundles')));
 app.use('/api', routes);
 
+// for react client
+app.use(express.static(path.join(__dirname, '../client_teamcode/build')));
+
+
+
 // app.use(subdomain('*', routesDocker));
 
 app.get('/', (req, res) => {
     return res.render('index');
 });
+
+
 
 var server = app.listen(config.port, config.hostname, () => {
     console.log(`Listening on ${config.hostname}:${config.port}`);
@@ -59,3 +66,14 @@ var server = app.listen(config.port, config.hostname, () => {
 // socket route
 const io = socket.listen(server);
 require('./routes/routeSocket')(io);
+
+app.get('/:company', (req, res) => {
+    var nsp = io.of(`/${req.params.company}`);
+    nsp.on('connection', function(socket){
+        console.log('someone connected');
+        nsp.emit('hi', req.params.company);
+    });
+    res.render('demo.html', {namespace: req.params.company}, (err, html) => {
+        return res.send(html);
+    })
+});

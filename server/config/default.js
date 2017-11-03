@@ -1,6 +1,6 @@
 var config = {
     hostname: 'localhost',
-    port: 3000,
+    port: 5000,
     database_url: 'mongodb://localhost/test',
     secret_key: 'nguyentando'
 }

@@ -23,13 +23,33 @@ let upload = multer({
 });
 
 // get all will be deleted soon, this is for testing purpose
+// router.get('/', (req, res) => {
+//     User.find({}, {
+//         password: false,
+//         salt: false
+//     }, (err, users) => {
+//         if (err) console.log(err);
+//         if (!users) {
+//             return res.json({
+//                 success: false,
+//                 message: 'Something wrong.'
+//             });
+//         }
+//         return res.json({
+//             success: true,
+//             message: 'all users info',
+//             users: users
+//         });
+//     });
+// });
+
 router.get('/', (req, res) => {
-    User.find({}, {
+    User.findOne({ _id: req.decoded.id }, {
         password: false,
         salt: false
-    }, (err, users) => {
+    }, (err, user) => {
         if (err) console.log(err);
-        if (!users) {
+        if (!user) {
             return res.json({
                 success: false,
                 message: 'Something wrong.'
@@ -37,8 +57,8 @@ router.get('/', (req, res) => {
         }
         return res.json({
             success: true,
-            message: 'all users info',
-            users: users
+            message: 'users info',
+            user: user
         });
     });
 });

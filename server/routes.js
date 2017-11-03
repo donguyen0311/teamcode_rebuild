@@ -52,7 +52,7 @@ router.get('/', (req, res) => {
 
 router.get('/authenticate', middlewareAuth, (req, res) => {
     User.findOne({
-        email: req.decoded.email
+        _id: req.decoded.id
     }, (err, user) => {
         if (err) throw err;
 
@@ -91,7 +91,7 @@ router.post('/login', (req, res) => {
                     message: 'Login failed. Invalid Email or Password.'
                 });
             } else {
-                var token = jwt.sign( {email: user.email} , config.secret_key, {
+                var token = jwt.sign( {id: user._id} , config.secret_key, {
                     expiresIn: "1d"
                 });
                 return res.json({

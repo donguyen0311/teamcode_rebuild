@@ -58,7 +58,7 @@ var userSchema = new Schema({
         type: [String],
         required: false
     },
-    current_conpany: {
+    current_company: {
         type: Schema.Types.ObjectId,
         ref: 'Company',
         required: false
