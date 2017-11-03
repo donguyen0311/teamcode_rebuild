@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="libs/angular-material/angular-material.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="libs/jstree/dist/themes/default/style.css">
 
     <script src="libs/angular/angular.min.js"></script>
     <script src="libs/angular-animate/angular-animate.min.js"></script>
@@ -29,13 +29,115 @@
 
     <script src="assets/js/jquery.particleground.js"></script>
 
-    <script src="libs/angular-drag-and-drop-lists/angular-drag-and-drop-lists.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="libs/jquery.splitter/css/jquery.splitter.css">
+    <script src="libs/angular-file-saver/dist/angular-file-saver.bundle.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="libs/angular-ui-layout/src/ui-layout.css"/>
+    <script type="text/javascript" src="libs/angular-ui-layout/src/ui-layout.js"></script>
 
-    <!--<script src="app/app.js"></script>
-    <script src="app/controllers/controllers.js"></script>
-    <script src="app/controllers/maincontroller.js"></script>
-    <script src="app/directives/directives.js"></script>
-    <script src="app/services/services.js"></script>-->
+    <link rel="stylesheet" type="text/css" href="libs/codemirror/lib/codemirror.css">
+    <script type="text/javascript" src="libs/codemirror/lib/codemirror.js"></script>
+
+    <!-- library codemirror -->
+    <link rel="stylesheet" type="text/css" href="libs/codemirror/addon/lint/lint.css">
+    <link rel="stylesheet" type="text/css" href="libs/codemirror/addon/hint/show-hint.css">
+    <link rel="stylesheet" type="text/css" href="libs/codemirror/theme/material.css">
+    <link rel="stylesheet" type="text/css" href="libs/codemirror/theme/monokai.css">
+    <link rel="stylesheet" type="text/css" href="libs/codemirror/addon/scroll/simplescrollbars.css">
+    <link rel="stylesheet" type="text/css" href="libs/codemirror/addon/dialog/dialog.css">
+    <link rel="stylesheet" type="text/css" href="libs/codemirror/addon/search/matchesonscrollbar.css">
+    <link rel="stylesheet" type="text/css" href="libs/codemirror/addon/tern/tern.css">
+
+    <script src="//ternjs.net/node_modules/acorn/dist/acorn.js"></script>
+    <script src="//ternjs.net/node_modules/acorn/dist/acorn_loose.js"></script>
+    <script src="//ternjs.net/node_modules/acorn/dist/walk.js"></script>
+    <script src="//ternjs.net/doc/demo/polyfill.js"></script>
+    <script src="//ternjs.net/lib/signal.js"></script>
+    <script src="//ternjs.net/lib/tern.js"></script>
+    <script src="//ternjs.net/lib/def.js"></script>
+    <script src="//ternjs.net/lib/comment.js"></script>
+    <script src="//ternjs.net/lib/infer.js"></script>
+    <script src="//ternjs.net/plugin/doc_comment.js"></script>
+
+    <script src="libs/codemirror-formatting/formatting.js"></script>
+    <!-- <script type="text/javascript" src="libs/emmet/dist/emmet.js"></script> -->
+    <script type="text/javascript" src="libs/codemirror/addon/hint/show-hint.js" ></script>
+    <script type="text/javascript" src="libs/codemirror/addon/hint/javascript-hint.js" ></script>
+    <script type="text/javascript" src="libs/codemirror/addon/hint/html-hint.js" ></script>
+    <script type="text/javascript" src="libs/codemirror/addon/hint/css-hint.js" ></script>
+    <script type="text/javascript" src="libs/codemirror/addon/hint/sql-hint.js" ></script>
+    <script type="text/javascript" src="libs/codemirror/addon/hint/xml-hint.js" ></script>
+    <script type="text/javascript" src="libs/codemirror/addon/hint/anyword-hint.js" ></script>
+    
+    <script type="text/javascript" src="libs/codemirror/addon/edit/closetag.js" ></script>
+    <script type="text/javascript" src="libs/codemirror/addon/edit/closebrackets.js" ></script>
+    <script type="text/javascript" src="libs/codemirror/addon/edit/matchbrackets.js" ></script>
+    <script type="text/javascript" src="libs/codemirror/addon/selection/active-line.js" ></script>
+    <script type="text/javascript" src="libs/codemirror/addon/dialog/dialog.js" ></script>
+    <script type="text/javascript" src="libs/codemirror/addon/tern/tern.js" ></script>
+    <script type="text/javascript" src="libs/codemirror/addon/scroll/simplescrollbars.js" ></script>
+    <script type="text/javascript" src="libs/codemirror/addon/scroll/annotatescrollbar.js" ></script>
+    <script type="text/javascript" src="libs/codemirror/addon/search/searchcursor.js" ></script>
+    <script type="text/javascript" src="libs/codemirror/addon/search/search.js" ></script>
+    <script type="text/javascript" src="libs/codemirror/addon/search/matchesonscrollbar.js" ></script>
+    <script type="text/javascript" src="libs/codemirror/addon/search/jump-to-line.js" ></script>
+    <script type="text/javascript" src="libs/codemirror/addon/selection/selection-pointer.js" ></script>
+    <script type="text/javascript" src="libs/codemirror/addon/mode/loadmode.js" ></script>
+    <script type="text/javascript" src="libs/codemirror/mode/meta.js" ></script>
+
+    <script src="//ajax.aspnetcdn.com/ajax/jshint/r07/jshint.js"></script>
+    <script src="https://rawgithub.com/zaach/jsonlint/79b553fb65c192add9066da64043458981b3972b/lib/jsonlint.js"></script>
+    <!-- <script src="libs/csslintjs/csslint.js"></script> -->
+
+    <script type="text/javascript" src="libs/codemirror/addon/lint/lint.js"></script>
+    <script type="text/javascript" src="libs/codemirror/addon/lint/javascript-lint.js"></script>
+    <script type="text/javascript" src="libs/codemirror/addon/lint/json-lint.js"></script>
+    <script type="text/javascript" src="libs/codemirror/addon/lint/css-lint.js"></script>
+    <script type="text/javascript" src="libs/codemirror/addon/lint/html-lint.js"></script>
+    <script type="text/javascript" src="libs/codemirror/addon/lint/coffeescript-lint.js"></script>
+    <script type="text/javascript" src="libs/codemirror/addon/lint/yaml-lint.js"></script>
+    <script>
+        CodeMirror.modeURL = "libs/codemirror/mode/%N/%N.js";
+        function change(modeValue, codeMirrorValue) {
+            var val = modeValue, m, mode, spec;
+            if (m = /.+\.([^.]+)$/.exec(val)) {
+                var info = CodeMirror.findModeByExtension(m[1]);
+                if (info) {
+                    mode = info.mode;
+                    spec = info.mime;
+                }
+            } else if (/\//.test(val)) {
+                var info = CodeMirror.findModeByMIME(val);
+                if (info) {
+                    mode = info.mode;
+                    spec = val;
+                }
+            } else {
+                mode = spec = val;
+            }
+            if (mode) {
+                codeMirrorValue.setOption("mode", spec);
+                CodeMirror.autoLoadMode(codeMirrorValue, mode);
+                // document.getElementById("modeinfo").textContent = spec;
+            }
+            else {
+                console.log("Could not find a mode corresponding to " + val);
+            }
+            // document.getElementById('info_mode').innerHTML = mode.toUpperCase();
+        }
+    </script>
+    <!-- end library codemirror -->
+    <script type="text/javascript" src="libs/angular-ui-codemirror/ui-codemirror.min.js"></script>
+
+    <!-- <script src="libs/jquery.splitter/js/jquery.splitter.js"></script> -->
+
+    <script src="libs/jstree/dist/jstree.min.js"></script>
+    <script src="libs/jsTree-directive/jsTree.directive.js"></script>
+
+    <script src="libs/angular-drag-and-drop-lists/angular-drag-and-drop-lists.min.js"></script>
+    <script src="libs/socket.io-client/dist/socket.io.js"></script>
+
+    <link rel="stylesheet" href="assets/css/style.css">
     <script src="bundles/bundles.js"></script>
 </head>
 <body>

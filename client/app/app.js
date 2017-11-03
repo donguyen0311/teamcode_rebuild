@@ -12,16 +12,23 @@
             'ngMaterial',
             'ngMessages',
             'ui.router',
+            'ui.layout',
+            'ui.codemirror',
             'app.controllers',
             'app.directives',
-            'app.services'
+            'app.services',
+            'jsTree.directive',
+            'ngFileSaver'
         ])
         .config(mainConfig)
         // Using $state within a template
-        .run(function ($rootScope, $state, $stateParams) {
+        .run(function ($rootScope, $state, $stateParams, socket) {
             $rootScope.$state = $state;
             $rootScope.$stateParams = $stateParams;
 
+            socket.on('connection', () => {
+                console.log("connected to server");
+            });
         });
 
     /** @ngInject */
@@ -135,6 +142,11 @@
                     'header': {
                         templateUrl: 'app/templates/header.html',
                         controller: 'headerController',
+                        controllerAs: 'vm'
+                    },
+                    'sidebar': {
+                        templateUrl: 'app/templates/sidebar.html',
+                        controller: 'sidebarController',
                         controllerAs: 'vm'
                     },
                     'content': {
