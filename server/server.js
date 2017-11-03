@@ -15,9 +15,7 @@ const subdomain = require('express-subdomain');
 const routes = require('./routes');
 const routesDocker = require('./routesDocker');
 
-mongoose.connect(config.database_url, {
-    useMongoClient: true
-}).then(
+mongoose.connect(config.database_url, config.mongo).then(
     () => console.log('Connected Database'),
     err => {
         throw err;

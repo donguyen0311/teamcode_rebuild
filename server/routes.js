@@ -113,7 +113,7 @@ router.post('/login', (req, res) => {
                 message: 'Login failed. Invalid Email or Password.'
             });
         } else if (user) {
-            if (helper.compareSync(req.body.password, user.salt, user.password)) {
+            if (!helper.compareSync(req.body.password, user.salt, user.password)) {
                 return res.json({
                     success: false,
                     // message: 'Authentication failed. Wrong password.'
