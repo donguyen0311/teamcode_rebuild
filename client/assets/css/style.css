@@ -91,7 +91,9 @@ a {
     margin-bottom: 15px;
 }
 
-
+.md-toolbar-tools{
+    background-color: white;
+}
 /*.toolbardemoBasicUsage md-toolbar md-icon.md-default-theme {
   color: white; 
 }*/
@@ -106,7 +108,7 @@ a {
     width: 100%;
     height: calc(100% - 64px);
     overflow: hidden;
-    background: #fff;
+    background: #000;
     position: absolute;
     z-index: 1;
 }
@@ -118,14 +120,14 @@ a {
     padding: 0 20px;
     width: 100%;
     text-align: center;
-    color: #353030;
+    color: #fff;
 }
 
 #intro h1::after {
     content: '';
     width: 100px;
     display: block;
-    background: #353030;
+    background: #fff;
     height: 5px;
     margin: 20px auto;
     line-height: 1.1;
@@ -208,7 +210,7 @@ img {
     margin-left: 3px;
     margin-right: 7px;
     width: 6px;
-    background: #353030;
+    background: #fff;
     animation: blink 1s step-start 0s infinite;
     -webkit-animation: blink 1s step-start 0s infinite;
 }

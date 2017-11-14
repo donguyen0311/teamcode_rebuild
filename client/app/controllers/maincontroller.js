@@ -13,8 +13,8 @@
 
         function init() {
             $('#particles').particleground({
-                dotColor: '#796b6b',
-                lineColor: '#796b6b'
+                dotColor: '#a5a5a5',
+                lineColor: '#a5a5a5'
             });
             
             $('#intro').css({
