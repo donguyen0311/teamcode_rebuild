@@ -29,7 +29,7 @@ var projectSchema = new Schema({
         type: Number,
         required: false
     },
-    company: {
+    belong_company: {
         type: Schema.Types.ObjectId,
         ref: 'Company',
         required: true

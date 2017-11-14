@@ -70,6 +70,34 @@ var userSchema = new Schema({
     experience: {
         type: String,
         required: false
+    },
+    analyst_capability: {
+        type: Number,
+        required: true
+    },
+    programmer_capability: {
+        type: Number,
+        required: true
+    },
+    personnel_continuity: {
+        type: Number,
+        required: true
+    },
+    application_experience: {
+        type: Number,
+        required: true
+    },
+    platform_experience: {
+        type: Number,
+        required: true
+    },
+    language_and_toolset_experience: {
+        type: Number,
+        required: true
+    },
+    salary: {
+        type: Number,
+        required: true
     }
 }, {
     timestamps: true

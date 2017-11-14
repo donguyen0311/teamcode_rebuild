@@ -7,10 +7,10 @@ const Project = require('../models/project');
 router.get('/', (req, res) => {
     Project
         .find({})
-        .populate('company')
+        .populate('belong_company')
         .populate({
             path: 'created_by',
-            select: 'email'
+            select: 'email image'
         })
         .populate('tasks')
         .exec((err, projects) => {
@@ -34,7 +34,7 @@ router.get('/:id', (req, res) => {
         .findOne({
             _id: req.params.id
         })
-        .populate('company')
+        .populate('belong_company')
         .populate({
             path: 'created_by',
             select: 'email'
@@ -62,10 +62,10 @@ router.get('/:project_name', (req, res) => {
         .findOne({
             project_name: req.params.project_name
         })
-        .populate('company')
+        .populate('belong_company')
         .populate({
             path: 'created_by',
-            select: 'email'
+            select: 'email image'
         })
         .populate('tasks')
         .exec((err, project) => {
@@ -99,7 +99,10 @@ router.post("/", (req, res) => {
                 project_name: req.body.project_name,
                 budget: req.body.budget,
                 deadline: req.body.deadline,
-                company: req.body.id_company,
+                description: req.body.description,
+                language_programming: req.body.language_programming,
+                level: req.body.level,
+                belong_company: req.body.belong_company,
                 created_by: req.body.created_by
             });
             newProject.save((err) => {
@@ -119,21 +122,20 @@ router.put("/:id", (req, res) => {
             project_name: req.body.project_name,
             budget: req.body.budget,
             deadline: req.body.deadline,
-            company: req.body.company,
+            belong_company: req.body.belong_company,
             created_by: req.body.created_by,
             description: req.body.description,
             language_programming: req.body.language_programming,
             level: req.body.level,
-            tasks: req.body.tasks, // Hmmm, maybe delete
             updateAt: new Date()
         }
     }, {
         new: true
     })
-    .populate('company')
+    .populate('belong_company')
     .populate({
         path: 'created_by',
-        select: 'email'
+        select: 'email image'
     })
     .populate('tasks')
     .exec((err, project) => {

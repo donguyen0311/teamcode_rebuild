@@ -28,10 +28,15 @@ taskSchema = new Schema({
         type: String,
         required: false
     },
-    project_id: { 
-        type: Schema.Types.ObjectId, ref: 'Project' 
+    belong_project: { 
+        type: Schema.Types.ObjectId, 
+        ref: 'Project',
+        required: true
     },
-    responsible_user: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    responsible_user: [{ 
+        type: Schema.Types.ObjectId, 
+        ref: 'User' 
+    }],
     created_by: {
         type: Schema.Types.ObjectId,
         ref: 'User',

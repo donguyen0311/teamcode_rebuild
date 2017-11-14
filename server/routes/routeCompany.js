@@ -9,11 +9,11 @@ router.get('/', (req, res) => {
         .find({})
         .populate({
             path: 'staff',
-            select: 'email'
+            select: 'email image'
         })
         .populate({
             path: 'created_by',
-            select: 'email'
+            select: 'email image'
         })
         .exec((err, companies) => {
             if (err) console.log(err);
@@ -38,11 +38,11 @@ router.get('/:id', (req, res) => {
         })
         .populate({
             path: 'staff',
-            select: 'email'
+            select: 'email image'
         })
         .populate({
             path: 'created_by',
-            select: 'email'
+            select: 'email image'
         })
         .exec((err, company) => {
             if (err) console.log(err);
@@ -60,18 +60,18 @@ router.get('/:id', (req, res) => {
         });
 });
 
-router.get(':/company_name', (req, res) => {
+router.get('/:company_name', (req, res) => {
     Company
         .findOne({
             company_name: req.params.company_name
         })
         .populate({
             path: 'staff',
-            select: 'email'
+            select: 'email image'
         })
         .populate({
             path: 'created_by',
-            select: 'email'
+            select: 'email image'
         })
         .exec((err, company) => {
             if (err) console.log(err);
@@ -102,6 +102,9 @@ router.post('/', (req, res) => {
         } else {
             var newCompany = new Company({
                 company_name: req.body.company_name,
+                address: req.body.address,
+                description: req.body.description,
+                field: req.body.field,
                 created_by: req.body.created_by
             });
             newCompany.save((err) => {
@@ -129,11 +132,11 @@ router.put('/:id', (req, res) => {
     })
     .populate({
         path: 'staff',
-        select: 'email'
+        select: 'email image'
     })
     .populate({
         path: 'created_by',
-        select: 'email'
+        select: 'email image'
     })
     .exec((err, company) => {
         if (err) console.log(err);
