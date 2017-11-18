@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const config = require('./config/default');
+const config = require('./config/development');
 const fs = require('fs');
 const path = require('path');
 const socket = require('socket.io');
@@ -16,7 +16,9 @@ const routes = require('./routes');
 
 const routesDocker = require('./routesDocker');
 
-mongoose.connect(config.database_url, config.mongo).then(
+mongoose.connect(config.database_url, {
+    useMongoClient: true
+}).then(
     () => console.log('Connected Database'),
     err => {
         throw err;
@@ -65,12 +67,20 @@ var server = app.listen(config.port, config.hostname, () => {
 const io = socket.listen(server);
 require('./routes/routeSocket')(io);
 
+
 app.get('/:company', (req, res) => {
-    var nsp = io.of(`/${req.params.company}`);
+    var nsp;
+    if (Object.keys(io.nsps).indexOf(`/${req.params.company}`) === -1) {
+        nsp = io.of(`/${req.params.company}`);
+    }
+    else {
+        nsp = io.nsps[`/${req.params.company}`];
+    }
     nsp.on('connection', function(socket){
         console.log('someone connected');
         nsp.emit('hi', req.params.company);
     });
+    // res.send(req.params.company);
     res.render('demo.html', {namespace: req.params.company}, (err, html) => {
         return res.send(html);
     })

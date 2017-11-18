@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 const Company = require('./company');
+const Project = require('./project');
 
 var userSchema = new Schema({
     firstname: {
@@ -63,6 +64,11 @@ var userSchema = new Schema({
         ref: 'Company',
         required: false
     },
+    belong_project: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Project',
+        required: false
+    }],
     description: {
         type: String,
         required: false

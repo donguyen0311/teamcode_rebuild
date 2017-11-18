@@ -44,10 +44,15 @@ let upload = multer({
 // });
 
 router.get('/', (req, res) => {
-    User.findOne({ _id: req.decoded.id }, {
+    User.findOne({
+        _id: req.decoded.id
+    }, {
         password: false,
         salt: false
-    }, (err, user) => {
+    })
+    .populate('current_company')
+    .populate('belong_project')
+    .exec((err, user) => {
         if (err) console.log(err);
         if (!user) {
             return res.json({
@@ -69,7 +74,10 @@ router.get('/:id', (req, res) => {
     }, {
         password: false,
         salt: false
-    }, (err, user) => {
+    })
+    .populate('current_company')
+    .populate('belong_project')
+    .exec((err, user) => {
         if (err) console.log(err);
         if (!user) {
             return res.json({
@@ -140,7 +148,10 @@ router.put('/:id', (req, res) => {
             password: false,
             salt: false
         }
-    }, (err, user) => {
+    })
+    .populate('current_company')
+    .populate('belong_project')
+    .exec((err, user) => {
         if (err) console.log(err);
         if (!user) {
             return res.json({
@@ -179,7 +190,10 @@ router.get('/:email', (req, res) => {
     }, {
         password: false,
         salt: false
-    }, (err, user) => {
+    })
+    .populate('current_company')
+    .populate('belong_project')
+    .exec((err, user) => {
         if (err) console.log(err);
         if (!user) {
             return res.json({
