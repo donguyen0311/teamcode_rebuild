@@ -11,6 +11,10 @@ var userSchema = new Schema({
         type: String,
         required: false
     },
+    gender:{
+        type: Boolean,
+        default: 1
+    },
     email: {
         type: String,
         required: true

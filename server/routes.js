@@ -13,6 +13,7 @@ const routeUser = require('./routes/routeUser');
 const routeCompany = require('./routes/routeCompany');
 const routeProject = require('./routes/routeProject');
 const routeTask = require('./routes/routeTask');
+const routeEstimate = require('./routes/routeEstimate');
 
 const routeTree = require('./routes/routeTree'); 
 
@@ -38,6 +39,7 @@ var middlewareAuth = function (req, res, next) {
     }
 };
 
+router.use('/estimate', middlewareAuth, routeEstimate);
 router.use('/users', middlewareAuth, routeUser);
 router.use('/projects', middlewareAuth, routeProject);
 router.use('/companies', middlewareAuth, routeCompany);
