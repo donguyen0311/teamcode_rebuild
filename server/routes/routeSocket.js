@@ -79,7 +79,46 @@ module.exports = (io) => {
                 project.tasks.push(createdTask._id);
                 project.save();
             }
-        })
+        });
+
+        socket.on('Task:editTask', async (data) => {
+            console.log(data)
+            var updatedTask = await Task.findByIdAndUpdate(data._id, {
+                    $set: {
+                        task_name: data.editTaskName,
+                        level: data.editLevel,
+                        note: data.editNote,
+                        description: data.editDescription,
+                        responsible_user: data.editResponsible,
+                        updateAt: new Date()
+                    }
+                }, {
+                    new: true
+                })
+                .populate({
+                    path: 'belong_project',
+                    select: 'project_name'
+                })
+                .populate({
+                    path: 'responsible_user',
+                    select: 'email image'
+                })
+                .populate({
+                    path: 'created_by',
+                    select: 'email image'
+                })
+                .exec();
+            var room = Object.keys(socket.rooms)[0];
+            io.to(room).emit('Task:updateEditTask', updatedTask);
+        });
+
+        socket.on('Task:deleteTask', async (data) => {
+            console.log(data);
+            var deletedTask = await Task.findByIdAndRemove(data._id).exec();
+            console.log(deletedTask);
+            var room = Object.keys(socket.rooms)[0];
+            io.to(room).emit('Task:updateDeleteTask', deletedTask);
+        });
 
         socket.on('Task:changeTaskPosition', (data) => {
             //console.log(data.columns);
