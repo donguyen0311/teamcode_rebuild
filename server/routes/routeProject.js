@@ -29,33 +29,33 @@ router.get('/', (req, res) => {
         });
 });
 
-router.get('/:id', (req, res) => {
-    Project
-        .findOne({
-            _id: req.params.id
-        })
-        .populate('belong_company')
-        .populate({
-            path: 'created_by',
-            select: 'email'
-        })
-        .populate('tasks')
-        .exec((err, project) => {
-            if (err) console.log(err);
-            if (!project) {
-                return res.json({
-                    success: false,
-                    message: 'ID not found.'
-                });
-            }
-            return res.json({
-                success: true,
-                message: 'Your project info',
-                project: project
-            });
-        });
+// router.get('/:id', (req, res) => {
+//     Project
+//         .findOne({
+//             _id: req.params.id
+//         })
+//         .populate('belong_company')
+//         .populate({
+//             path: 'created_by',
+//             select: 'email'
+//         })
+//         .populate('tasks')
+//         .exec((err, project) => {
+//             if (err) console.log(err);
+//             if (!project) {
+//                 return res.json({
+//                     success: false,
+//                     message: 'ID not found.'
+//                 });
+//             }
+//             return res.json({
+//                 success: true,
+//                 message: 'Your project info',
+//                 project: project
+//             });
+//         });
 
-});
+// });
 
 router.get('/:project_name', (req, res) => {
     Project
@@ -67,13 +67,37 @@ router.get('/:project_name', (req, res) => {
             path: 'created_by',
             select: 'email image'
         })
-        .populate('tasks')
+        .populate({
+            path: 'users',
+            select: 'email image'
+        })
+        .populate({
+            path: 'tasks',
+            populate: {
+                path: 'belong_project',
+                select: 'project_name'
+            },     
+        })
+        .populate({
+            path: 'tasks',
+            populate: {
+                path: 'responsible_user',
+                select: 'email image'
+            },     
+        })
+        .populate({
+            path: 'tasks',
+            populate: {
+                path: 'created_by',
+                select: 'email image'
+            },     
+        })
         .exec((err, project) => {
             if (err) console.log(err);
             if (!project) {
                 return res.json({
                     success: false,
-                    message: 'ID not found.'
+                    message: 'Project name not found.'
                 });
             }
             return res.json({
@@ -103,7 +127,8 @@ router.post("/", (req, res) => {
                 language_programming: req.body.language_programming,
                 level: req.body.level,
                 belong_company: req.body.belong_company,
-                created_by: req.body.created_by
+                created_by: req.body.created_by,
+                users: req.body.users
             });
             newProject.save((err) => {
                 if (err) console.log(err);

@@ -3,6 +3,7 @@ var router = express.Router();
 const config = require('./config/default');
 const User = require('./models/user');
 const Project = require('./models/project');
+const Company = require('./models/company');
 const helper = require('./helper');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
@@ -15,7 +16,7 @@ const routeProject = require('./routes/routeProject');
 const routeTask = require('./routes/routeTask');
 const routeEstimate = require('./routes/routeEstimate');
 
-const routeTree = require('./routes/routeTree'); 
+const routeTree = require('./routes/routeTree');
 
 var middlewareAuth = function (req, res, next) {
     var token = req.body.token || req.query.token || req.headers['x-access-token'];
@@ -52,6 +53,26 @@ router.get('/', (req, res) => {
     });
 });
 
+router.get('/checkCompany/:company_name', (req, res) => {
+    Company
+        .findOne({
+            company_name: req.params.company_name
+        })
+        .exec((err, company) => {
+            if (err) console.log(err);
+            if (!company) {
+                return res.json({
+                    success: false,
+                    message: 'Company not found.'
+                });
+            }
+            return res.json({
+                success: true,
+                message: 'Company is found.'
+            });
+        });
+})
+
 router.get('/authenticate', middlewareAuth, (req, res) => {
     User.findOne({
         _id: req.decoded.id
@@ -63,8 +84,7 @@ router.get('/authenticate', middlewareAuth, (req, res) => {
                 success: false,
                 message: 'Authentication failed. Email not found.'
             });
-        }
-        else {
+        } else {
             return res.json({
                 success: true,
                 message: 'Authentication successful.'
@@ -93,7 +113,9 @@ router.post('/login', (req, res) => {
                     message: 'Login failed. Invalid Email or Password.'
                 });
             } else {
-                var token = jwt.sign( {id: user._id} , config.secret_key, {
+                var token = jwt.sign({
+                    id: user._id
+                }, config.secret_key, {
                     expiresIn: "1d"
                 });
                 return res.json({
@@ -210,22 +232,22 @@ router.put('/projects/:projectname', (req, res) => {
     //Project.findOne({
     //    projectname: req.params.projectname
     //}, (err, project) => {
-        // var task = {
-        //     task_name: 'do something____!!!!!',
-        //     task_status: 'doing',
-        //     user_create: 'dont',
-        //     user_do: 'dont',
-        //     content: 'try something special',
-        //     note: 'this is new task'
-        // };
-        // project.tasks.push(task);
-        // project.tasks.id('599582241a408327a074723b').remove();
-        // project.save((err) => {
-        //     if (err) throw err;
-        //     console.log('Project changed successfully');
-        //     return res.json({ success: true });
-        // });
-        // return res.json(project.tasks.id('59957e5e6177a00e04c64e06'));
+    // var task = {
+    //     task_name: 'do something____!!!!!',
+    //     task_status: 'doing',
+    //     user_create: 'dont',
+    //     user_do: 'dont',
+    //     content: 'try something special',
+    //     note: 'this is new task'
+    // };
+    // project.tasks.push(task);
+    // project.tasks.id('599582241a408327a074723b').remove();
+    // project.save((err) => {
+    //     if (err) throw err;
+    //     console.log('Project changed successfully');
+    //     return res.json({ success: true });
+    // });
+    // return res.json(project.tasks.id('59957e5e6177a00e04c64e06'));
     //});
     Project.findOneAndUpdate({
         projectname: req.params.projectname,
