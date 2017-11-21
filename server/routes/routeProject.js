@@ -68,6 +68,10 @@ router.get('/:project_name', (req, res) => {
             select: 'email image'
         })
         .populate({
+            path: 'users',
+            select: 'email image'
+        })
+        .populate({
             path: 'tasks',
             populate: {
                 path: 'belong_project',
