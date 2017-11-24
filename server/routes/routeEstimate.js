@@ -32,34 +32,57 @@ const path = require('path');
 // });
 
 router.post('/suitableStaff', (req, res) => {
-    //nos chuaw vo ođây luôn á ma`
-    //tại vì bên này chưa cần requirêmnt nên để trống
+    
+    let requirement = req.body;
     User.find({
-        analyst_capability: { $gte:  2 },
-        programmer_capability: { $gte:  4},
-        personnel_continuity: { $gte: 2 },
-        platform_experience: { $gte: 1 },
-        language_and_toolset_experience: { $gte: 2 }
+        analyst_capability: { $gte:  requirement.analyst_capability },
+        programmer_capability: { $gte:  requirement.programmer_capability},
+        application_experience: { $gte: requirement.application_experience },
+        platform_experience: { $gte: requirement.platform_experience },
+        language_and_toolset_experience: { $gte: requirement.language_and_toolset_experience }
     })
     .sort({
         salary: 1
     })
-    .limit(6)
-    .exec((err, suitableStaff) => {
+    .limit(parseInt(requirement.person_month))
+    .exec((err, suitableStaffs) => {
         if(err) console.log(err);
-        if(!suitableStaff)
+        if(!suitableStaffs)
         {
             return res.json({
                 success: false,
                 message: 'Something wrong.'
             });
-        }      
-        res.json({
-            success: true,
-            message: 'all suitable staff',
-            suitableStaff: suitableStaff
-        });      
+        }
+        User.aggregate([
+            {$match: {        
+                analyst_capability: { $gte:  parseInt(requirement.analyst_capability) },
+                programmer_capability: { $gte:  parseInt(requirement.programmer_capability)},
+                application_experience: { $gte: parseInt(requirement.application_experience) },
+                platform_experience: { $gte: parseInt(requirement.platform_experience) },
+                language_and_toolset_experience: { $gte: parseInt(requirement.language_and_toolset_experience) }
+                }
+            },
+            { $sort : { salary: 1 } },
+            {$limit: parseInt(requirement.person_month)},
+            {$group: {
+                _id: '',
+                projectCost: { $sum: '$salary' }
+                }
+            }
+        ],(err,result) => {
+            if(err)
+                console.log('err: '+err);
+            res.json({
+                success: true,
+                message: 'all suitable staff',
+                suitableStaffs: suitableStaffs,
+                projectCost: result[0].projectCost
+            }); 
+        });
+     
     });
+
 });
 
 
