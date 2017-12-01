@@ -98,7 +98,9 @@ router.get('/authenticate', middlewareAuth, (req, res) => {
 router.post('/login', (req, res) => {
     User.findOne({
         email: req.body.email
-    }, (err, user) => {
+    })
+    .populate('current_company')
+    .exec((err, user) => {
         if (err) throw err;
 
         if (!user) {
@@ -108,7 +110,14 @@ router.post('/login', (req, res) => {
                 message: 'Login failed. Invalid Email or Password.'
             });
         } else if (user) {
-            if (!helper.compareSync(req.body.password, user.salt, user.password)) {
+            if (req.body.company_name !== user.current_company.company_name) {
+                return res.json({
+                    success: false,
+                    // message: 'Authentication failed. Wrong password.'
+                    message: 'Login failed. Invalid Email or Password.'
+                });
+            }
+            else if (!helper.compareSync(req.body.password, user.salt, user.password)) {
                 return res.json({
                     success: false,
                     // message: 'Authentication failed. Wrong password.'
@@ -133,7 +142,7 @@ router.post('/login', (req, res) => {
 router.post('/register', (req, res) => {
     User.findOne({
         email: req.body.email
-    }, (err, user) => {
+    }, async (err, user) => {
         if (err) console.log(err);
 
         if (user) {
@@ -154,13 +163,43 @@ router.post('/register', (req, res) => {
                 password: password_sha512.password_encrypt,
                 salt: password_sha512.salt
             });
-            newUser.save((err) => {
-                if (err) console.log(err);
-                return res.json({
-                    success: true,
-                    message: 'Register successfully.'
+            var createdUser = await newUser.save();
+            if (createdUser) {
+                var newCompany = new Company({
+                    company_name: req.body.company_name,
+                    created_by: createdUser._id
                 });
-            });
+                var createdCompany = await newCompany.save();
+                if (createdCompany) {
+                    var updatedUser = await User.findByIdAndUpdate(createdUser._id, {
+                        $set: {
+                            current_company: createdCompany._id
+                        }
+                    }).exec();
+                    if (updatedUser) {
+                        return res.json({
+                            success: true,
+                            message: 'Register successfully.'
+                        });
+                    } else {
+                        return res.json({
+                            success: false,
+                            message: 'Ppdate user failed.'
+                        });
+                    }
+                } else {
+                    return res.json({
+                        success: false,
+                        message: 'Register company failed.'
+                    });
+                }
+            } else {
+                return res.json({
+                    success: false,
+                    message: 'Register user failed.'
+                });
+            }
+            
         }
     });
 

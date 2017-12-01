@@ -83,31 +83,31 @@ var userSchema = new Schema({
     },
     analyst_capability: {
         type: Number,
-        required: true
+        required: false
     },
     programmer_capability: {
         type: Number,
-        required: true
+        required: false
     },
     personnel_continuity: {
         type: Number,
-        required: true
+        required: false
     },
     application_experience: {
         type: Number,
-        required: true
+        required: false
     },
     platform_experience: {
         type: Number,
-        required: true
+        required: false
     },
     language_and_toolset_experience: {
         type: Number,
-        required: true
+        required: false
     },
     salary: {
         type: Number,
-        required: true
+        required: false
     }
 }, {
     timestamps: true
