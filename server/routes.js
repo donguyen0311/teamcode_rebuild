@@ -14,6 +14,7 @@ const routeUser = require('./routes/routeUser');
 const routeCompany = require('./routes/routeCompany');
 const routeProject = require('./routes/routeProject');
 const routeTask = require('./routes/routeTask');
+const routeNotification = require('./routes/routeNotification');
 const routeEstimate = require('./routes/routeEstimate');
 
 const routeTree = require('./routes/routeTree');
@@ -33,7 +34,7 @@ var middlewareAuth = function (req, res, next) {
             }
         });
     } else {
-        return res.status(403).send({
+        return res.send({
             success: false,
             message: 'No token provied.'
         });
@@ -45,6 +46,7 @@ router.use('/users', middlewareAuth, routeUser);
 router.use('/projects', middlewareAuth, routeProject);
 router.use('/companies', middlewareAuth, routeCompany);
 router.use('/tasks', middlewareAuth, routeTask);
+router.use('/notifications', middlewareAuth, routeNotification);
 router.use('/trees', routeTree);
 
 router.get('/', (req, res) => {
