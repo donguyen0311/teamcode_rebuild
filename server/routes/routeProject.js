@@ -3,6 +3,7 @@ var router = express.Router();
 const config = require('../config/default');
 const helper = require('../helper');
 const Project = require('../models/project');
+const User = require('../models/user');
 
 router.get('/', (req, res) => {
     Project
@@ -130,11 +131,33 @@ router.post("/", (req, res) => {
                 created_by: req.body.created_by,
                 users: req.body.users
             });
-            newProject.save((err) => {
-                if (err) console.log(err);
+
+            newProject.save((err,projectSaved) => {
+                if (err){
+                  console.log(err);  
+                  return res.json({
+                        success: false,
+                        message: err.message
+                    });
+                } 
+                
+                for (let index in projectSaved.users){
+                    User.findByIdAndUpdate(
+                        projectSaved.users[index]
+                    ,
+                    {
+                        $push:{
+                            belong_project: projectSaved._id
+                        }
+                    },(err,tank)=>{
+                        if(err) console.log(err.message)
+                    });
+                }
+
                 return res.json({
                     success: true,
-                    message: "Create project successful."
+                    message: "Create project successful.",
+                    projectSaved: projectSaved
                 });
             });
         }

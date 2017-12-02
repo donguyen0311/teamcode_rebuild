@@ -1,13 +1,12 @@
 var config = {
     hostname: 'localhost',
     port: 5000,
-    // database_url: 'mongodb://localhost/test',
-    database_url: 'mongodb://teamcode.tk/teamcode',
+    database_url: 'teamcode.tk:27017/teamcode',
     mongo: {
-    	user: 'locpham',
-	    pass: 'teamcode',
-	    useMongoClient: true,
-	    authSource: "admin"
+        user: 'teamcode',
+        pass: 'donguyen_locpham',
+        useMongoClient: true,
+        authSource: 'admin'
     },
     secret_key: 'nguyentando'
 }

@@ -16,7 +16,7 @@ const routes = require('./routes');
 
 const routesDocker = require('./routesDocker');
 
-mongoose.connect(config.database_url, {
+mongoose.connect(`mongodb://${encodeURIComponent(config.mongo.user)}:${encodeURIComponent(config.mongo.pass)}@${config.database_url}?authSource=${config.mongo.authSource}`, {
     useMongoClient: true
 }).then(
     () => console.log('Connected Database'),
