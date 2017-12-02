@@ -17,8 +17,33 @@ const company = {
                     Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
                     when an unknown printer took a galley of type and scrambled it to make a type specimen book.`,
     field: 'Software',
-    created_by: '59e1d5711b430b37fc1bd54e',
+    created_by: '5a1bc409a94d0a339cde190d',
 }
+
+const project_1 = {
+    project_name: 'Project 1',
+    budget: 6000,
+    deadline: new Date(),
+    description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    language_programming: ['PHP', 'Python'],
+    level: 123,
+    belong_company: '5a1bc4ef5671cd2fa8beb87f',
+    created_by: '5a1bc409a94d0a339cde190d',
+    users: ['5a1bc409a94d0a339cde190d', '5a1bc52a06575f2bd8b89904']
+}
+
+const project_2 = {
+    project_name: 'Project 2',
+    budget: 8000,
+    deadline: new Date(),
+    description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Ha galley of type and scrambled it to make a ty',
+    language_programming: ['PHP', 'Javascript'],
+    level: 1234,
+    belong_company: '5a1bc4ef5671cd2fa8beb87f',
+    created_by: '5a1bc409a94d0a339cde190d',
+    users: ['5a1bc409a94d0a339cde190d']
+}
+
 const MALE = 1;
 const FEMALE = 0;
 
@@ -66,7 +91,13 @@ function getNameAbbreviate(fullname)
     return result;
 }
 
-mongoose.connect(config.database_url, {
+function getRandomIntInclusive(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
+}
+
+mongoose.connect(`mongodb://${encodeURIComponent(config.mongo.user)}:${encodeURIComponent(config.mongo.pass)}@${config.database_url}?authSource=${config.mongo.authSource}`, {
     useMongoClient: true
 }).then(
     () => console.log('Connected Database'),
@@ -75,6 +106,61 @@ mongoose.connect(config.database_url, {
     }
 );
 app.use(logger('dev'));
+
+app.post('/init_user', async (req, res) => {
+    var users = [];
+    for (var i = 0; i < 1; i++) {
+        var person = getRandomPerson();
+        users.push({
+            email: `${person.username}${i}@gmail.com`,
+            firstname: person.firstname,
+            lastname: person.lastname+' '+person.middlename,
+            gender: person.gender,
+            username: `${person.username}${i}`,
+            password: `${person.username}${i}!`,
+            analyst_capability: getRandomIntInclusive(0, 5),
+            programmer_capability: getRandomIntInclusive(0, 5),
+            personnel_continuity: getRandomIntInclusive(0, 5),
+            application_experience: getRandomIntInclusive(0, 5),
+            platform_experience: getRandomIntInclusive(0, 5),
+            language_and_toolset_experience: getRandomIntInclusive(0, 5),
+            salary: getRandomIntInclusive(300, 5000)
+        })
+    }
+    var count = 1;
+    for (let user of users) {
+        var password_sha512 = helper.sha512(user.password);
+        var newUser = new User({
+            email: user.email,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            gender: user.gender,
+            username: user.username,
+            password: password_sha512.password_encrypt,
+            salt: password_sha512.salt,
+            current_company: user.current_company,
+            analyst_capability: user.analyst_capability,
+            programmer_capability: user.programmer_capability,
+            personnel_continuity: user.personnel_continuity,
+            application_experience: user.application_experience,
+            platform_experience: user.platform_experience,
+            language_and_toolset_experience: user.language_and_toolset_experience,
+            salary: user.salary
+        });
+        var success = await newUser.save();
+        if (!success) {
+            return res.json({
+                success: false,
+                message: 'Error occurred while saving user.'
+            });
+        }
+        console.log(`Created ${count++} users`);
+    }
+    return res.json({
+        success: true,
+        message: "Created 1000 user successful."
+    });
+})
 
 app.post('/fullname', async(req, res) => {
     var users = [];
@@ -87,7 +173,7 @@ app.post('/fullname', async(req, res) => {
             gender: person.gender,
             username: `${person.username}${i}`,
             password: `${person.username}${i}!`,
-            current_company: '5a0abda455a6fa2f882eb25a',
+            current_company: '5a1bc4ef5671cd2fa8beb87f',
             analyst_capability: getRandomIntInclusive(0, 5),
             programmer_capability: getRandomIntInclusive(0, 5),
             personnel_continuity: getRandomIntInclusive(0, 5),
@@ -133,10 +219,10 @@ app.post('/fullname', async(req, res) => {
 });
 
 app.get('/companies', async(req, res) => {
-    var company = await Company.findOne({
+    var company_result = await Company.findOne({
         company_name: company.company_name
     });
-    if (company) {
+    if (company_result) {
         return res.json({
             success: false,
             message: 'Company name already exists.'
@@ -162,11 +248,42 @@ app.get('/companies', async(req, res) => {
     });
 });
 
-function getRandomIntInclusive(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
-}
+app.get('/projects', async (req, res) => {
+    var newProject1 = new Project({
+        project_name: 'Project 1',
+        budget: 6000,
+        deadline: new Date(),
+        description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+        language_programming: ['PHP', 'Python'],
+        level: 123,
+        belong_company: '5a1bc4ef5671cd2fa8beb87f',
+        created_by: '5a1bc409a94d0a339cde190d',
+        users: ['5a1bc409a94d0a339cde190d', '5a1bc52a06575f2bd8b89904']
+    });
+    var newProject2 = new Project({
+        project_name: 'Project 2',
+        budget: 8000,
+        deadline: new Date(),
+        description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Ha galley of type and scrambled it to make a ty',
+        language_programming: ['PHP', 'Javascript'],
+        level: 1234,
+        belong_company: '5a1bc4ef5671cd2fa8beb87f',
+        created_by: '5a1bc409a94d0a339cde190d',
+        users: ['5a1bc409a94d0a339cde190d']
+    });
+    var success1 = await newProject1.save();
+    var success2 = await newProject2.save();
+    if (!success1 && !success2) {
+        return res.json({
+            success: false,
+            message: 'Error occurred while saving project.'
+        });
+    }
+    return res.json({
+        success: true,
+        message: "Create project successful."
+    });
+});
 
 app.get('/demoFilter', async(req, res) => {
     var users = await User.find({

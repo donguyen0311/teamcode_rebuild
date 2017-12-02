@@ -207,30 +207,30 @@ router.delete('/:id', (req, res) => {
     });
 });
 
-router.get('/:email', (req, res) => {
-    User.findOne({
-        email: req.params.email
-    }, {
-        password: false,
-        salt: false
-    })
-    .populate('current_company')
-    .populate('belong_project')
-    .exec((err, user) => {
-        if (err) console.log(err);
-        if (!user) {
-            return res.json({
-                success: false,
-                message: 'Email not found.'
-            });
-        }
-        return res.json({
-            success: true,
-            message: 'Your user info',
-            user: user
-        });
-    });
-});
+// router.get('/:email', (req, res) => {
+//     User.findOne({
+//         email: req.params.email
+//     }, {
+//         password: false,
+//         salt: false
+//     })
+//     .populate('current_company')
+//     .populate('belong_project')
+//     .exec((err, user) => {
+//         if (err) console.log(err);
+//         if (!user) {
+//             return res.json({
+//                 success: false,
+//                 message: 'Email not found.'
+//             });
+//         }
+//         return res.json({
+//             success: true,
+//             message: 'Your user info',
+//             user: user
+//         });
+//     });
+// });
 
 router.put('/image', upload.any(), (req, res) => {
     res.status(200).json({
