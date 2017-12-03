@@ -4,7 +4,7 @@ var config = {
     database_url: '*************',
     mongo: {
         user: '*************',
-        pass: '*************',
+        pass: '*****************',
         useMongoClient: true,
         authSource: 'admin'
     },
