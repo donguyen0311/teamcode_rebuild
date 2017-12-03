@@ -43,6 +43,28 @@ let upload = multer({
 //     });
 // });
 
+router.get('/company/:id', (req, res) => {
+    User.find({
+        current_company: req.params.id,
+        belong_project: []
+    })
+    .populate('current_company')
+    .exec((err, users) => {
+        if (err) console.log(err);
+        if (!users) {
+            return res.json({
+                success: false,
+                message: 'Company ID not found.'
+            });
+        }
+        return res.json({
+            success: true,
+            message: 'Your users info available in your company.',
+            users: users
+        });
+    });
+});
+
 router.get('/', (req, res) => {
     User.findOne({
         _id: req.decoded.id
@@ -92,6 +114,7 @@ router.get('/:id', (req, res) => {
         });
     });
 });
+
 
 // create with current company
 router.post('/', (req, res) => {
