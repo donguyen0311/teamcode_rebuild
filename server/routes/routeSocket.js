@@ -4,7 +4,7 @@ const path = require('path');
 const Task = require('../models/task');
 const Project = require('../models/project');
 const Notification = require('../models/notification');
-const _ = require('underscore');
+const _ = require('lodash');
 
 
 module.exports = (io) => {
@@ -18,29 +18,19 @@ module.exports = (io) => {
         //on user disconected
         socket.on('disconnect', function () {
             console.log('a user disconnected');
+            var index = _.findIndex(userOnlineList, { id: socket.id, userID: socket.userID });
+            userOnlineList.splice(index, 1);
         });
 
         socket.on('updateOnlineList', (_id) => {
-            console.log(_id);
-            if (_.findIndex(userOnlineList, { _id: _id }) === -1) {
-                userOnlineList.push({ _id: _id, socket: socket });
-            }
-            else if (_.findIndex(userOnlineList, { _id: _id }) !== -1) {
-                var index = _.findIndex(userOnlineList, { _id: _id });
-                if (userOnlineList[index].socket.id !== socket.id) {
-                    userOnlineList.splice(index, 1, { _id: _id, socket: socket });
-                }
-            }
-            
+            socket.userID = _id;
+            if (_.findIndex(userOnlineList, { id: socket.id, userID: socket.userID }) === -1) {
+                userOnlineList.push(socket);
+            }         
         });
 
         socket.on('Task:joinRoom', (data) => {
             let rooms = Object.keys(socket.rooms);
-            // for (let room of rooms) {
-            //     socket.leave(room, () => {
-            //         socket.join(data);  
-            //     });
-            // } 
             if(rooms.length > 1) {
                 for(let i = 1; i < rooms.length; i++) {
                     socket.leave(rooms[i], () => {
@@ -54,7 +44,7 @@ module.exports = (io) => {
             
         });
 
-        socket.on('Task:addTask', async(data) => {
+        socket.on('Task:addTask', async (data) => {
             console.log(userOnlineList);
             console.log(data);
             var newTask = new Task({
@@ -96,10 +86,10 @@ module.exports = (io) => {
                         belong_user: responsible_user
                     }); 
                     var createdNotification = await newNotification.save();
-                    if(_.findIndex(userOnlineList, { _id: responsible_user}) !== -1) {
-                        var index = _.findIndex(userOnlineList, { _id: responsible_user});
-                        console.log(userOnlineList[index].socket.id)
-                        io.to(userOnlineList[index].socket.id).emit('Notification:updateNotification', createdNotification);
+                    for(let userOnline of userOnlineList) {
+                        if (userOnline.userID === responsible_user) {
+                            io.to(userOnline.id).emit('Notification:updateNotification', createdNotification);
+                        }
                     }
                 }
 
@@ -111,7 +101,21 @@ module.exports = (io) => {
         });
 
         socket.on('Task:editTask', async (data) => {
-            console.log(data)
+            console.log(data);
+            console.log(userOnlineList.map(user => ({id: user.id, userID: user.userID})));
+            // var currentTask = await Task.findById(data._id).populate({
+            //         path: 'belong_project',
+            //         select: 'project_name'
+            //     })
+            //     .populate({
+            //         path: 'responsible_user',
+            //         select: 'email image'
+            //     })
+            //     .populate({
+            //         path: 'created_by',
+            //         select: 'email username image'
+            //     })
+            //     .exec();
             var updatedTask = await Task.findByIdAndUpdate(data._id, {
                     $set: {
                         task_name: data.editTaskName,
@@ -149,10 +153,10 @@ module.exports = (io) => {
                     belong_user: responsible_user
                 }); 
                 var createdNotification = await newNotification.save();
-                if(_.findIndex(userOnlineList, { _id: responsible_user}) !== -1) {
-                    var index = _.findIndex(userOnlineList, { _id: responsible_user});
-                    console.log(userOnlineList[index].socket.id)
-                    io.to(userOnlineList[index].socket.id).emit('Notification:updateNotification', createdNotification);
+                for(let userOnline of userOnlineList) {
+                    if (userOnline.userID === responsible_user) {
+                        io.to(userOnline.id).emit('Notification:updateNotification', createdNotification);
+                    }
                 }
             }
 
@@ -167,6 +171,8 @@ module.exports = (io) => {
         });
 
         socket.on('Task:changeTaskPosition', (data) => {
+            console.log(userOnlineList.map(user => ({id: user.id, userID: user.userID})));
+            console.log(socket.id);
             // console.log(socket.rooms);
             //console.log(data.columns);
             data.columns[data.result.destination.droppableId].forEach(async(task, index) => {
