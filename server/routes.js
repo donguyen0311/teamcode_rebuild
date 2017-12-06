@@ -15,6 +15,7 @@ const routeCompany = require('./routes/routeCompany');
 const routeProject = require('./routes/routeProject');
 const routeTask = require('./routes/routeTask');
 const routeNotification = require('./routes/routeNotification');
+const routeActivity = require('./routes/routeActivity');
 const routeEstimate = require('./routes/routeEstimate');
 
 const routeTree = require('./routes/routeTree');
@@ -47,6 +48,7 @@ router.use('/projects', middlewareAuth, routeProject);
 router.use('/companies', middlewareAuth, routeCompany);
 router.use('/tasks', middlewareAuth, routeTask);
 router.use('/notifications', middlewareAuth, routeNotification);
+router.use('/activities', middlewareAuth, routeActivity);
 router.use('/trees', routeTree);
 
 router.get('/', (req, res) => {

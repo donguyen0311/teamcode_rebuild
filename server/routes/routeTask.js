@@ -89,38 +89,38 @@ router.get('/:id', (req, res) => {
         });
 });
 
-router.get('/:task_name', (req, res) => {
-    Task
-        .findOne({
-            task_name: req.params.task_name
-        })
-        .populate({
-            path: 'belong_project',
-            select: 'project_name'
-        })
-        .populate({
-            path: 'responsible_user',
-            select: 'email image'
-        })
-        .populate({
-            path: 'created_by',
-            select: 'email image'
-        })
-        .exec((err, task) => {
-            if (err) console.log(err);
-            if (!task) {
-                return res.json({
-                    success: false,
-                    message: 'Something wrong.'
-                });
-            }
-            return res.json({
-                success: true,
-                message: 'Your task info',
-                task: task
-            });
-        });
-});
+// router.get('/:task_name', (req, res) => {
+//     Task
+//         .findOne({
+//             task_name: req.params.task_name
+//         })
+//         .populate({
+//             path: 'belong_project',
+//             select: 'project_name'
+//         })
+//         .populate({
+//             path: 'responsible_user',
+//             select: 'email image'
+//         })
+//         .populate({
+//             path: 'created_by',
+//             select: 'email image'
+//         })
+//         .exec((err, task) => {
+//             if (err) console.log(err);
+//             if (!task) {
+//                 return res.json({
+//                     success: false,
+//                     message: 'Something wrong.'
+//                 });
+//             }
+//             return res.json({
+//                 success: true,
+//                 message: 'Your task info',
+//                 task: task
+//             });
+//         });
+// });
 
 router.post('/', (req, res) => {
     var newTask = new Task({
