@@ -39,7 +39,8 @@ router.post('/suitableStaff', (req, res) => {
         programmer_capability: { $gte:  requirement.programmer_capability},
         application_experience: { $gte: requirement.application_experience },
         platform_experience: { $gte: requirement.platform_experience },
-        language_and_toolset_experience: { $gte: requirement.language_and_toolset_experience }
+        language_and_toolset_experience: { $gte: requirement.language_and_toolset_experience },
+        belong_project: []
     })
     .sort({
         salary: 1
@@ -67,7 +68,7 @@ router.post('/suitableStaff', (req, res) => {
             {$limit: parseInt(requirement.person_month)},
             {$group: {
                 _id: '',
-                projectCost: { $sum: '$salary' }
+                projectCostPerMonth: { $sum: '$salary' }
                 }
             }
         ],(err,result) => {
@@ -77,7 +78,7 @@ router.post('/suitableStaff', (req, res) => {
                 success: true,
                 message: 'all suitable staff',
                 suitableStaffs: suitableStaffs,
-                projectCost: result[0].projectCost
+                projectCostPerMonth: result ? result[0].projectCostPerMonth : 0
             }); 
         });
      
