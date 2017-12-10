@@ -51,10 +51,10 @@ var userSchema = new Schema({
         type: String,
         required: false
     },
-    time_available: {
-        type: String,
-        required: false
-    },
+    // time_available: {
+    //     type: String,
+    //     required: false
+    // },
     studied_at: {
         type: [String],
         required: false
@@ -108,9 +108,13 @@ var userSchema = new Schema({
     salary: {
         type: Number,
         required: false
+    },
+    work_time:{
+        type: Schema.Types.Mixed
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    collection: 'upgraded_user'
 });
 
 module.exports = mongoose.model('User', userSchema);
