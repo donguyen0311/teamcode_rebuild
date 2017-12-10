@@ -32,6 +32,20 @@ const _ = require('lodash');
 //     });
 // });
 
+async function caculateUserInDB() {
+    var projectTime = 5;
+    var users = await User.find({'work_time.office': { $ne: 8 }}, {
+        password: false,
+        salt: false
+    });
+    console.log('users', users.length);
+    var result = CaculateStaff([...users], projectTime);
+    console.log(result);
+    //console.log(result[0].month_spend);
+}
+
+caculateUserInDB();
+
 var staffsDB = [
     {
         _id: 1,
@@ -114,15 +128,18 @@ function CaculateStaff(staffs, projectDuration /*Effort*/) {
                 staff.month_spend = projectDuration;
                 return staff;
             });
-            let modifyTimeOfLastStaff = ( (8 - chosenStaffs[iStaff].work_time.office) * 4 * 5 * 0.95 * projectDuration - extraTime) / ( (8 - chosenStaffs[iStaff].work_time.office) * 4 * 5 * 0.95);
-            // console.log(modifyTimeOfLastStaff);
+            let modifyTimeOfLastStaff = ((8 - chosenStaffs[iStaff].work_time.office) * 4 * 5 * 0.95 * projectDuration - extraTime) / ((8 - chosenStaffs[iStaff].work_time.office) * 4 * 5 * 0.95);
+            //console.log(modifyTimeOfLastStaff);
             chosenStaffs[iStaff].month_spend = modifyTimeOfLastStaff;
             let totalBudget = 0;
+            let totalTimeSpend = 0;
             for(let i = 0; i < chosenStaffs.length; i++) {
                 totalBudget += chosenStaffs[i].salaryForTimeAvailable * 4 * 5 * 0.95 * chosenStaffs[i].month_spend;
+                totalTimeSpend += (8 - chosenStaffs[i].work_time.office) * 4 * 5 * 0.95 * chosenStaffs[i].month_spend;
             }
-            // console.log(totalBudget);
-            return {staffs: chosenStaffs, total_budget: totalBudget};
+
+            console.log(chosenStaffs[0].month_spend);
+            return {staffs: chosenStaffs, total_budget: totalBudget, total_time_spend: totalTimeSpend};
         }
     }
     return false;
@@ -140,8 +157,7 @@ function SumTimeOfNStaffs(staffs, projectDuration) {
 // var result = CaculateStaff(staffsDB, projectTime);
 // console.log(result);
 
-function combinations(array)
-{
+function combinations(array) {
     var result = [];
     
         var loop = function (start,depth,prefix)
