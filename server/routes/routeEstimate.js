@@ -275,7 +275,7 @@ router.post('/suitableStaff', (req, res) => {
                 success: true,
                 message: 'all suitable staff',
                 suitableStaffs: suitableStaffs,
-                projectCostPerMonth: result ? result[0].projectCostPerMonth : 0
+                projectCostPerMonth: (result[0] !== undefined) ? result[0].projectCostPerMonth : 0
             }); 
         });
      

@@ -392,6 +392,106 @@ app.post('/users', async(req, res) => {
 //     })
 // })
 
+app.post('/upgraded_users', async(req, res) => {
+    var users = [];
+    for (var i = 1; i <= 1000; i++) {
+        var person = getRandomPerson();
+        
+        var LTEX = PCAP = getRandomIntInclusive(0, 4);
+        var ACAP = getRandomIntInclusive(LTEX-1, LTEX+1);
+        var PLEX = APEX = getRandomIntInclusive(LTEX-1, LTEX);
+        var salary = 0;
+        var office_hours = getRandomIntInclusive(0, 8);
+        var overtime = (office_hours >= 6 ? getRandomIntInclusive(0, 4) : 0);
+        switch(LTEX) {
+            case 0:
+                salary=getRandomIntInclusive(250,350);
+                break;
+            case 1:
+                salary=getRandomIntInclusive(300,500);
+                break;
+            case 2:
+                salary=getRandomIntInclusive(450,750);
+                break;
+            case 3:
+                salary=getRandomIntInclusive(700,2500);
+                break;
+            case 4:
+                salary=getRandomIntInclusive(2200,5000);
+                break;
+            default:
+                break;
+        }
+
+        users.push({
+            email: `${person.username}${i}@gmail.com`,
+            firstname: person.firstname,
+            lastname: person.lastname+' '+person.middlename,
+            gender: person.gender,
+            username: `${person.username}${i}`,
+            password: `${person.username}${i}!`,
+            current_company: '5a1bc4ef5671cd2fa8beb87f',
+            analyst_capability: ACAP,
+            programmer_capability: PCAP,
+            personnel_continuity: getRandomIntInclusive(0, 4),
+            application_experience: getRandomIntInclusive(0, 4),
+            platform_experience: getRandomIntInclusive(0, 4),
+            language_and_toolset_experience: LTEX,
+            salary: salary,
+            work_time:{
+                office: office_hours,
+                overtime: overtime,
+                projects:[
+                    {
+                        id: '5a1bcc820fe6401eb4d3904e',
+                        work_time: {
+                            office: office_hours,
+                            overtime: overtime
+                        }
+                    }
+                ]
+            }
+        });
+        // console.log('was random '+i+' users');
+    }
+    // console.log(users);
+    // return;
+    var count = 1;
+    for (let user of users) {
+        var password_sha512 = helper.sha512(user.password);
+        var newUser = new User({
+            email: user.email,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            gender: user.gender,
+            username: user.username,
+            password: password_sha512.password_encrypt,
+            salt: password_sha512.salt,
+            current_company: user.current_company,
+            analyst_capability: user.analyst_capability,
+            programmer_capability: user.programmer_capability,
+            personnel_continuity: user.personnel_continuity,
+            application_experience: user.application_experience,
+            platform_experience: user.platform_experience,
+            language_and_toolset_experience: user.language_and_toolset_experience,
+            salary: user.salary,
+            work_time: user.work_time
+        });
+        var success = await newUser.save();
+        if (!success) {
+            return res.json({
+                success: false,
+                message: 'Error occurred while saving user.'
+            });
+        }
+        console.log(`Created ${count++} users`);
+    }
+    return res.json({
+        success: true,
+        message: "Created 500 user successful."
+    });
+});
+
 var server = app.listen(config.port, config.hostname, () => {
     console.log(`Listening on ${config.hostname}:${config.port}`);
 });
