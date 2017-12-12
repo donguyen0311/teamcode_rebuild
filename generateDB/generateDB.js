@@ -398,8 +398,8 @@ app.post('/upgraded_users', async(req, res) => {
         var person = getRandomPerson();
         
         var LTEX = PCAP = getRandomIntInclusive(0, 4);
-        var ACAP = getRandomIntInclusive(LTEX-1, LTEX+1);
-        var PLEX = APEX = getRandomIntInclusive(LTEX-1, LTEX);
+        var ACAP = getRandomIntInclusive((LTEX == 0) ? 0 : LTEX-1, LTEX+1);
+        var PLEX = APEX = getRandomIntInclusive((LTEX == 0) ? 0 : LTEX-1, LTEX);
         var salary = 0;
         var office_hours = getRandomIntInclusive(0, 8);
         var overtime = (office_hours >= 6 ? getRandomIntInclusive(0, 4) : 0);
@@ -434,8 +434,8 @@ app.post('/upgraded_users', async(req, res) => {
             analyst_capability: ACAP,
             programmer_capability: PCAP,
             personnel_continuity: getRandomIntInclusive(0, 4),
-            application_experience: getRandomIntInclusive(0, 4),
-            platform_experience: getRandomIntInclusive(0, 4),
+            application_experience: APEX,
+            platform_experience: PLEX,
             language_and_toolset_experience: LTEX,
             salary: salary,
             work_time:{
