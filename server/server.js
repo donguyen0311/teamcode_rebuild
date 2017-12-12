@@ -25,6 +25,8 @@ mongoose.connect(`mongodb://${encodeURIComponent(config.mongo.user)}:${encodeURI
     }
 );
 
+app.use(bodyParser.json({limit: '50mb'}));
+
 app.set('secretKey', config.secret_key);
 
 app.set('views', path.join(__dirname, '../client_teamcode/build'));

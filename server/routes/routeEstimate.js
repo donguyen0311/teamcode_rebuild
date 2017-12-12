@@ -44,7 +44,7 @@ async function caculateUserInDB() {
     //console.log(result[0].month_spend);
 }
 
-caculateUserInDB();
+// caculateUserInDB();
 
 var staffsDB = [
     {
@@ -107,8 +107,8 @@ var staffsDB = [
 
 var projectTime = 3;
 
-function CaculateStaff(staffs, projectDuration /*Effort*/) { 
-    let projectByHours = projectDuration * 152;
+function CaculateStaff(staffs, projectDuration,personMonths /*Effort*/) { 
+    let projectByHours = personMonths * 152;
     let staffsWithSalaryForOneHours = staffs.map((staff) => {
         staff.salaryForOneHours = staff.salary / 152;
         return staff;
@@ -131,18 +131,18 @@ function CaculateStaff(staffs, projectDuration /*Effort*/) {
             let modifyTimeOfLastStaff = ((8 - chosenStaffs[iStaff].work_time.office) * 4 * 5 * 0.95 * projectDuration - extraTime) / ((8 - chosenStaffs[iStaff].work_time.office) * 4 * 5 * 0.95);
             //console.log(modifyTimeOfLastStaff);
             chosenStaffs[iStaff].month_spend = modifyTimeOfLastStaff;
-            let totalBudget = 0;
+            let totalCost = 0;
             let totalTimeSpend = 0;
             for(let i = 0; i < chosenStaffs.length; i++) {
-                totalBudget += chosenStaffs[i].salaryForTimeAvailable * 4 * 5 * 0.95 * chosenStaffs[i].month_spend;
+                totalCost += chosenStaffs[i].salaryForTimeAvailable * 4 * 5 * 0.95 * chosenStaffs[i].month_spend;
                 totalTimeSpend += (8 - chosenStaffs[i].work_time.office) * 4 * 5 * 0.95 * chosenStaffs[i].month_spend;
             }
 
-            console.log(chosenStaffs[0].month_spend);
-            return {staffs: chosenStaffs, total_budget: totalBudget, total_time_spend: totalTimeSpend};
+            // console.log(chosenStaffs[0].month_spend);
+            return {staffs: chosenStaffs, totalCost: totalCost, totalTimeSpend: totalTimeSpend};
         }
     }
-    return false;
+    return {staffs: [], totalCost: 0, totalTimeSpend: 0};
 }
 
 function SumTimeOfNStaffs(staffs, projectDuration) { 
@@ -184,8 +184,8 @@ function combinations(array) {
     return result;
 }
 
-function bruteforce(staffs, projectDuration) {
-    let projectByHours = projectDuration * 152;
+function bruteforce(staffs, projectDuration,personMonths) {
+    let projectByHours = personMonths * 152;
     staffs.map((staff) => {
         staff.salaryForOneHours = staff.salary / 152;
         return staff;
@@ -221,7 +221,7 @@ function bruteforce(staffs, projectDuration) {
         // let sumTimeOfNStaffs = SumTimeOfNStaffs(chosenStaffs, projectDuration);
 
         bruteforceStaffs[chosenStaffsIndex]['timeAffordable'] = SumTimeOfNStaffs(chosenStaffs, projectDuration);
-        bruteforceStaffs[chosenStaffsIndex]['cost'] = caculateSalary(chosenStaffs, projectDuration);
+        bruteforceStaffs[chosenStaffsIndex]['cost'] = caculateSalary(chosenStaffs, projectDuration,personMonths);
 
         // if(sumTimeOfNStaffs > projectByHours) {
         //     if(minStaff.length === 0) {
@@ -243,10 +243,10 @@ function bruteforce(staffs, projectDuration) {
     return bruteforceStaffs;
 }
 
-function caculateSalary(staffs, projectDuration) {
+function caculateSalary(staffs, projectDuration, personMonths) {
     let sumSalary = 0;
     let sumTimeOfNStaffs = SumTimeOfNStaffs(staffs, projectDuration);
-    let extraTime = sumTimeOfNStaffs - projectDuration * 152;
+    let extraTime = sumTimeOfNStaffs - personMonths * 152;
     let sortStaffsSalaryForOneHours = _.sortBy(staffs, ['salaryForOneHours']);
     sortStaffsSalaryForOneHours.map((staff) => {
         staff.timeWork = (8 - staff.work_time.office) * 4 * 5 * 0.95 * projectDuration;
@@ -255,7 +255,8 @@ function caculateSalary(staffs, projectDuration) {
     if(extraTime > 0)
     {
         // console.log('=============');
-        // console.log(sortStaffsSalaryForOneHours.length);
+        // console.log(sumTimeOfNStaffs);
+        // console.log(extraTime);
         // console.log('=============');
         sortStaffsSalaryForOneHours[sortStaffsSalaryForOneHours.length - 1].timeWork = (8 - sortStaffsSalaryForOneHours[sortStaffsSalaryForOneHours.length - 1].work_time.office) * 4 * 5 * 0.95 * projectDuration - extraTime;
         
@@ -274,57 +275,107 @@ function caculateSalary(staffs, projectDuration) {
 
 // bruteforce(staffsDB, projectTime);
 
-router.post('/suitableStaff', (req, res) => {
+// router.post('/suitableStaff', (req, res) => {
     
+//     let requirement = req.body;
+//     User.find({
+//         analyst_capability: { $gte:  requirement.analyst_capability },
+//         programmer_capability: { $gte:  requirement.programmer_capability},
+//         application_experience: { $gte: requirement.application_experience },
+//         platform_experience: { $gte: requirement.platform_experience },
+//         language_and_toolset_experience: { $gte: requirement.language_and_toolset_experience },
+//         belong_project: []
+//     })
+//     .sort({
+//         salary: 1
+//     })
+//     .limit(parseInt(requirement.person_month))
+//     .exec((err, suitableStaffs) => {
+//         if(err) console.log(err);
+//         if(!suitableStaffs)
+//         {
+//             return res.json({
+//                 success: false,
+//                 message: 'Something wrong.'
+//             });
+//         }
+//         User.aggregate([
+//             {$match: {        
+//                 analyst_capability: { $gte:  parseInt(requirement.analyst_capability) },
+//                 programmer_capability: { $gte:  parseInt(requirement.programmer_capability)},
+//                 application_experience: { $gte: parseInt(requirement.application_experience) },
+//                 platform_experience: { $gte: parseInt(requirement.platform_experience) },
+//                 language_and_toolset_experience: { $gte: parseInt(requirement.language_and_toolset_experience) }
+//                 }
+//             },
+//             { $sort : { salary: 1 } },
+//             {$limit: parseInt(requirement.person_month)},
+//             {$group: {
+//                 _id: '',
+//                 projectCostPerMonth: { $sum: '$salary' }
+//                 }
+//             }
+//         ],(err,result) => {
+//             if(err)
+//                 console.log('err: '+err);
+//             res.json({
+//                 success: true,
+//                 message: 'all suitable staff',
+//                 suitableStaffs: suitableStaffs,
+//                 projectCostPerMonth: (result[0] !== undefined) ? result[0].projectCostPerMonth : 0
+//             }); 
+//         });
+     
+//     });
+// });
+
+router.post('/suitableStaff', (req, res) => {
+    // var projectTime = 5;
+    // var users = await User.find({'work_time.office': { $ne: 8 }}, {
+    //     password: false,
+    //     salt: false
+    // });
+    // console.log('users', users.length);
+    // var result = CaculateStaff([...users], projectTime);
+    // console.log(result);
+    //console.log(result[0].month_spend);
+
     let requirement = req.body;
+    console.log(requirement.performanceTable);
     User.find({
         analyst_capability: { $gte:  requirement.analyst_capability },
         programmer_capability: { $gte:  requirement.programmer_capability},
         application_experience: { $gte: requirement.application_experience },
         platform_experience: { $gte: requirement.platform_experience },
         language_and_toolset_experience: { $gte: requirement.language_and_toolset_experience },
-        belong_project: []
+        belong_project: [],
+        'work_time.office': { $ne: 8 }
     })
     .sort({
         salary: 1
     })
-    .limit(parseInt(requirement.person_month))
-    .exec((err, suitableStaffs) => {
+    .limit(parseInt((requirement.person_month === undefined) ? 1 : requirement.person_month))
+    .exec((err, satisfiedRequirementStaffs) => {
         if(err) console.log(err);
-        if(!suitableStaffs)
+        if(!satisfiedRequirementStaffs)
         {
             return res.json({
                 success: false,
                 message: 'Something wrong.'
             });
         }
-        User.aggregate([
-            {$match: {        
-                analyst_capability: { $gte:  parseInt(requirement.analyst_capability) },
-                programmer_capability: { $gte:  parseInt(requirement.programmer_capability)},
-                application_experience: { $gte: parseInt(requirement.application_experience) },
-                platform_experience: { $gte: parseInt(requirement.platform_experience) },
-                language_and_toolset_experience: { $gte: parseInt(requirement.language_and_toolset_experience) }
-                }
-            },
-            { $sort : { salary: 1 } },
-            {$limit: parseInt(requirement.person_month)},
-            {$group: {
-                _id: '',
-                projectCostPerMonth: { $sum: '$salary' }
-                }
-            }
-        ],(err,result) => {
-            if(err)
-                console.log('err: '+err);
+        else
+        {
+            let suitableStaffsInfos = CaculateStaff([...satisfiedRequirementStaffs], requirement.projectDuration,requirement.personMonths);
             res.json({
                 success: true,
                 message: 'all suitable staff',
-                suitableStaffs: suitableStaffs,
-                projectCostPerMonth: (result[0] !== undefined) ? result[0].projectCostPerMonth : 0
+                suitableStaffs: suitableStaffsInfos.staffs,
+                projectCostPerMonth: suitableStaffsInfos.totalCost/requirement.projectDuration,
+                projectCost: suitableStaffsInfos.totalCost,
+                totalTimeSpend: suitableStaffsInfos.totalTimeSpend
             }); 
-        });
-     
+        }
     });
 });
 
@@ -359,7 +410,7 @@ router.post('/bruteforceStaff', (req, res) => {
             res.json({
                 success: true,
                 message: 'all suitable staff',
-                bruteforceStaffs: bruteforce(satisfiedRequirementStaffs, requirement.projectDuration)
+                bruteforceStaffs: bruteforce(satisfiedRequirementStaffs, requirement.projectDuration,requirement.personMonths)
             }); 
         }
     });
