@@ -95,12 +95,12 @@ var projectTime = 3;
 
 function CaculateStaff(staffs, projectDuration /*Effort*/) { 
     let projectByHours = projectDuration * 152;
-    let staffsWithSalaryForOneHours = staffs.map((staff) => {
+    let staffsWithSalaryForOneHours = [...staffs].map((staff) => {
         staff.salaryForOneHours = staff.salary / 152;
         return staff;
     });
     let sortStaffsSalaryForOneHours = _.sortBy(staffsWithSalaryForOneHours, ['salaryForOneHours']);
-    let staffsWithSalaryForTimeAvailable = sortStaffsSalaryForOneHours.map((staff) => {
+    let staffsWithSalaryForTimeAvailable = [...sortStaffsSalaryForOneHours].map((staff) => {
         staff.salaryForTimeAvailable = staff.salaryForOneHours * (8 - staff.work_time.office);
         return staff;
     });
