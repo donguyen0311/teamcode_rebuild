@@ -123,40 +123,44 @@ function CaculateStaff(staffs, projectDuration, personMonths /*Effort*/ , perfor
         return staff;
     });
     let sortStaffsSalaryForOneHours = _.sortBy([...staffsWithSalaryForOneHoursOffice, ...staffsWithSalaryForOneHoursOverTime], ['salaryForOneHours']);
-    // let staffsWithSalaryForTimeAvailable = [...sortStaffsSalaryForOneHours].map((staff) => {
-    //     staff.salaryForTimeAvailable = staff.salaryForOneHours * (8 - staff.work_time.office);
-    //     return staff;
-    // });
+
     for(let iStaff = 0; iStaff < sortStaffsSalaryForOneHours.length; iStaff++) {
         let chosenStaffs = _.slice(sortStaffsSalaryForOneHours, 0, iStaff + 1);
         let sumTimeOfNStaffs = SumTimeOfNStaffs(chosenStaffs, projectDuration, performanceList);
+
         if(sumTimeOfNStaffs >= projectByHours) {
             let extraTime = sumTimeOfNStaffs - projectByHours;
-            // console.log(extraTime);
             chosenStaffs = _.map(chosenStaffs, (staff) => {
                 staff.monthSpend = projectDuration;
+                if (staff.typeWork === 'OFFICE') {
+                    staff.timeOfDayForProject = 8 - staff.work_time.office;
+                } else {
+                    staff.timeOfDayForProject = 4 - staff.work_time.overtime;
+                } 
                 return staff;
             });
-            console.log('sumTimeOfNStaffs: ', sumTimeOfNStaffs);
-            console.log('extraTime: ', extraTime);
+            //console.log('sumTimeOfNStaffs: ', sumTimeOfNStaffs);
+            //console.log('extraTime: ', extraTime);
             // console.log('chosenStaffs[iStaff]: ', chosenStaffs[iStaff]);
             let modifyTimeOfLastStaff = (chosenStaffs[iStaff].typeWork === 'OFFICE') ? 
                                             ( (8 - chosenStaffs[iStaff].work_time.office) * 4 * 5 * 0.95 * projectDuration * ReferenceStaffWithPerformanceList(chosenStaffs[iStaff], performanceList) - extraTime ) / 
-                                                ( (8 - chosenStaffs[iStaff].work_time.office) * 4 * 5 * 0.95 * ReferenceStaffWithPerformanceList(chosenStaffs[iStaff], performanceList) ) : 
-                                            ( (8 - chosenStaffs[iStaff].work_time.overtime) * 4 * 5 * 0.95 * projectDuration * ReferenceStaffWithPerformanceList(chosenStaffs[iStaff], performanceList) - extraTime ) / 
-                                                ( (8 - chosenStaffs[iStaff].work_time.overtime) * 4 * 5 * 0.95 * ReferenceStaffWithPerformanceList(chosenStaffs[iStaff], performanceList) );
+                                                ( 4 * 5 * 0.95 * projectDuration * ReferenceStaffWithPerformanceList(chosenStaffs[iStaff], performanceList) ) : 
+                                            ( (4 - chosenStaffs[iStaff].work_time.overtime) * 4 * 5 * 0.95 * projectDuration * ReferenceStaffWithPerformanceList(chosenStaffs[iStaff], performanceList) - extraTime ) / 
+                                                ( 4 * 5 * 0.95 * projectDuration * ReferenceStaffWithPerformanceList(chosenStaffs[iStaff], performanceList) );
             //console.log(modifyTimeOfLastStaff);
-            chosenStaffs[iStaff].monthSpend = modifyTimeOfLastStaff;
+            
+            chosenStaffs[iStaff].timeOfDayForProject = Math.ceil(modifyTimeOfLastStaff); // ceil number
+            console.log(chosenStaffs[iStaff]);
             let totalCost = 0;
             let totalTimeSpend = 0;
             let listStaffMonthSpend = [];
             for(let i = 0; i < chosenStaffs.length; i++) {
-                totalCost += (chosenStaffs[i].typeWork === 'OFFICE') ? chosenStaffs[i].salaryForOneHours * (8 - chosenStaffs[i].work_time.office) * 4 * 5 * 0.95 * chosenStaffs[i].monthSpend :
-                                                                        chosenStaffs[i].salaryForOneHours * (8 - chosenStaffs[i].work_time.overtime) * 4 * 5 * 0.95 * chosenStaffs[i].monthSpend;
-                totalTimeSpend += (chosenStaffs[i].typeWork === 'OFFICE') ? (8 - chosenStaffs[i].work_time.office) * 4 * 5 * 0.95 * chosenStaffs[i].monthSpend * ReferenceStaffWithPerformanceList(chosenStaffs[i], performanceList) : 
-                                                                            (8 - chosenStaffs[i].work_time.overtime) * 4 * 5 * 0.95 * chosenStaffs[i].monthSpend * ReferenceStaffWithPerformanceList(chosenStaffs[i], performanceList);
+                totalCost += chosenStaffs[i].salaryForOneHours * chosenStaffs[i].timeOfDayForProject * 4 * 5 * 0.95 * chosenStaffs[i].monthSpend;
+                totalTimeSpend += chosenStaffs[i].timeOfDayForProject * 4 * 5 * 0.95 * chosenStaffs[i].monthSpend * ReferenceStaffWithPerformanceList(chosenStaffs[i], performanceList);
 
             }
+            console.log('totalCost: ', totalCost);
+            console.log('totalTimeSpend: ', totalTimeSpend);
             //console.log(chosenStaffs[0].monthSpend);
             return { work_office_staffs: chosenStaffs, total_cost: totalCost, total_time_spend: totalTimeSpend };
         }
@@ -171,7 +175,7 @@ function SumTimeOfNStaffs(staffs, projectDuration, performanceList) {
             sumTime += (8 - staffs[i].work_time.office) * 4 * 5 * 0.95 * projectDuration * ReferenceStaffWithPerformanceList(staffs[i], performanceList);
         }
         else {
-            sumTime += (8 - staffs[i].work_time.overtime) * 4 * 5 * 0.95 * projectDuration * ReferenceStaffWithPerformanceList(staffs[i], performanceList);
+            sumTime += (4 - staffs[i].work_time.overtime) * 4 * 5 * 0.95 * projectDuration * ReferenceStaffWithPerformanceList(staffs[i], performanceList);
         }  
     }
     return sumTime;
@@ -358,7 +362,6 @@ function caculateSalary(staffs, projectDuration, personMonths) {
 // });
 
 router.post('/suitableStaff', (req, res) => {
-    console.log('================aaaaa');
     // var projectTime = 5;
     // var users = await User.find({'work_time.office': { $ne: 8 }}, {
     //     password: false,
