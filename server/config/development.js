@@ -1,13 +1,14 @@
 var config = {
     hostname: 'localhost',
     port: 5000,
-    database_url: '******************',
+    database_url: '************',
     mongo: {
-        user: '******************',
-        pass: '******************',
+        user: '**********',
+        pass: '***********',
         useMongoClient: true,
-        authSource: '******************'
-    },
+        authSource: '*********'
+     },
     secret_key: 'nguyentando'
-}
+};  
+
 module.exports = config;

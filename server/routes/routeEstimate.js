@@ -341,7 +341,7 @@ router.post('/suitableStaff', (req, res) => {
     //console.log(result[0].month_spend);
 
     let requirement = req.body;
-    console.log(requirement.performanceTable);
+    
     User.find({
         analyst_capability: { $gte:  requirement.analyst_capability },
         programmer_capability: { $gte:  requirement.programmer_capability},
