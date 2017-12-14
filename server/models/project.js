@@ -13,7 +13,11 @@ var projectSchema = new Schema({
         type: Number,
         required: true
     },
-    deadline: {
+    start_day: {
+        type: Date,
+        required: true
+    },
+    end_day: {
         type: Date,
         required: true
     },

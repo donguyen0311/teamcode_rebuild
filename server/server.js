@@ -25,7 +25,7 @@ mongoose.connect(`mongodb://${encodeURIComponent(config.mongo.user)}:${encodeURI
     }
 );
 
-app.use(bodyParser.json({limit: '50mb'}));
+
 
 app.set('secretKey', config.secret_key);
 
@@ -37,7 +37,7 @@ app.use(helmet());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb'}));
 app.use(cookieParser());
 app.use(logger('dev'));
 

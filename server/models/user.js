@@ -110,11 +110,34 @@ var userSchema = new Schema({
         required: false
     },
     work_time:{
-        type: Schema.Types.Mixed
+        office: {
+            type: Number,
+            require: false
+        },
+        overtime: {
+            type: Number,
+            require: false
+        },
+        projects:[{
+            _id:false,
+            project: {
+                type: Schema.Types.ObjectId, 
+                ref: 'Project',
+                required: false
+            },          
+            office: {
+                type: Number,
+                require: false
+            },
+            overtime: {
+                type: Number,
+                require: false
+            },
+        }]
     }
 }, {
     timestamps: true,
-    collection: 'upgraded_user'
+    collection: 'upgraded_users'
 });
 
 module.exports = mongoose.model('User', userSchema);
