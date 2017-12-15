@@ -7,8 +7,7 @@ var config = {
         pass: '***************',
         useMongoClient: true,
         authSource: '***************'
-     },
+    },
     secret_key: 'nguyentando'
-};  
-
+}
 module.exports = config;
