@@ -1,14 +1,13 @@
 var config = {
     hostname: 'localhost',
     port: 5000,
-    database_url: 'teamcode.tk:27017/teamcode',
+    database_url: '***************',
     mongo: {
-        user: 'teamcode',
-        pass: 'donguyen_locpham',
+        user: '***************',
+        pass: '***************',
         useMongoClient: true,
-        authSource: 'admin'
-     },
+        authSource: '***************'
+    },
     secret_key: 'nguyentando'
-};  
-
+}
 module.exports = config;
