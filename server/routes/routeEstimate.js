@@ -512,24 +512,14 @@ function generateTimeline(staff, projectWillCreate)
             if(workingProject.end_day < projectWillCreate.end_day)
             {
                 //|2/7-----(2/8)----------(2/9)----------2/10|
-                if(timeline.indexOf(workingProject.start_day) == -1)
-                {
-                    timeline.push(workingProject.start_day);
-                }
-                if(timeline.indexOf(workingProject.end_day) == -1)
-                {
-                    timeline.push(workingProject.end_day)
-                }
+                timeline.push(workingProject.start_day,workingProject.end_day);
                 continue;
             }
             
             if(workingProject.end_day > projectWillCreate.end_day)
             {
                 //|2/7-----(2/9)--------------------2/10|-------(2/11)
-                if(timeline.indexOf(workingProject.start_day) == -1)
-                {
-                    timeline.push(workingProject.start_day);
-                }
+                timeline.push(workingProject.start_day);
                 continue;
             }
 
@@ -544,10 +534,7 @@ function generateTimeline(staff, projectWillCreate)
             if(workingProject.end_day < projectWillCreate.end_day)
             {
                 //(2/3)--------|2/7--------(2/8)----------2/10|
-                if(timeline.indexOf(workingProject.end_day) == -1)
-                {
-                    timeline.push(workingProject.end_day);
-                }
+                timeline.push(workingProject.end_day);
             }
             continue;
         }
@@ -621,7 +608,7 @@ function convertMilisecondsToDate(milisecondsArray){
     return result;
 }
 
-// console.log(combineAvailableHourToTimeline(staff, generateTimeline(staff, projectWillCreate)));
+console.log(combineAvailableHourToTimeline(staff, generateTimeline(staff, projectWillCreate)));
 
 
 module.exports = router;
