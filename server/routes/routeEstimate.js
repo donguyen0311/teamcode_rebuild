@@ -492,8 +492,8 @@ function generateTimeline(staff, projectWillCreate) {
             // |2/7-----(2/8)----------(2/9)----------2/10|
             if (workingProject.project.end_day < projectWillCreate.end_day) {
                 //|2/7-----(2/8)----------(2/9)----------2/10|
-                timeline.push(workingProject.project.start_day);
-                timeline.push(workingProject.project.end_day);
+                timeline.push(workingProject.start_day,workingProject.end_day);
+
                 continue;
             }
             if (workingProject.project.end_day > projectWillCreate.end_day) {
@@ -574,7 +574,7 @@ function convertMilisecondsToDate(milisecondsArray) {
     return result;
 }
 
-// console.log(combineAvailableHourToTimeline(staff, generateTimeline(staff, projectWillCreate)));
+console.log(combineAvailableHourToTimeline(staff, generateTimeline(staff, projectWillCreate)));
 
 
 module.exports = router;
