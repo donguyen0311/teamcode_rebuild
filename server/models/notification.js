@@ -19,6 +19,10 @@ var notificationSchema = new Schema({
         type: Schema.Types.ObjectId, 
         ref: 'User',
         required: true
+    },
+    link: {
+        type: String,
+        required: false
     }
 }, {
     timestamps: true

@@ -111,7 +111,8 @@ module.exports = (io) => {
                         title: `From project ${createdTaskMoreInfo.belong_project.project_name}`,
                         content: `You have assigned a new Task (${data.task_name}) by ${createdTaskMoreInfo.created_by.username}`,
                         status: 0,
-                        belong_user: responsible_user
+                        belong_user: responsible_user,
+                        link: `${createdTaskMoreInfo.belong_project.project_name}`
                     });
                     var createdNotification = await newNotification.save();
                     for (let userOnline of userOnlineList) {
@@ -197,7 +198,8 @@ module.exports = (io) => {
                     title: `From project ${updatedTask.belong_project.project_name}`,
                     content: `You have assigned a Task (${updatedTask.task_name}) by ${updatedTask.created_by.username}`,
                     status: 0,
-                    belong_user: responsible_user
+                    belong_user: responsible_user,
+                    link: `${updatedTask.belong_project.project_name}`
                 });
                 var createdNotification = await newNotification.save();
                 for (let userOnline of userOnlineList) {
