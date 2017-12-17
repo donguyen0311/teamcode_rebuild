@@ -45,74 +45,74 @@ let upload = multer({
 
 router.get('/company/:id', (req, res) => {
     User.find({
-        current_company: req.params.id,
-        belong_project: []
-    })
-    .populate('current_company')
-    .exec((err, users) => {
-        if (err) console.log(err);
-        if (!users) {
+            current_company: req.params.id,
+            belong_project: []
+        })
+        .populate('current_company')
+        .exec((err, users) => {
+            if (err) console.log(err);
+            if (!users) {
+                return res.json({
+                    success: false,
+                    message: 'Company ID not found.'
+                });
+            }
             return res.json({
-                success: false,
-                message: 'Company ID not found.'
+                success: true,
+                message: 'Your users info available in your company.',
+                users: users
             });
-        }
-        return res.json({
-            success: true,
-            message: 'Your users info available in your company.',
-            users: users
         });
-    });
 });
 
 router.get('/', (req, res) => {
     User.findOne({
-        _id: req.decoded.id
-    }, {
-        password: false,
-        salt: false
-    })
-    .populate('current_company')
-    .populate('belong_project')
-    .exec((err, user) => {
-        if (err) console.log(err);
-        if (!user) {
+            _id: req.decoded.id
+        }, {
+            password: false,
+            salt: false
+        })
+        .populate('current_company')
+        .populate('belong_project')
+        .exec((err, user) => {
+            if (err) console.log(err);
+            if (!user) {
+                return res.json({
+                    success: false,
+                    message: 'Something wrong.'
+                });
+            }
             return res.json({
-                success: false,
-                message: 'Something wrong.'
+                success: true,
+                message: 'users info',
+                user: user
             });
-        }
-        return res.json({
-            success: true,
-            message: 'users info',
-            user: user
         });
-    });
 });
 
 router.get('/:id', (req, res) => {
     User.findOne({
-        _id: req.params.id
-    }, {
-        password: false,
-        salt: false
-    })
-    .populate('current_company')
-    .populate('belong_project')
-    .exec((err, user) => {
-        if (err) console.log(err);
-        if (!user) {
+            _id: req.params.id
+        }, {
+            password: false,
+            salt: false
+        })
+        .populate('current_company')
+        .populate('belong_project')
+        .exec((err, user) => {
+            if (err) console.log(err);
+            if (!user) {
+                return res.json({
+                    success: false,
+                    message: 'ID not found.'
+                });
+            }
             return res.json({
-                success: false,
-                message: 'ID not found.'
+                success: true,
+                message: 'Your user info',
+                user: user
             });
-        }
-        return res.json({
-            success: true,
-            message: 'Your user info',
-            user: user
         });
-    });
 });
 
 
@@ -155,39 +155,37 @@ router.post('/', (req, res) => {
 
 router.put('/:id', (req, res) => {
     User.findByIdAndUpdate(req.params.id, {
-        $set: {
-            firstname: req.body.firstname,
-            lastname: req.body.lastname,
-            description: req.body.description,
-            experience: req.body.experience,
-            study_at: req.body.study_at,
-            work_at: req.body.work_at,
-            time_available: req.body.time_available,
-            language_programming: req.body.language_programming
-        }
-    }, {
-        new: true, // return new user info
-        fields: {
-            password: false,
-            salt: false
-        }
-    })
-    .populate('current_company')
-    .populate('belong_project')
-    .exec((err, user) => {
-        if (err) console.log(err);
-        if (!user) {
+            $set: {
+                firstname: req.body.firstname,
+                lastname: req.body.lastname,
+                studied_at: req.body.studied_at,
+                worked_at: req.body.worked_at,
+                gender: req.body.gender,
+                language_programming: req.body.language_programming
+            }
+        }, {
+            new: true, // return new user info
+            fields: {
+                password: false,
+                salt: false
+            }
+        })
+        .populate('current_company')
+        .populate('belong_project')
+        .exec((err, user) => {
+            if (err) console.log(err);
+            if (!user) {
+                return res.json({
+                    success: false,
+                    message: 'Update user failed.'
+                });
+            }
             return res.json({
-                success: false,
-                message: 'Update user failed.'
+                success: true,
+                message: 'Update user successful.',
+                user: user
             });
-        }
-        return res.json({
-            success: true,
-            message: 'Update user successful.',
-            user: user
         });
-    });
 });
 
 // this function not useful right now
@@ -232,11 +230,33 @@ router.delete('/:id', (req, res) => {
 //     });
 // });
 
-router.put('/image', upload.any(), (req, res) => {
-    res.status(200).json({
-        code: 200,
-        message: "Upload Sucess"
+router.put('/image/:id', upload.any(), async(req, res) => {
+    var userUpdated = await User.findByIdAndUpdate(req.params.id, {
+            $set: {
+                image: `/assets/images/${req.files[0].filename}`
+            }
+        }, {
+            new: true, // return new user info
+            fields: {
+                password: false,
+                salt: false
+            }
+        })
+        .populate('current_company')
+        .populate('belong_project')
+        .exec();
+    if (userUpdated) {
+        return res.json({
+            success: true,
+            message: "Upload Success",
+            user: userUpdated
+        });
+    }
+    return res.json({
+        success: false,
+        message: "Upload Failed"
     });
+
 });
 
 module.exports = router;

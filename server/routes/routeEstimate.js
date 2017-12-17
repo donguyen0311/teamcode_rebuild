@@ -574,7 +574,7 @@ function convertMilisecondsToDate(milisecondsArray) {
     return result;
 }
 
-console.log(combineAvailableHourToTimeline(staff, generateTimeline(staff, projectWillCreate)));
+//console.log(combineAvailableHourToTimeline(staff, generateTimeline(staff, projectWillCreate)));
 
 
 module.exports = router;
