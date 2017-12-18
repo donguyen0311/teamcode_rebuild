@@ -28,6 +28,10 @@ var userSchema = new Schema({
         type: String,
         required: true
     },
+    status: {
+        type: Number,
+        required: false
+    },
     salt: {
         type: String,
         required: true

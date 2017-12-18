@@ -13,7 +13,6 @@ const helmet = require('helmet');
 const ejs = require('ejs');
 const subdomain = require('express-subdomain');
 const routes = require('./routes');
-
 const routesDocker = require('./routesDocker');
 
 mongoose.connect(`mongodb://${encodeURIComponent(config.mongo.user)}:${encodeURIComponent(config.mongo.pass)}@${config.database_url}?authSource=${config.mongo.authSource}`, {
@@ -85,5 +84,5 @@ app.get('/:company', (req, res) => {
     // res.send(req.params.company);
     res.render('demo.html', {namespace: req.params.company}, (err, html) => {
         return res.send(html);
-    })
+    });
 });

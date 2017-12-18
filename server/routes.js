@@ -102,7 +102,7 @@ router.post('/login', (req, res) => {
         email: req.body.email
     })
     .populate('current_company')
-    .exec((err, user) => {
+    .exec(async (err, user) => {
         if (err) throw err;
 
         if (!user) {
@@ -131,6 +131,13 @@ router.post('/login', (req, res) => {
                 }, config.secret_key, {
                     expiresIn: "1d"
                 });
+                if (user.status === 0) {
+                    await User.findByIdAndUpdate(user._id, {
+                        $set: {
+                            status: 1
+                        }
+                    }).exec();
+                }
                 return res.json({
                     success: true,
                     message: 'Login success.',
