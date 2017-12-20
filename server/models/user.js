@@ -137,7 +137,7 @@ var userSchema = new Schema({
     }
 }, {
     timestamps: true,
-    collection: 'upgraded_users'
+    collection: 'upgraded_users_max_2_projects'
 });
 
 module.exports = mongoose.model('User', userSchema);

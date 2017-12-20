@@ -498,11 +498,11 @@ app.post('/upgraded_users_with_dynamic_time', async(req, res) => {
         '5a1bcc820fe6401eb4d3904e',
         '5a1bcc820fe6401eb4d3904f',
         '5a202d6c5903b33f78ae999e',
-        '5a2038be5903b33f78ae999f',
-        '5a20d7b062f12130c4813ec1',
+        // '5a2038be5903b33f78ae999f',
+        // '5a20d7b062f12130c4813ec1',
     ];
 
-    for (var i = 1; i <= 1000; i++) {
+    for (var i = 1; i <= 100; i++) {
         var person = getRandomPerson();
         
         var LTEX = PCAP = getRandomIntInclusive(0, 4);
@@ -530,7 +530,7 @@ app.post('/upgraded_users_with_dynamic_time', async(req, res) => {
                 break;
         }
 
-        let numOfProjects = getRandomIntInclusive(1, projectsId.length);
+        let numOfProjects = getRandomIntInclusive(1,2);
         let whichProjects = []; 
         for(j=0; j<numOfProjects; j++)
         {
