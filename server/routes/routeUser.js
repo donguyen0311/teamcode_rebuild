@@ -235,7 +235,7 @@ router.post('/company/:id', (req, res) => {
                 <p>Password: ${randomPassword}</p>
                 <p>Company Name: ${company.company_name}</p>
             `;
-            sendMail('donguyen0311@gmail.com', mail_content);
+            sendMail(req.body.email, mail_content);
             return res.json({
                 success: true,
                 message: "Create user successful."
