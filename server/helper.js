@@ -7,9 +7,21 @@ var crypto = require('crypto');
 var genRandomString = (length) => {
     return crypto.randomBytes(Math.ceil(length / 2))
         .toString('hex') /** convert to hexadecimal format */
-        .slice(0, length); /** return required number of characters */
+        .slice(0, length) + genRandomSpecialString(1); /** return required number of characters */
 };
 exports.genRandomString = genRandomString;
+
+var genRandomSpecialString = (length) => {
+    var text = "";
+    var char = "!@#$%^&*()_+=~";
+    for (var i = 0; i < length; i++) {
+        text += char.charAt(Math.floor(Math.random() * char.length));
+    }
+    return text;
+};
+
+exports.genRandomSpecialString = genRandomSpecialString;
+
 /**
  * hash password with sha512.
  * @function
