@@ -118,6 +118,7 @@ function CaculateStaff(staffs, projectDuration, personMonths /*Effort*/ , perfor
     //console.log('performanceList: ', performanceList);
     let projectByHours = personMonths * 152;
     let listStaffs = staffs.map(staff => staff._doc); // get only data info of user
+
     let staffsWithSalaryForOneHoursOffice = _.map(_.cloneDeep(listStaffs), (staff) => {
         staff.salaryForOneHours = staff.salary / 152;
         staff.typeWork = 'OFFICE';
@@ -128,13 +129,45 @@ function CaculateStaff(staffs, projectDuration, personMonths /*Effort*/ , perfor
         staff.typeWork = 'OVERTIME';
         return staff;
     });
+    
     let sortStaffsSalaryForOneHours = _.sortBy([
         ...staffsWithSalaryForOneHoursOffice,
         ...staffsWithSalaryForOneHoursOverTime
     ], ['salaryForOneHours']);
 
-    for (let iStaff = 0; iStaff < sortStaffsSalaryForOneHours.length; iStaff++) {
-        let chosenStaffs = _.slice(sortStaffsSalaryForOneHours, 0, iStaff + 1);
+    // filter staff work < 10% project duration
+    let filterStaffs = _.filter(sortStaffsSalaryForOneHours, (staff) => {
+        // caculate timeline
+        let timeline = generateTimeline(staff, projectWillCreate);
+        //caculate available time
+        let arrayAvailableHour = combineAvailableHourToTimeline(staff, timeline);
+        let sumAvailableHour = 0;
+        if (staff.typeWork === 'OFFICE') {
+            for (let availableHour of arrayAvailableHour) {
+                if(availableHour.office > 0) {
+                    sumAvailableHour += durationMonthFormat(availableHour.from, availableHour.to);
+                }
+            }
+            if ((sumAvailableHour / projectDuration) < 0.9) {
+                return false;
+            }
+            return true;
+        } else {
+            for (let availableHour of arrayAvailableHour) {
+                if(availableHour.overtime > 0) {
+                    sumAvailableHour += durationMonthFormat(availableHour.from, availableHour.to);
+                }
+            }
+            if ((sumAvailableHour / projectDuration) < 0.9) {
+                return false;
+            }
+            return true;
+        }
+        
+    });
+
+    for (let iStaff = 0; iStaff < filterStaffs.length; iStaff++) {
+        let chosenStaffs = _.slice(filterStaffs, 0, iStaff + 1);
         let sumTimeOfNStaffs = SumTimeOfNStaffs(chosenStaffs, projectDuration, performanceList, projectWillCreate); // issue here
         if (sumTimeOfNStaffs >= projectByHours) {
             
@@ -151,19 +184,21 @@ function CaculateStaff(staffs, projectDuration, personMonths /*Effort*/ , perfor
             //console.log('chosenStaffs: ', chosenStaffs);
             console.log('sumTimeOfNStaffs: ', sumTimeOfNStaffs);
             console.log('extraTime: ', extraTime);
-            console.log('chosenStaffs: ');
-            console.log(chosenStaffs.length);
-            return; //---------------------------------------------------//
-            let modifyTimeOfLastStaff = (chosenStaffs[iStaff].typeWork === 'OFFICE') ? 
-                                            ( (8 - chosenStaffs[iStaff].work_time.office) * 4 * 5 * 0.95 * projectDuration * ReferenceStaffWithPerformanceList(chosenStaffs[iStaff], performanceList) - extraTime ) / 
-                                                ( 4 * 5 * 0.95 * projectDuration * ReferenceStaffWithPerformanceList(chosenStaffs[iStaff], performanceList) ) : 
-                                            ( (4 - chosenStaffs[iStaff].work_time.overtime) * 4 * 5 * 0.95 * projectDuration * ReferenceStaffWithPerformanceList(chosenStaffs[iStaff], performanceList) - extraTime ) / 
-                                                ( 4 * 5 * 0.95 * projectDuration * ReferenceStaffWithPerformanceList(chosenStaffs[iStaff], performanceList) );
-            //console.log(modifyTimeOfLastStaff);
-            
-            chosenStaffs[iStaff].timeOfDayForProject = Math.ceil(modifyTimeOfLastStaff); // ceil number
-            //console.log(chosenStaffs[iStaff]);
+            // console.log('chosenStaffs: ', chosenStaffs);
+            //chosenStaffs.map((staff) => console.log({typework: staff.typeWork, timeOfDayForProject: staff.timeOfDayForProject}));
+            chosenStaffs[iStaff].timeOfDayForProject = caculateTimeOfLastStaff({...chosenStaffs[iStaff]}, extraTime, performanceList);
 
+            // let modifyTimeOfLastStaff = (chosenStaffs[iStaff].typeWork === 'OFFICE') ? 
+            //                                 ( (8 - chosenStaffs[iStaff].work_time.office) * 4 * 5 * 0.95 * projectDuration * ReferenceStaffWithPerformanceList(chosenStaffs[iStaff], performanceList) - extraTime ) / 
+            //                                     ( 4 * 5 * 0.95 * projectDuration * ReferenceStaffWithPerformanceList(chosenStaffs[iStaff], performanceList) ) : 
+            //                                 ( (4 - chosenStaffs[iStaff].work_time.overtime) * 4 * 5 * 0.95 * projectDuration * ReferenceStaffWithPerformanceList(chosenStaffs[iStaff], performanceList) - extraTime ) / 
+            //                                     ( 4 * 5 * 0.95 * projectDuration * ReferenceStaffWithPerformanceList(chosenStaffs[iStaff], performanceList) );
+            //console.log(modifyTimeOfLastStaff);
+
+            // chosenStaffs[iStaff].timeOfDayForProject = Math.ceil(modifyTimeOfLastStaff); // ceil number
+            //console.log(chosenStaffs[iStaff]);
+            chosenStaffs.map((staff) => console.log({typework: staff.typeWork, timeOfDayForProject: staff.timeOfDayForProject}));
+            return;
             let totalCost = 0;
             let totalTimeSpend = 0;
             let listStaffMonthSpend = [];
@@ -189,6 +224,55 @@ function CaculateStaff(staffs, projectDuration, personMonths /*Effort*/ , perfor
     };
 }
 
+function caculateTimeOfLastStaff(lastStaff, extraTime, performanceList) {
+    let timeOfDayForProject = _.cloneDeep(lastStaff.timeOfDayForProject);
+    let typeWork = _.cloneDeep(lastStaff.typeWork);
+    while(true) {
+        if(checkTimeOfDayForProject(timeOfDayForProject, typeWork)) {
+            return timeOfDayForProject;
+        }
+        for(let i = 0; i < timeOfDayForProject.length; i++) {
+            if(lastStaff.typeWork === 'OFFICE') {
+                timeOfDayForProject[i].office = timeOfDayForProject[i].office - 1;
+                let minus = SumAvailableHour(lastStaff, performanceList, lastStaff.timeOfDayForProject, lastStaff.typeWork) - 
+                                SumAvailableHour(lastStaff, performanceList, timeOfDayForProject, lastStaff.typeWork);
+                if(minus === extraTime) {
+                    return timeOfDayForProject;
+                } else if (minus > extraTime) {
+                    timeOfDayForProject[i].office = timeOfDayForProject[i].office + 1;
+                    return timeOfDayForProject;
+                }
+            } else {
+                timeOfDayForProject[i].overtime = timeOfDayForProject[i].overtime - 1;
+                let minus = SumAvailableHour(lastStaff, performanceList, lastStaff.timeOfDayForProject, lastStaff.typeWork) - 
+                                SumAvailableHour(lastStaff, performanceList, timeOfDayForProject, lastStaff.typeWork);
+                if(minus === extraTime) {
+                    return timeOfDayForProject;
+                } else if (minus > extraTime) {
+                    timeOfDayForProject[i].overtime = timeOfDayForProject[i].overtime + 1;
+                    return timeOfDayForProject;
+                }
+            }
+        }
+    }
+}
+
+function checkTimeOfDayForProject(timeOfDayForProject, typeWork) {
+    let flag = 0;
+    for(let time of timeOfDayForProject) {
+        if(typeWork === 'OFFICE') {
+            flag += time.office;
+        }
+        else {
+            flag += time.overtime;
+        }
+    }
+    if(flag === timeOfDayForProject.length) {
+        return true;
+    }
+    return false;
+}
+
 function SumTimeOfNStaffs(staffs, projectDuration, performanceList, projectWillCreate) {
     let sumTime = 0;
 
@@ -197,11 +281,7 @@ function SumTimeOfNStaffs(staffs, projectDuration, performanceList, projectWillC
         let timeline = generateTimeline(staffs[i], projectWillCreate);
         //caculate available time
         let arrayAvailableHour = combineAvailableHourToTimeline(staffs[i], timeline);
-        // if (staffs[i].typeWork === 'OFFICE') {
-        //     sumTime += (8 - staffs[i].work_time.office) * 4 * 5 * 0.95 * projectDuration * ReferenceStaffWithPerformanceList(staffs[i], performanceList);
-        // } else {
-        //     sumTime += (4 - staffs[i].work_time.overtime) * 4 * 5 * 0.95 * projectDuration * ReferenceStaffWithPerformanceList(staffs[i], performanceList);
-        // }
+
         sumTime += SumAvailableHour(staffs[i], performanceList, arrayAvailableHour, staffs[i].typeWork);
     }
     return sumTime;
@@ -372,6 +452,7 @@ router.post('/suitableStaff', (req, res) => {
         salary: 1
     })
     .limit(parseInt((requirement.person_month === undefined) ? 1 : requirement.person_month))
+    // .limit(10)
     .exec((err, satisfiedRequirementStaffs) => {
         if(err) console.log(err);
         if(!satisfiedRequirementStaffs)
@@ -574,7 +655,7 @@ function convertMilisecondsToDate(milisecondsArray) {
     return result;
 }
 
-console.log(combineAvailableHourToTimeline(staff, generateTimeline(staff, projectWillCreate)));
+//console.log(combineAvailableHourToTimeline(staff, generateTimeline(staff, projectWillCreate)));
 
 
 module.exports = router;

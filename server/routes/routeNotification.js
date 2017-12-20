@@ -55,7 +55,8 @@ router.put('/status/:status', (req, res) => {
     console.log(req.decoded.id);
     Notification
         .update({
-            belong_user: req.decoded.id
+            belong_user: req.decoded.id,
+            status: {$ne: 2}
         }, {
             $set: {"status": req.params.status}
         }, {
@@ -73,6 +74,28 @@ router.put('/status/:status', (req, res) => {
                 success: true,
                 message: 'Your notifications info',
                 notifications: 0
+            });
+        });
+});
+
+router.put('/:id/status/:status', (req, res) => {
+    Notification
+        .update({
+            _id: req.params.id
+        }, {
+            $set: {"status": req.params.status}
+        })
+        .exec((err, notifications) => {
+            if (err) console.log(err);
+            if (!notifications) {
+                return res.json({
+                    success: false,
+                    message: 'Something wrong.'
+                });
+            }
+            return res.json({
+                success: true,
+                message: 'Update notifications status success'
             });
         });
 });
