@@ -214,7 +214,7 @@ router.post('/company/:id', (req, res) => {
                 message: 'Email already exists.'
             });
         }
-        var randomPassword = helper.genRandomString(20);
+        var randomPassword = helper.genRandomString(20) + helper.genRandomSpecialString(1);
         var password_sha512 = helper.sha512(randomPassword);
         var username = _.slice(req.body.email, 0, _.indexOf(req.body.email, '@')).join('');
         var newUser = new User({
@@ -223,7 +223,12 @@ router.post('/company/:id', (req, res) => {
             password: password_sha512.password_encrypt,
             salt: password_sha512.salt,
             current_company: req.params.id,
-            status: 0
+            status: 0,
+            analyst_capability: 0,
+            programmer_capability: 0,
+            application_experience: 0,
+            platform_experience: 0,
+            language_and_toolset_experience: 0,
         });
         var company = await Company.findById(req.params.id);
         newUser.save((err) => {

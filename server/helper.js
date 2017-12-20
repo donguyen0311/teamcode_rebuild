@@ -7,7 +7,7 @@ var crypto = require('crypto');
 var genRandomString = (length) => {
     return crypto.randomBytes(Math.ceil(length / 2))
         .toString('hex') /** convert to hexadecimal format */
-        .slice(0, length) + genRandomSpecialString(1); /** return required number of characters */
+        .slice(0, length); /** return required number of characters */
 };
 exports.genRandomString = genRandomString;
 
