@@ -170,7 +170,9 @@ router.post('/register', (req, res) => {
                 username: req.body.username,
                 email: req.body.email,
                 password: password_sha512.password_encrypt,
-                salt: password_sha512.salt
+                salt: password_sha512.salt,
+                admin: 1,
+                status: 1
             });
             var createdUser = await newUser.save();
             if (createdUser) {
@@ -193,7 +195,7 @@ router.post('/register', (req, res) => {
                     } else {
                         return res.json({
                             success: false,
-                            message: 'Ppdate user failed.'
+                            message: 'Update user failed.'
                         });
                     }
                 } else {

@@ -189,7 +189,9 @@ router.post('/', (req, res) => {
                 username: req.body.username,
                 password: password_sha512.password_encrypt,
                 salt: password_sha512.salt,
-                current_company: req.body.id_company
+                current_company: req.body.id_company,
+                admin: 0,
+                status: 0
             });
             newUser.save((err) => {
                 if (err) console.log(err);
@@ -229,6 +231,7 @@ router.post('/company/:id', (req, res) => {
             application_experience: 0,
             platform_experience: 0,
             language_and_toolset_experience: 0,
+            admin: 0
         });
         var company = await Company.findById(req.params.id);
         newUser.save((err) => {
@@ -250,7 +253,62 @@ router.post('/company/:id', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
-    User.findByIdAndUpdate(req.params.id, {
+    if(req.query.change_password) {
+        User
+            .findById(req.params.id)
+            .exec((err, user) => {
+                if (err) console.log(err);
+                if (!user) {
+                    return res.json({
+                        success: false,
+                        message: 'User not found.'
+                    });
+                }
+                if (!helper.compareSync(req.body.old_password, user.salt, user.password)) {
+                    return res.json({
+                        success: false,
+                        message: 'Update failed. Wrong Old Password.'
+                    });
+                }
+                if (req.body.new_password !== req.body.confirm_password) {
+                    return res.json({
+                        success: false,
+                        message: 'Update failed. Confirm Password Not Match.'
+                    });
+                }
+                var password_sha512 = helper.sha512(req.body.new_password);
+                User.findByIdAndUpdate(user._id, {
+                    $set: {
+                        password: password_sha512.password_encrypt,
+                        salt: password_sha512.salt
+                    }
+                }, {
+                    new: true, // return new user info
+                    fields: {
+                        password: false,
+                        salt: false
+                    }
+                })
+                .populate('current_company')
+                .populate('belong_project')
+                .exec((err, user) => {
+                    if (err) console.log(err);
+                    if (!user) {
+                        return res.json({
+                            success: false,
+                            message: 'Update user failed.'
+                        });
+                    }
+                    return res.json({
+                        success: true,
+                        message: 'Update user successful.',
+                        user: user
+                    });
+                });
+
+            });
+    } else {
+        User.findByIdAndUpdate(req.params.id, {
             $set: {
                 firstname: req.body.firstname,
                 lastname: req.body.lastname,
@@ -282,6 +340,7 @@ router.put('/:id', (req, res) => {
                 user: user
             });
         });
+    }
 });
 
 router.put('/:id/skill', (req, res) => {
@@ -292,7 +351,8 @@ router.put('/:id/skill', (req, res) => {
                 application_experience: req.body.application_experience,
                 platform_experience: req.body.platform_experience,
                 language_and_toolset_experience: req.body.language_and_toolset_experience,
-                salary: req.body.salary
+                salary: req.body.salary,
+                admin: req.body.admin
             }
         }, {
             new: true, // return new user info
@@ -320,8 +380,26 @@ router.put('/:id/skill', (req, res) => {
 });
 
 // this function not useful right now
+// router.delete('/:id', (req, res) => {
+//     User.findByIdAndRemove(req.params.id, (err, user) => {
+//         if (err) console.log(err);
+//         if (!user) {
+//             return res.json({
+//                 success: false,
+//                 message: 'Delete user failed.'
+//             });
+//         }
+//         return res.json({
+//             success: true,
+//             message: 'Delete user successful.'
+//         });
+//     });
+// });
+
 router.delete('/:id', (req, res) => {
-    User.findByIdAndRemove(req.params.id, (err, user) => {
+    User.findOneAndRemove({
+        _id: req.params.id
+    }, (err, user) => {
         if (err) console.log(err);
         if (!user) {
             return res.json({

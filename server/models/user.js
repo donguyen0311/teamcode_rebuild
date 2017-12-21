@@ -30,7 +30,11 @@ var userSchema = new Schema({
     },
     status: {
         type: Number,
-        required: false
+        required: true
+    },
+    admin: {
+        type: Number,
+        required: true
     },
     salt: {
         type: String,

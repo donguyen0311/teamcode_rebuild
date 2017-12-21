@@ -162,15 +162,13 @@ function CaculateStaff(staffs, projectDuration, personMonths /*Effort*/ , perfor
                 return false;
             }
             return true;
-        }
-        
+        }   
     });
 
     for (let iStaff = 0; iStaff < filterStaffs.length; iStaff++) {
         let chosenStaffs = _.slice(filterStaffs, 0, iStaff + 1);
-        let sumTimeOfNStaffs = SumTimeOfNStaffs(chosenStaffs, projectDuration, performanceList, projectWillCreate); // issue here
-        if (sumTimeOfNStaffs >= projectByHours) {
-            
+        let sumTimeOfNStaffs = SumTimeOfNStaffs(chosenStaffs, projectDuration, performanceList, projectWillCreate);
+        if (sumTimeOfNStaffs >= projectByHours) {   
             let extraTime = sumTimeOfNStaffs - projectByHours;
             chosenStaffs = _.map(chosenStaffs, (staff) => {
                 staff.monthSpend = projectDuration;
