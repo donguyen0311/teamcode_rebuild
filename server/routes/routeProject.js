@@ -123,7 +123,8 @@ router.post("/", (req, res) => {
             var newProject = new Project({
                 project_name: req.body.project_name,
                 budget: req.body.budget,
-                deadline: req.body.deadline,
+                start_day: req.body.start_day,
+                end_day: req.body.end_day,
                 description: req.body.description,
                 language_programming: req.body.language_programming,
                 level: req.body.level,
@@ -140,18 +141,27 @@ router.post("/", (req, res) => {
                         message: err.message
                     });
                 } 
-                
+                let suitableStaffs = req.body.suitableStaffs;
                 for (let index in projectSaved.users){
-                    User.findByIdAndUpdate(
-                        projectSaved.users[index]
-                    ,
+                    for(let i=0; i<suitableStaffs.length; i++)
                     {
-                        $push:{
-                            belong_project: projectSaved._id
+                        if(projectSaved.users[index] == suitableStaffs[i]._id)
+                        {
+                            User.findByIdAndUpdate(
+                                projectSaved.users[index]
+                            ,
+                            {
+                                $push:{
+                                    belong_project: projectSaved._id,
+                                    work_time: {
+                                        projects: suitableStaffs[i].timeOfDayForProject
+                                    }
+                                }
+                            },(err,tank)=>{
+                                if(err) console.log(err.message)
+                            });
                         }
-                    },(err,tank)=>{
-                        if(err) console.log(err.message)
-                    });
+                    }
                 }
 
                 return res.json({
