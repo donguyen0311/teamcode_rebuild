@@ -163,8 +163,7 @@ function CaculateStaff(staffs, projectDuration, personMonths /*Effort*/ , perfor
                 return false;
             }
             return true;
-        }
-        
+        }   
     });
     // console.log('filterStaffs',filterStaffs);
     for (let iStaff = 0; iStaff < filterStaffs.length; iStaff++) {
