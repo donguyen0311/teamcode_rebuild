@@ -50,8 +50,7 @@ let upload = multer({
 
 router.get('/company/:id', (req, res) => {
     User.find({
-            current_company: req.params.id,
-            belong_project: []
+            current_company: req.params.id
         })
         .populate('current_company')
         .exec((err, users) => {

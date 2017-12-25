@@ -141,11 +141,19 @@ var userSchema = new Schema({
                 type: Number,
                 require: false
             },
+            from: {
+                type: Date,
+                require: false
+            },
+            to: {
+                type: Date,
+                require: false
+            }
         }]
     }
 }, {
     timestamps: true,
-    collection: 'upgraded_users_max_2_projects'
+    collection: 'upgraded_users_max_2_projects_from_to'
 });
 
 module.exports = mongoose.model('User', userSchema);

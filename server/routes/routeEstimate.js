@@ -527,7 +527,7 @@ router.post('/suitableStaff', (req, res) => {
                 start_day: new Date(requirement.start_day),
                 end_day: new Date(requirement.end_day)
             };
-            console.log('satisfiedRequirementStaffs',satisfiedRequirementStaffs.length);
+            // console.log('satisfiedRequirementStaffs',satisfiedRequirementStaffs.length);
             let suitableStaffsInfos = CaculateStaff([...satisfiedRequirementStaffs], projectDuration, requirement.personMonths, requirement.performanceTable, projectWillCreate);
             // console.log('suitableStaffsInfos',suitableStaffsInfos);
             res.json({
@@ -625,29 +625,33 @@ var staff = {
 function generateTimeline(staff, projectWillCreate) {
     let timeline = [];
     timeline.push(projectWillCreate.start_day, projectWillCreate.end_day);
+
     for (let workingProject of staff.work_time.projects) {
-        if (workingProject.project.start_day > projectWillCreate.start_day && workingProject.project.start_day < projectWillCreate.end_day) {
+        if (workingProject.from > projectWillCreate.start_day && workingProject.from < projectWillCreate.end_day) {
             // |2/7-----(2/9)--------------------2/10|-------(2/11)
             // |2/7-----(2/8)----------(2/9)----------2/10|
-            if (workingProject.project.end_day < projectWillCreate.end_day) {
+            if (workingProject.to < projectWillCreate.end_day) {
                 //|2/7-----(2/8)----------(2/9)----------2/10|
-                timeline.push(workingProject.start_day,workingProject.end_day);
+                // console.log('1',workingProject.from,workingProject.to);
+                timeline.push(workingProject.from,workingProject.to);
 
                 continue;
             }
-            if (workingProject.project.end_day > projectWillCreate.end_day) {
+            if (workingProject.to > projectWillCreate.end_day) {
                 //|2/7-----(2/9)--------------------2/10|-------(2/11)
-                timeline.push(workingProject.project.start_day);
+                // console.log('2',workingProject.from);
+                timeline.push(workingProject.from);
                 continue;
             }
             continue;
         }
-        if (workingProject.project.start_day < projectWillCreate.start_day && workingProject.project.end_day > projectWillCreate.start_day) {
+        if (workingProject.from < projectWillCreate.start_day && workingProject.to > projectWillCreate.start_day) {
             // (2/3)--------|2/7--------(2/8)----------2/10|
             // (2/3)--------|2/7------------------2/10|-------(2/11)
-            if (workingProject.project.end_day < projectWillCreate.end_day) {
+            if (workingProject.to < projectWillCreate.end_day) {
                 //(2/3)--------|2/7--------(2/8)----------2/10|
-                timeline.push(workingProject.project.end_day);
+                // console.log('3',workingProject.to);
+                timeline.push(workingProject.to);
             }
             continue;
         }
@@ -681,7 +685,7 @@ function combineAvailableHourToTimeline(staff, timeline) {
         var timelineEndDay = timeline[i + 1];
 
         for (let workingProject of staff.work_time.projects) {
-            if (workingProject.project.end_day > timelineStartDay && workingProject.project.start_day < timelineEndDay) {
+            if (workingProject.to > timelineStartDay && workingProject.from < timelineEndDay) {
                 availableHour[i].office -= workingProject.office;
                 availableHour[i].overtime -= workingProject.overtime;
             }
@@ -701,6 +705,7 @@ function combineAvailableHourToTimeline(staff, timeline) {
 
 function convertDateToMiliseconds(dateArray) {
     let result = [];
+    // console.log(dateArray);
     for (i = 0; i < dateArray.length; i++) {
         result.push(dateArray[i].getTime());
     }

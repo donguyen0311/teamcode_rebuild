@@ -495,9 +495,21 @@ app.post('/upgraded_users', async(req, res) => {
 app.post('/upgraded_users_with_dynamic_time', async(req, res) => {
     var users = [];
     let projectsId=[
-        '5a1bcc820fe6401eb4d3904e',
-        '5a1bcc820fe6401eb4d3904f',
-        '5a202d6c5903b33f78ae999e',
+        {
+            id: '5a1bcc820fe6401eb4d3904e',
+            from: '2017-11-16T17:00:00.000Z',
+            to: '2018-03-16T17:00:00.000Z',
+        },
+        {
+            id: '5a1bcc820fe6401eb4d3904f',
+            from: '2018-02-23T17:00:00.000Z',
+            to: '2018-06-23T17:00:00.000Z'
+        },
+        {
+            id: '5a202d6c5903b33f78ae999e',
+            from: '2018-05-09T17:00:00.000Z',
+            to: '2018-09-09T17:00:00.000Z'
+        }
         // '5a2038be5903b33f78ae999f',
         // '5a20d7b062f12130c4813ec1',
     ];
@@ -531,10 +543,16 @@ app.post('/upgraded_users_with_dynamic_time', async(req, res) => {
         }
 
         let numOfProjects = getRandomIntInclusive(1,2);
-        let whichProjects = []; 
+        let whichProjects = [];
+        let choseProject = [];
         for(j=0; j<numOfProjects; j++)
         {
-            whichProjects.push(projectsId[getRandomIntInclusive(0,projectsId.length-1)]);
+            let projectIndex = getRandomIntInclusive(0,projectsId.length-1);
+            if(choseProject.indexOf(projectIndex) < 0)
+            {
+                whichProjects.push(projectsId[getRandomIntInclusive(0,projectsId.length-1)]);
+                choseProject.push(projectIndex);
+            }
         }
         let work_time_projects = [];
 
@@ -544,7 +562,9 @@ app.post('/upgraded_users_with_dynamic_time', async(req, res) => {
             var overtime = (office_hours >= 6 ? getRandomIntInclusive(0, 4) : 0);
 
             work_time_projects.push({
-                project: whichProjects[k],
+                project: whichProjects[k].id,
+                from: whichProjects[k].from,
+                to: whichProjects[k].to,
                 office: office_hours,
                 overtime: overtime
             });
@@ -566,6 +586,8 @@ app.post('/upgraded_users_with_dynamic_time', async(req, res) => {
             platform_experience: PLEX,
             language_and_toolset_experience: LTEX,
             salary: salary,
+            admin: 1,
+            status: 1,
             work_time:{
                 office: office_hours,
                 overtime: overtime,
@@ -578,6 +600,7 @@ app.post('/upgraded_users_with_dynamic_time', async(req, res) => {
     console.log('====================');
     console.log('save user');
     console.log('====================');
+    // console.log(users[1].work_time.projects);
     // return;
 
     var count = 1;
@@ -598,6 +621,8 @@ app.post('/upgraded_users_with_dynamic_time', async(req, res) => {
             platform_experience: user.platform_experience,
             language_and_toolset_experience: user.language_and_toolset_experience,
             salary: user.salary,
+            admin: user.admin,
+            status: user.status,
             work_time: user.work_time
         });
         var success = await newUser.save();
