@@ -141,25 +141,42 @@ router.post("/", (req, res) => {
                         message: err.message
                     });
                 } 
+                // console.log(projectSaved._id);
                 let suitableStaffs = req.body.suitableStaffs;
                 for (let index in projectSaved.users){
+                    
+                    User.findByIdAndUpdate(
+                    projectSaved.users[index]
+                    ,
+                    {
+                        $addToSet:{
+                            "belong_project": projectSaved._id,
+                        }
+                    },(err,tank)=>{
+                        if(err) console.log(err.message)
+                    }); 
+
                     for(let i=0; i<suitableStaffs.length; i++)
                     {
                         if(projectSaved.users[index] == suitableStaffs[i]._id)
                         {
-                            User.findByIdAndUpdate(
-                                projectSaved.users[index]
-                            ,
+                            let projectWillPush = suitableStaffs[i].timeOfDayForProject;
+                            
+                            for (let timeFrame of projectWillPush)
                             {
-                                $push:{
-                                    belong_project: projectSaved._id,
-                                    work_time: {
-                                        projects: suitableStaffs[i].timeOfDayForProject
+                                delete timeFrame['duration'];
+                                timeFrame['project'] = projectSaved._id;
+                                User.findByIdAndUpdate(
+                                projectSaved.users[index]
+                                ,
+                                {
+                                    $push:{
+                                        "work_time.projects": timeFrame
                                     }
-                                }
-                            },(err,tank)=>{
-                                if(err) console.log(err.message)
-                            });
+                                },(err,tank)=>{
+                                    if(err) console.log(err.message)
+                                });   
+                            }
                         }
                     }
                 }

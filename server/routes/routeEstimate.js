@@ -256,29 +256,33 @@ function ReferenceStaffWithPerformanceList(staff, performanceList) {
 function GenerateTimeline(staff, projectWillCreate) {
     let timeline = [];
     timeline.push(projectWillCreate.start_day, projectWillCreate.end_day);
+
     for (let workingProject of staff.work_time.projects) {
-        if (workingProject.project.start_day > projectWillCreate.start_day && workingProject.project.start_day < projectWillCreate.end_day) {
+        if (workingProject.from > projectWillCreate.start_day && workingProject.from < projectWillCreate.end_day) {
             // |2/7-----(2/9)--------------------2/10|-------(2/11)
             // |2/7-----(2/8)----------(2/9)----------2/10|
-            if (workingProject.project.end_day < projectWillCreate.end_day) {
-                //|2/7-----(2/8)----------(2/9)----------2/10|
-                timeline.push(workingProject.start_day, workingProject.end_day);
+            if (workingProject.to < projectWillCreate.end_day) {
+                // |2/7-----(2/8)----------(2/9)----------2/10|
+                // console.log('1',workingProject.from,workingProject.to);
+                timeline.push(workingProject.from, workingProject.to);
 
                 continue;
             }
-            if (workingProject.project.end_day > projectWillCreate.end_day) {
-                //|2/7-----(2/9)--------------------2/10|-------(2/11)
-                timeline.push(workingProject.project.start_day);
+            if (workingProject.to > projectWillCreate.end_day) {
+                // |2/7-----(2/9)--------------------2/10|-------(2/11)
+                // console.log('2',workingProject.from);
+                timeline.push(workingProject.from);
                 continue;
             }
             continue;
         }
-        if (workingProject.project.start_day < projectWillCreate.start_day && workingProject.project.end_day > projectWillCreate.start_day) {
+        if (workingProject.from < projectWillCreate.start_day && workingProject.to > projectWillCreate.start_day) {
             // (2/3)--------|2/7--------(2/8)----------2/10|
             // (2/3)--------|2/7------------------2/10|-------(2/11)
-            if (workingProject.project.end_day < projectWillCreate.end_day) {
-                //(2/3)--------|2/7--------(2/8)----------2/10|
-                timeline.push(workingProject.project.end_day);
+            if (workingProject.to < projectWillCreate.end_day) {
+                // (2/3)--------|2/7--------(2/8)----------2/10|
+                // console.log('3',workingProject.to);
+                timeline.push(workingProject.to);
             }
             continue;
         }
@@ -286,7 +290,11 @@ function GenerateTimeline(staff, projectWillCreate) {
 
     timeline
         .sort(function (a, b) {
-            return a.getTime() < b.getTime() ? -1 : a.getTime() > b.getTime() ? 1 : 0;
+            return a.getTime() < b.getTime()
+                ? -1
+                : a.getTime() > b.getTime()
+                    ? 1
+                    : 0;
         });
     return convertMilisecondsToDate(_.uniq(convertDateToMiliseconds(timeline)));
 }
@@ -304,15 +312,15 @@ function CombineAvailableHourToTimeline(staff, timeline) {
     for (i = 0; i < timeline.length - 1; i++) {
         var timelineStartDay = timeline[i];
         var timelineEndDay = timeline[i + 1];
+
         for (let workingProject of staff.work_time.projects) {
-            if (workingProject.project.end_day > timelineStartDay && workingProject.project.start_day < timelineEndDay) {
+            if (workingProject.to > timelineStartDay && workingProject.from < timelineEndDay) {
                 availableHour[i].office -= workingProject.office;
                 availableHour[i].overtime -= workingProject.overtime;
             }
             if (availableHour[i].office < 0) {
                 availableHour[i].office = 0;
             }
-
             if (availableHour[i].overtime < 0) {
                 availableHour[i].overtime = 0;
             }
@@ -488,7 +496,7 @@ router.post('/suitableStaff', (req, res) => {
                 start_day: new Date(requirement.start_day),
                 end_day: new Date(requirement.end_day)
             };
-            console.log('satisfiedRequirementStaffs', satisfiedRequirementStaffs.length);
+            // console.log('satisfiedRequirementStaffs',satisfiedRequirementStaffs.length);
             let suitableStaffsInfos = CaculateStaff([...satisfiedRequirementStaffs], projectDuration, requirement.personMonths, requirement.performanceTable, projectWillCreate);
             res.json({
                 success: true,
