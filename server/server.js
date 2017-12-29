@@ -58,8 +58,6 @@ app.get('/', (req, res) => {
     return res.render('index');
 });
 
-
-
 var server = app.listen(config.port, config.hostname, () => {
     console.log(`Listening on ${config.hostname}:${config.port}`);
 });

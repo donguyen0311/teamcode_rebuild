@@ -26,7 +26,7 @@ var companySchema = new Schema({
     },
     image: {
         type: String,
-        default: '/assets/images/no_image.png'
+        default: "/assets/images/no_image.jpg"
     },
     staff: [{ type: Schema.Types.ObjectId, ref: 'User' }]
 }, {

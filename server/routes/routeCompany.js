@@ -3,17 +3,32 @@ var router = express.Router();
 const config = require('../config/default');
 const helper = require('../helper');
 const Company = require('../models/company');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
+let upload = multer({
+    storage: multer.diskStorage({
+        destination: (req, file, callback) => {
+            callback(null, path.join(__dirname, '..', '..', 'client/assets/images'));
+        },
+        filename: (req, file, callback) => {
+            //originalname is the uploaded file's name with extn
+            callback(null, file.originalname);
+        }
+    })
+});
 
 router.get('/', (req, res) => {
     Company
         .find({})
         .populate({
             path: 'staff',
-            select: 'email image'
+            select: 'email image username firstname lastname'
         })
         .populate({
             path: 'created_by',
-            select: 'email image'
+            select: 'email image username firstname lastname'
         })
         .exec((err, companies) => {
             if (err) console.log(err);
@@ -38,11 +53,11 @@ router.get('/:id', (req, res) => {
         })
         .populate({
             path: 'staff',
-            select: 'email image'
+            select: 'email image username firstname lastname'
         })
         .populate({
             path: 'created_by',
-            select: 'email image'
+            select: 'email image username firstname lastname'
         })
         .exec((err, company) => {
             if (err) console.log(err);
@@ -60,34 +75,34 @@ router.get('/:id', (req, res) => {
         });
 });
 
-router.get('/:company_name', (req, res) => {
-    Company
-        .findOne({
-            company_name: req.params.company_name
-        })
-        .populate({
-            path: 'staff',
-            select: 'email image'
-        })
-        .populate({
-            path: 'created_by',
-            select: 'email image'
-        })
-        .exec((err, company) => {
-            if (err) console.log(err);
-            if (!company) {
-                return res.json({
-                    success: false,
-                    message: 'Something wrong.'
-                });
-            }
-            return res.json({
-                success: true,
-                message: 'Your company info',
-                company: company
-            });
-        });
-});
+// router.get('/:company_name', (req, res) => {
+//     Company
+//         .findOne({
+//             company_name: req.params.company_name
+//         })
+//         .populate({
+//             path: 'staff',
+//             select: 'email image'
+//         })
+//         .populate({
+//             path: 'created_by',
+//             select: 'email image'
+//         })
+//         .exec((err, company) => {
+//             if (err) console.log(err);
+//             if (!company) {
+//                 return res.json({
+//                     success: false,
+//                     message: 'Something wrong.'
+//                 });
+//             }
+//             return res.json({
+//                 success: true,
+//                 message: 'Your company info',
+//                 company: company
+//             });
+//         });
+// });
 
 router.post('/', (req, res) => {
     Company.findOne({
@@ -124,7 +139,6 @@ router.put('/:id', (req, res) => {
             address: req.body.address,
             description: req.body.description,
             field: req.body.field,
-            staff: req.body.staff,
             updateAt: new Date()
         }
     }, {
@@ -132,11 +146,11 @@ router.put('/:id', (req, res) => {
     })
     .populate({
         path: 'staff',
-        select: 'email image'
+        select: 'email image username firstname lastname'
     })
     .populate({
         path: 'created_by',
-        select: 'email image'
+        select: 'email image username firstname lastname'
     })
     .exec((err, company) => {
         if (err) console.log(err);
@@ -152,6 +166,29 @@ router.put('/:id', (req, res) => {
             company: company
         });
     });
+});
+
+router.put('/image/:id', upload.any(), async(req, res) => {
+    var companyUpdated = await Company.findByIdAndUpdate(req.params.id, {
+            $set: {
+                image: `/assets/images/${req.files[0].filename}`
+            }
+        }, {
+            new: true // return new user info
+        })
+        .exec();
+    if (companyUpdated) {
+        return res.json({
+            success: true,
+            message: "Upload Success",
+            company: companyUpdated
+        });
+    }
+    return res.json({
+        success: false,
+        message: "Upload Failed"
+    });
+
 });
 
 router.delete('/:id', (req, res) => {

@@ -185,6 +185,8 @@ router.post('/', (req, res) => {
         } else {
             var password_sha512 = helper.sha512(req.body.password);
             var newUser = new User({
+                firstname: 'Anonymous',
+                lastname: 'TC',
                 email: req.body.email,
                 username: req.body.username,
                 password: password_sha512.password_encrypt,
@@ -220,6 +222,8 @@ router.post('/company/:id', (req, res) => {
         var password_sha512 = helper.sha512(randomPassword);
         var username = _.slice(req.body.email, 0, _.indexOf(req.body.email, '@')).join('');
         var newUser = new User({
+            firstname: 'Anonymous',
+            lastname: 'TC',
             email: req.body.email,
             username: username,
             password: password_sha512.password_encrypt,

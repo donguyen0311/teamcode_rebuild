@@ -28,6 +28,14 @@ taskSchema = new Schema({
         type: String,
         required: false
     },
+    labels: {
+        type: Array,
+        required: false
+    },
+    editor: {
+        type: Schema.Types.Mixed,
+        required: false
+    },
     belong_project: { 
         type: Schema.Types.ObjectId, 
         ref: 'Project',

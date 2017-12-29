@@ -15,6 +15,30 @@ const taskStatus = {
     'DONE': 'Done'
 }
 
+function arr_diff(a1, a2) {
+
+    var a = [],
+        diff = [];
+
+    for (var i = 0; i < a1.length; i++) {
+        a[a1[i]] = true;
+    }
+
+    for (var i = 0; i < a2.length; i++) {
+        if (a[a2[i]]) {
+            delete a[a2[i]];
+        } else {
+            a[a2[i]] = true;
+        }
+    }
+
+    for (var k in a) {
+        diff.push(k);
+    }
+
+    return diff;
+}
+
 module.exports = (io) => {
 
     const userOnlineList = [];
@@ -66,6 +90,7 @@ module.exports = (io) => {
                 task_name: data.task_name,
                 level: data.level,
                 note: data.note,
+                labels: data.labels,
                 description: data.description,
                 responsible_user: data.responsible_user,
                 belong_project: data.belong_project,
@@ -81,11 +106,11 @@ module.exports = (io) => {
                     })
                     .populate({
                         path: 'responsible_user',
-                        select: 'email username image'
+                        select: 'email image username firstname lastname'
                     })
                     .populate({
                         path: 'created_by',
-                        select: 'email username image'
+                        select: 'email image username firstname lastname'
                     }).exec();
                 var room = Object.keys(socket.rooms)[1];
                 io.to(room).emit('Task:updateAddTask', createdTaskMoreInfo);
@@ -101,7 +126,7 @@ module.exports = (io) => {
                         .findById(createdActivity._id)
                         .populate({
                             path: 'belong_user',
-                            select: 'email username image'
+                            select: 'email image username firstname lastname'
                         }).exec();
                     io.to( room.replace('project', 'activity') ).emit('Activity:updateActivity', createdActivityMoreInfo);   
                 }
@@ -134,24 +159,16 @@ module.exports = (io) => {
                 id: user.id,
                 userID: user.userID
             })));
-            // var currentTask = await Task.findById(data._id).populate({
-            //         path: 'belong_project',
-            //         select: 'project_name'
-            //     })
-            //     .populate({
-            //         path: 'responsible_user',
-            //         select: 'email image'
-            //     })
-            //     .populate({
-            //         path: 'created_by',
-            //         select: 'email username image'
-            //     })
-            //     .exec();
+            var previousTask = await Task.findById(data._id);
+            var previousResponseUser = [...previousTask._doc.responsible_user];
+            var currentResponseUser = [...data.editResponsible];
+            var diffResponseUser = arr_diff(currentResponseUser, previousResponseUser);
             var updatedTask = await Task.findByIdAndUpdate(data._id, {
                     $set: {
                         task_name: data.editTaskName,
                         level: data.editLevel,
                         note: data.editNote,
+                        labels: data.editLabels,
                         description: data.editDescription,
                         responsible_user: data.editResponsible,
                         updateAt: new Date()
@@ -165,11 +182,11 @@ module.exports = (io) => {
                 })
                 .populate({
                     path: 'responsible_user',
-                    select: 'email image'
+                    select: 'email image username firstname lastname'
                 })
                 .populate({
                     path: 'created_by',
-                    select: 'email username image'
+                    select: 'email image username firstname lastname'
                 })
                 .exec();
             var room = Object.keys(socket.rooms)[1];
@@ -187,24 +204,40 @@ module.exports = (io) => {
                     .findById(createdActivity._id)
                     .populate({
                         path: 'belong_user',
-                        select: 'email username image'
+                        select: 'email image username firstname lastname'
                     }).exec();
                 io.to( room.replace('project', 'activity') ).emit('Activity:updateActivity', createdActivityMoreInfo);   
             }
 
             // add notification
             for (let responsible_user of data.editResponsible) {
-                let newNotification = new Notification({
-                    title: `From project ${updatedTask.belong_project.project_name}`,
-                    content: `You have assigned a Task (${updatedTask.task_name}) by ${updatedTask.created_by.username}`,
-                    status: 0,
-                    belong_user: responsible_user,
-                    link: `${updatedTask.belong_project.project_name}`
-                });
-                var createdNotification = await newNotification.save();
-                for (let userOnline of userOnlineList) {
-                    if (userOnline.userID === responsible_user) {
-                        io.to(userOnline.id).emit('Notification:updateNotification', createdNotification);
+                if(_.indexOf(diffResponseUser, responsible_user) !== -1) {
+                    let newNotification = new Notification({
+                        title: `From project ${updatedTask.belong_project.project_name}`,
+                        content: `You have assigned a Task (${updatedTask.task_name}) by ${updatedTask.created_by.username}`,
+                        status: 0,
+                        belong_user: responsible_user,
+                        link: `${updatedTask.belong_project.project_name}`
+                    });
+                    let createdNotification = await newNotification.save();
+                    for (let userOnline of userOnlineList) {
+                        if (userOnline.userID === responsible_user) {
+                            io.to(userOnline.id).emit('Notification:updateNotification', createdNotification);
+                        }
+                    }
+                } else {
+                    let newNotification = new Notification({
+                        title: `From project ${updatedTask.belong_project.project_name}`,
+                        content: `Your task (${updatedTask.task_name}) edited by ${updatedTask.created_by.username}`,
+                        status: 0,
+                        belong_user: responsible_user,
+                        link: `${updatedTask.belong_project.project_name}`
+                    });
+                    let createdNotification = await newNotification.save();
+                    for (let userOnline of userOnlineList) {
+                        if (userOnline.userID === responsible_user) {
+                            io.to(userOnline.id).emit('Notification:updateNotification', createdNotification);
+                        }
                     }
                 }
             }
@@ -233,7 +266,7 @@ module.exports = (io) => {
                         .findById(createdActivity._id)
                         .populate({
                             path: 'belong_user',
-                            select: 'email username image'
+                            select: 'email image username firstname lastname'
                         }).exec();
                     io.to( room.replace('project', 'activity') ).emit('Activity:updateActivity', createdActivityMoreInfo);
                 }
@@ -300,7 +333,7 @@ module.exports = (io) => {
                         .findById(createdActivity._id)
                         .populate({
                             path: 'belong_user',
-                            select: 'email username image'
+                            select: 'email image username firstname lastname'
                         }).exec();
                     io.to( room.replace('project', 'activity') ).emit('Activity:updateActivity', createdActivityMoreInfo);
                 }

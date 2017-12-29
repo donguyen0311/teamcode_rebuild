@@ -167,6 +167,8 @@ router.post('/register', (req, res) => {
         } else {
             var password_sha512 = helper.sha512(req.body.password);
             var newUser = new User({
+                firstname: 'Anonymous',
+                lastname: 'TC',
                 username: req.body.username,
                 email: req.body.email,
                 password: password_sha512.password_encrypt,

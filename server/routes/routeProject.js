@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
         .populate('belong_company')
         .populate({
             path: 'created_by',
-            select: 'email image'
+            select: 'email image username firstname lastname'
         })
         .populate('tasks')
         .exec((err, projects) => {
@@ -66,11 +66,11 @@ router.get('/:project_name', (req, res) => {
         .populate('belong_company')
         .populate({
             path: 'created_by',
-            select: 'email image'
+            select: 'email image username firstname lastname'
         })
         .populate({
             path: 'users',
-            select: 'email image'
+            select: 'email image username firstname lastname'
         })
         .populate({
             path: 'tasks',
@@ -83,7 +83,7 @@ router.get('/:project_name', (req, res) => {
             path: 'tasks',
             populate: {
                 path: 'responsible_user',
-                select: 'email image'
+                select: 'email image username firstname lastname'
             },     
         })
         .populate({
@@ -193,7 +193,7 @@ router.put("/:id", (req, res) => {
     .populate('belong_company')
     .populate({
         path: 'created_by',
-        select: 'email image'
+        select: 'email image username firstname lastname'
     })
     .populate('tasks')
     .exec((err, project) => {
