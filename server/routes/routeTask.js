@@ -184,6 +184,43 @@ router.put('/:id', (req, res) => {
     });
 });
 
+router.put('/:id/editor', (req, res) => {
+    Task.findByIdAndUpdate(req.params.id, {
+        $set: {
+            editor: req.body.data,
+            updateAt: new Date()
+        }
+    }, {
+        new: true
+    })
+    .populate({
+        path: 'belong_project',
+        select: 'project_name'
+    })
+    .populate({
+        path: 'responsible_user',
+        select: 'email image username firstname lastname'
+    })
+    .populate({
+        path: 'created_by',
+        select: 'email image username firstname lastname'
+    })
+    .exec((err, task) => {
+        if (err) console.log(err);
+        if (!task) {
+            return res.json({
+                success: false,
+                message: 'Update task failed.'
+            });
+        }
+        return res.json({
+            success: true,
+            message: 'Update task successful.',
+            task: task
+        });
+    });
+});
+
 router.delete('/:id', (req, res) => {
     Task.findByIdAndRemove(req.params.id, (err, task) => {
         if (err) console.log(err);
