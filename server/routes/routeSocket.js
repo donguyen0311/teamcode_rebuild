@@ -214,7 +214,7 @@ module.exports = (io) => {
                 if(_.indexOf(diffResponseUser, responsible_user) !== -1) {
                     let newNotification = new Notification({
                         title: `From project ${updatedTask.belong_project.project_name}`,
-                        content: `You have assigned a Task (${updatedTask.task_name}) by ${updatedTask.created_by.username}`,
+                        content: `You have assigned a Task (${updatedTask.task_name}) by ${user.username}`,
                         status: 0,
                         belong_user: responsible_user,
                         link: `${updatedTask.belong_project.project_name}`
@@ -228,7 +228,7 @@ module.exports = (io) => {
                 } else {
                     let newNotification = new Notification({
                         title: `From project ${updatedTask.belong_project.project_name}`,
-                        content: `Your task (${updatedTask.task_name}) edited by ${updatedTask.created_by.username}`,
+                        content: `Your task handling (${updatedTask.task_name}) edited by ${user.username}`,
                         status: 0,
                         belong_user: responsible_user,
                         link: `${updatedTask.belong_project.project_name}`
@@ -245,9 +245,18 @@ module.exports = (io) => {
         });
 
         socket.on('Task:deleteTask', async (data) => {
-            console.log(data);
-            var deletedTask = await Task.findByIdAndRemove(data._id).exec();
-            console.log(deletedTask);
+            console.log('data: ', data);
+            var deletedTask = await Task.findByIdAndRemove(data._id)
+                .populate({
+                    path: 'belong_project',
+                    select: 'project_name'
+                })
+                .populate({
+                    path: 'created_by',
+                    select: 'email image username firstname lastname'
+                })
+                .exec();
+            console.log('deletedTask: ', deletedTask);
             if (deletedTask) {
                 var room = Object.keys(socket.rooms)[1];
                 io.to(room).emit('Task:updateDeleteTask', deletedTask);
@@ -269,6 +278,24 @@ module.exports = (io) => {
                             select: 'email image username firstname lastname'
                         }).exec();
                     io.to( room.replace('project', 'activity') ).emit('Activity:updateActivity', createdActivityMoreInfo);
+                }
+            }
+            // add notification
+            let responsibleUser = [...deletedTask._doc.responsible_user];
+            console.log('responsibleUser: ', responsibleUser);
+            for (let responsible_user of responsibleUser) {
+                let newNotification = new Notification({
+                    title: `From project ${deletedTask.belong_project.project_name}`,
+                    content: `Your task handling (${deletedTask.task_name}) deleted by ${user.username}`,
+                    status: 0,
+                    belong_user: responsible_user,
+                    link: `${deletedTask.belong_project.project_name}`
+                });
+                let createdNotification = await newNotification.save();
+                for (let userOnline of userOnlineList) {
+                    if (userOnline.userID === responsible_user.toString()) {
+                        io.to(userOnline.id).emit('Notification:updateNotification', createdNotification);
+                    }
                 }
             }
         });
