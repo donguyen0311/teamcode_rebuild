@@ -92,6 +92,8 @@ module.exports = (io) => {
                 note: data.note,
                 labels: data.labels,
                 description: data.description,
+                start_day: data.start_day,
+                end_day: data.end_day,
                 responsible_user: data.responsible_user,
                 belong_project: data.belong_project,
                 created_by: data.created_by
@@ -170,6 +172,8 @@ module.exports = (io) => {
                         note: data.editNote,
                         labels: data.editLabels,
                         description: data.editDescription,
+                        start_day: data.editStartDay,
+                        end_day: data.editEndDay,
                         responsible_user: data.editResponsible,
                         updateAt: new Date()
                     }
@@ -282,7 +286,6 @@ module.exports = (io) => {
             }
             // add notification
             let responsibleUser = [...deletedTask._doc.responsible_user];
-            console.log('responsibleUser: ', responsibleUser);
             for (let responsible_user of responsibleUser) {
                 let newNotification = new Notification({
                     title: `From project ${deletedTask.belong_project.project_name}`,
