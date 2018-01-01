@@ -165,6 +165,37 @@ router.get('/all/company/:id', (req, res) => {
     });
 });
 
+router.post('/replace', async (req, res) => { // updating...
+    var users = req.body.users;
+    var projectID = req.body.projectID;
+    var usersDetail = [];
+    var usersReplace = [];
+    for(let user of users) {
+        let userTemp = await User.findById(user._id).exec();
+        usersDetail.push(userTemp);
+    }
+    for(let user of usersDetail) {
+        let userTemp = await User.find({
+            analyst_capability: {
+                $gte: user.analyst_capability
+            },
+            programmer_capability: {
+                $gte: user.programmer_capability
+            },
+            application_experience: {
+                $gte: user.application_experience
+            },
+            platform_experience: {
+                $gte: user.platform_experience
+            },
+            language_and_toolset_experience: {
+                $gte: user.language_and_toolset_experience
+            } // add condition
+        }).exec();
+        usersReplace.push(userTemp);
+    }
+});
+
 // create with current company
 router.post('/', (req, res) => {
     User.findOne({

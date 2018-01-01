@@ -265,17 +265,10 @@ router.put("/:id", (req, res) => {
     });
 });
 
-router.put("/:id/staff", (req, res) => {
+router.put("/:id/staff", (req, res) => { // updating...
     Project.findByIdAndUpdate(req.params.id, {
         $set: {
-            project_name: req.body.project_name,
-            budget: req.body.budget,
-            deadline: req.body.deadline,
-            belong_company: req.body.belong_company,
-            created_by: req.body.created_by,
-            description: req.body.description,
-            language_programming: req.body.language_programming,
-            level: req.body.level,
+            
             updateAt: new Date()
         }
     }, {
