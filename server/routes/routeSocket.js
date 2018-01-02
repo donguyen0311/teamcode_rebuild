@@ -16,14 +16,11 @@ const taskStatus = {
 }
 
 function arr_diff(a1, a2) {
-
     var a = [],
         diff = [];
-
     for (var i = 0; i < a1.length; i++) {
         a[a1[i]] = true;
     }
-
     for (var i = 0; i < a2.length; i++) {
         if (a[a2[i]]) {
             delete a[a2[i]];
@@ -31,24 +28,71 @@ function arr_diff(a1, a2) {
             a[a2[i]] = true;
         }
     }
-
     for (var k in a) {
         diff.push(k);
     }
-
     return diff;
 }
 
 module.exports = (io) => {
 
     const userOnlineList = [];
+    rooms = {};
+    userIds = {};
 
     //setting socket
     io.on('connection', function (socket) {
         console.log('a new username connected');
+        //-------------VIDEO CALL-----------------//
+
+        var currentRoom, id;
+        socket.on('init', function (data, fn) {
+            console.log(data);
+            currentRoom = data.room;
+            var room = rooms[currentRoom];
+            if (!room) {
+                rooms[currentRoom] = [socket];
+                id = userIds[currentRoom] = 0;
+                fn(currentRoom, id);
+                console.log('Room created, with #', currentRoom);
+            } else {
+                userIds[currentRoom] += 1;
+                id = userIds[currentRoom];
+                fn(currentRoom, id);
+                room.forEach(function (s) {
+                    s.emit('peer.connected', {id: id});
+                });
+                room[id] = socket;
+                console.log('Peer connected to room', currentRoom, 'with #', id);
+            } 
+        });
+
+        socket.on('msg', function (data) {
+            var to = parseInt(data.to, 10);
+            if (rooms[currentRoom] && rooms[currentRoom][to]) {
+                console.log('Redirecting message to', to, 'by', data.by);
+                rooms[currentRoom][to].emit('msg', data);
+            } else {
+                console.warn('Invalid user');
+            }
+        });
+
+        //-------------VIDEO CALL-----------------//
 
         //on user disconected
         socket.on('disconnect', function () {
+            //-------------VIDEO CALL-----------------//
+            if (!currentRoom || !rooms[currentRoom]) {
+                return;
+            }
+            delete rooms[currentRoom][rooms[currentRoom].indexOf(socket)];
+            rooms[currentRoom].forEach(function (socket) {
+                if (socket) {
+                    socket.emit('peer.disconnected', { id: id });
+                }
+            });
+            //-------------VIDEO CALL-----------------//
+            
             console.log('a user disconnected');
             var index = _.findIndex(userOnlineList, {
                 id: socket.id,
