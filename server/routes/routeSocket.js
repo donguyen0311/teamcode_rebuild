@@ -45,54 +45,59 @@ module.exports = (io) => {
         console.log('a new username connected');
         //-------------VIDEO CALL-----------------//
 
-        var currentRoom, id;
-        socket.on('init', function (data, fn) {
-            console.log(data);
-            currentRoom = data.room;
-            var room = rooms[currentRoom];
-            if (!room) {
-                rooms[currentRoom] = [socket];
-                id = userIds[currentRoom] = 0;
-                fn(currentRoom, id);
-                console.log('Room created, with #', currentRoom);
-            } else {
-                userIds[currentRoom] += 1;
-                id = userIds[currentRoom];
-                fn(currentRoom, id);
-                room.forEach(function (s) {
-                    s.emit('peer.connected', {id: id});
-                });
-                room[id] = socket;
-                console.log('Peer connected to room', currentRoom, 'with #', id);
-            } 
+        function log() {
+            var array = [">>> Message from server: "];
+            for (var i = 0; i < arguments.length; i++) {
+                array.push(arguments[i]);
+            }
+            socket.emit('log', array);
+        }
+    
+        socket.on('message', function (message) {
+            log('Got message: ', message);
+            socket.broadcast.to(socket.room).emit('message', message);
         });
-
-        socket.on('msg', function (data) {
-            var to = parseInt(data.to, 10);
-            if (rooms[currentRoom] && rooms[currentRoom][to]) {
-                console.log('Redirecting message to', to, 'by', data.by);
-                rooms[currentRoom][to].emit('msg', data);
+        
+        socket.on('create or join', function (message) {
+            var room = message.room;
+            socket.room = room;
+            var participantID = message.from;
+            configNameSpaceChannel(participantID);
+            
+            var numClients = io.of('/').in(room).clients.length;
+    
+            log('Room ' + room + ' has ' + numClients + ' client(s)');
+            log('Request to create or join room', room);
+    
+            if (numClients == 0){
+                socket.join(room);
+                socket.emit('created', room);
             } else {
-                console.warn('Invalid user');
+                io.sockets.in(room).emit('join', room);
+                socket.join(room);
+                socket.emit('joined', room);
             }
         });
+        
+        // Setup a communication channel (namespace) to communicate with a given participant (participantID)
+        function configNameSpaceChannel(participantID) {
+            var socketNamespace = io.of('/' + participantID);
+            socketNamespace.on('connection', function (socket) {
+                socket
+                    .on('message', function (message) {
+                        // Send message to everyone BUT sender
+                        socket
+                            .broadcast
+                            .emit('message', message);
+                    });
+            });
+        }
 
         //-------------VIDEO CALL-----------------//
 
         //on user disconected
         socket.on('disconnect', function () {
-            //-------------VIDEO CALL-----------------//
-            if (!currentRoom || !rooms[currentRoom]) {
-                return;
-            }
-            delete rooms[currentRoom][rooms[currentRoom].indexOf(socket)];
-            rooms[currentRoom].forEach(function (socket) {
-                if (socket) {
-                    socket.emit('peer.disconnected', { id: id });
-                }
-            });
-            //-------------VIDEO CALL-----------------//
-            
+
             console.log('a user disconnected');
             var index = _.findIndex(userOnlineList, {
                 id: socket.id,
