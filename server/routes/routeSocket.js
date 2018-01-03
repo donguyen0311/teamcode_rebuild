@@ -39,35 +39,35 @@ module.exports = (io) => {
     const userOnlineList = [];
     rooms = {};
     userIds = {};
-
     //setting socket
     io.on('connection', function (socket) {
         console.log('a new username connected');
         //-------------VIDEO CALL-----------------//
 
-        function log() {
-            var array = [">>> Message from server: "];
-            for (var i = 0; i < arguments.length; i++) {
-                array.push(arguments[i]);
-            }
-            socket.emit('log', array);
-        }
+        // function log() {
+        //     var array = [">>> Message from server: "];
+        //     for (var i = 0; i < arguments.length; i++) {
+        //         array.push(arguments[i]);
+        //     }
+        //     socket.emit('log', array);
+        // }
     
         socket.on('message', function (message) {
-            log('Got message: ', message);
+            console.log('Got message: ', message);
             socket.broadcast.to(socket.room).emit('message', message);
         });
         
-        socket.on('create or join', function (message) {
+        socket.on('create or join', function (message, callback) {
             var room = message.room;
             socket.room = room;
+            socket.participantID = message.from;
             var participantID = message.from;
             configNameSpaceChannel(participantID);
             
             var numClients = io.of('/').in(room).clients.length;
-    
-            log('Room ' + room + ' has ' + numClients + ' client(s)');
-            log('Request to create or join room', room);
+
+            console.log('Room ' + room + ' has ' + numClients + ' client(s)');
+            console.log('Request to create or join room', room);
     
             if (numClients == 0){
                 socket.join(room);
@@ -77,12 +77,14 @@ module.exports = (io) => {
                 socket.join(room);
                 socket.emit('joined', room);
             }
+            callback({success: true});
         });
         
         // Setup a communication channel (namespace) to communicate with a given participant (participantID)
         function configNameSpaceChannel(participantID) {
             var socketNamespace = io.of('/' + participantID);
             socketNamespace.on('connection', function (socket) {
+
                 socket
                     .on('message', function (message) {
                         // Send message to everyone BUT sender
@@ -90,6 +92,9 @@ module.exports = (io) => {
                             .broadcast
                             .emit('message', message);
                     });
+                socket.on('disconnect', () => {
+                    console.log('a user disconnected from a namespace');
+                })
             });
         }
 
@@ -97,7 +102,7 @@ module.exports = (io) => {
 
         //on user disconected
         socket.on('disconnect', function () {
-
+            socket.broadcast.to(socket.room).emit('message', {type: 'bye', from: socket.participantID});
             console.log('a user disconnected');
             var index = _.findIndex(userOnlineList, {
                 id: socket.id,
