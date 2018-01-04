@@ -18,6 +18,7 @@ const routeProject = require('./routes/routeProject');
 const routeTask = require('./routes/routeTask');
 const routeNotification = require('./routes/routeNotification');
 const routeActivity = require('./routes/routeActivity');
+const routeChat = require('./routes/routeChat');
 const routeEstimate = require('./routes/routeEstimate');
 const _ = require('lodash');
 
@@ -52,6 +53,7 @@ router.use('/companies', middlewareAuth, routeCompany);
 router.use('/tasks', middlewareAuth, routeTask);
 router.use('/notifications', middlewareAuth, routeNotification);
 router.use('/activities', middlewareAuth, routeActivity);
+router.use('/chats', middlewareAuth, routeChat);
 router.use('/trees', routeTree);
 
 router.get('/', (req, res) => {

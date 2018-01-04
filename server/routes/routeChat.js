@@ -1,24 +1,26 @@
 const express = require('express');
 var router = express.Router();
-const Activity = require('../models/activity');
+const Chat = require('../models/chat');
+const User = require('../models/user');
 const Project = require('../models/project');
 
 router.get('/projects/:id', (req, res) => {
     console.log(req.decoded.id);
-    Activity
+    Chat
         .find({
-            belong_project: req.params.id
+            to: req.params.id
         })
         .populate({
-            path: 'belong_user',
-            select: 'email username image'
+            path: 'from',
+            select: 'email image username firstname lastname'
         })
+        .populate('to')
         .sort({'createdAt': -1})
         .skip(parseInt(req.query.offset) || 0)
         .limit(parseInt(req.query.limit) || 30)
-        .exec((err, activities) => {
+        .exec((err, chats) => {
             if (err) console.log(err);
-            if (!activities) {
+            if (!chats) {
                 return res.json({
                     success: false,
                     message: 'Something wrong.'
@@ -26,8 +28,8 @@ router.get('/projects/:id', (req, res) => {
             }
             return res.json({
                 success: true,
-                message: 'Your activities info',
-                activities: activities
+                message: 'Your messages info',
+                messages: chats
             });
         });
    

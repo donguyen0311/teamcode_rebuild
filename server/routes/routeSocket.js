@@ -6,6 +6,7 @@ const Project = require('../models/project');
 const Notification = require('../models/notification');
 const Activity = require('../models/activity');
 const User = require('../models/user');
+const Chat = require('../models/chat');
 const _ = require('lodash');
 
 const taskStatus = {
@@ -56,6 +57,25 @@ module.exports = (io) => {
             console.log('Got message: ', message);
             socket.broadcast.to(socket.room).emit('message', message);
         });
+
+        socket.on('send chat group message', async (data) => {
+            console.log(`User ${data.from} send message ${data.message} to room project ${data.to}`);
+            var chat = new Chat({
+                from: data.from,
+                message: data.message,
+                to: data.to
+            });
+            var chatSaved = await chat.save();
+            
+            if (chatSaved) {
+                var queryChat = await Chat.findById(chatSaved._id).populate({
+                    path: 'from',
+                    select: 'email image username firstname lastname'
+                })
+                .populate('to').exec();
+                io.sockets.in(socket.room).emit('receive chat group message', queryChat);
+            }
+        });
         
         socket.on('create or join', function (message, callback) {
             var room = message.room;
@@ -84,17 +104,13 @@ module.exports = (io) => {
         function configNameSpaceChannel(participantID) {
             var socketNamespace = io.of('/' + participantID);
             socketNamespace.on('connection', function (socket) {
-
-                socket
-                    .on('message', function (message) {
-                        // Send message to everyone BUT sender
-                        socket
-                            .broadcast
-                            .emit('message', message);
-                    });
+                socket.on('message', function (message) {
+                    // Send message to everyone BUT sender
+                    socket.broadcast.emit('message', message);
+                });
                 socket.on('disconnect', () => {
                     console.log('a user disconnected from a namespace');
-                })
+                });
             });
         }
 
@@ -103,6 +119,7 @@ module.exports = (io) => {
         //on user disconected
         socket.on('disconnect', function () {
             socket.broadcast.to(socket.room).emit('message', {type: 'bye', from: socket.participantID});
+            
             console.log('a user disconnected');
             var index = _.findIndex(userOnlineList, {
                 id: socket.id,
