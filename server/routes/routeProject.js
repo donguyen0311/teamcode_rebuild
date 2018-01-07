@@ -58,9 +58,11 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-    Project
+    if(req.params.id) {
+        Project
         .findOne({
-            _id: req.params.id
+            _id: req.params.id,
+            project_name: req.query.project_name
         })
         .populate('belong_company')
         .populate({
@@ -106,6 +108,13 @@ router.get('/:id', (req, res) => {
                 project: project
             });
         });
+    } else {
+        return res.json({
+            success: false,
+            message: 'ID not found.'
+        });
+    }
+    
 });
 
 router.get('/project_name/:project_name', (req, res) => {

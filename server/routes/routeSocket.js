@@ -10,10 +10,10 @@ const Chat = require('../models/chat');
 const _ = require('lodash');
 
 const taskStatus = {
-    'TODO': 'To Do',
-    'INPROGRESS': 'In Progress',
-    'CODEREVIEW': 'Code Review',
-    'DONE': 'Done'
+    'TODO': 'Việc cần làm',
+    'INPROGRESS': 'Việc đang làm',
+    'CODEREVIEW': 'Việc đang kiểm tra',
+    'DONE': 'Việc đã hoàn thành'
 }
 
 function arr_diff(a1, a2) {
@@ -189,7 +189,7 @@ module.exports = (io) => {
                 io.to(room).emit('Task:updateAddTask', createdTaskMoreInfo);
 
                 var newActivity = new Activity({
-                    action: `${createdTaskMoreInfo.created_by.username} created a new Task (${createdTaskMoreInfo.task_name})`,
+                    action: `${createdTaskMoreInfo.created_by.username} đã tạo công việc mới (${createdTaskMoreInfo.task_name})`,
                     belong_project: createdTaskMoreInfo.belong_project._id,
                     belong_user: createdTaskMoreInfo.created_by._id
                 });
@@ -206,8 +206,8 @@ module.exports = (io) => {
                 // add notification
                 for (let responsible_user of data.responsible_user) {
                     let newNotification = new Notification({
-                        title: `From project ${createdTaskMoreInfo.belong_project.project_name}`,
-                        content: `You have assigned a new Task (${data.task_name}) by ${createdTaskMoreInfo.created_by.username}`,
+                        title: `Từ dự án ${createdTaskMoreInfo.belong_project.project_name}`,
+                        content: `Bạn được chỉ định vào công việc mới (${data.task_name}) bởi ${createdTaskMoreInfo.created_by.username}`,
                         status: 0,
                         belong_user: responsible_user,
                         link: `${createdTaskMoreInfo.belong_project.project_name}?id=${createdTaskMoreInfo.belong_project._id}`
@@ -269,7 +269,7 @@ module.exports = (io) => {
 
             var user = await User.findById(socket.userID);
             var newActivity = new Activity({
-                action: `${user.username} updated a Task (${data.editTaskName})`,
+                action: `${user.username} đã chỉnh sửa công việc (${data.editTaskName})`,
                 belong_project: updatedTask.belong_project._id,
                 belong_user: socket.userID
             });
@@ -288,8 +288,8 @@ module.exports = (io) => {
             for (let responsible_user of data.editResponsible) {
                 if(_.indexOf(diffResponseUser, responsible_user) !== -1) {
                     let newNotification = new Notification({
-                        title: `From project ${updatedTask.belong_project.project_name}`,
-                        content: `You have assigned a Task (${updatedTask.task_name}) by ${user.username}`,
+                        title: `Từ dự án ${updatedTask.belong_project.project_name}`,
+                        content: `Bạn được chỉ định vào công việc (${updatedTask.task_name}) bởi ${user.username}`,
                         status: 0,
                         belong_user: responsible_user,
                         link: `${updatedTask.belong_project.project_name}?id=${updatedTask.belong_project._id}`
@@ -302,8 +302,8 @@ module.exports = (io) => {
                     }
                 } else {
                     let newNotification = new Notification({
-                        title: `From project ${updatedTask.belong_project.project_name}`,
-                        content: `Your task handling (${updatedTask.task_name}) edited by ${user.username}`,
+                        title: `Từ dự án ${updatedTask.belong_project.project_name}`,
+                        content: `Công việc của bạn đang xử lý (${updatedTask.task_name}) đã được chỉnh sửa thông tin bởi ${user.username}`,
                         status: 0,
                         belong_user: responsible_user,
                         link: `${updatedTask.belong_project.project_name}?id=${updatedTask.belong_project._id}`
@@ -340,7 +340,7 @@ module.exports = (io) => {
             var user = await User.findById(socket.userID);
             if(user) {
                 var newActivity = new Activity({
-                    action: `${user.username} deleted a Task (${deletedTask.task_name})`,
+                    action: `${user.username} đã xóa công việc (${deletedTask.task_name})`,
                     belong_project: deletedTask.belong_project,
                     belong_user: socket.userID
                 });
@@ -359,8 +359,8 @@ module.exports = (io) => {
             let responsibleUser = [...deletedTask._doc.responsible_user];
             for (let responsible_user of responsibleUser) {
                 let newNotification = new Notification({
-                    title: `From project ${deletedTask.belong_project.project_name}`,
-                    content: `Your task handling (${deletedTask.task_name}) deleted by ${user.username}`,
+                    title: `Từ dự án ${deletedTask.belong_project.project_name}`,
+                    content: `Công việc của bạn đang xử lý (${deletedTask.task_name}) đã bị xóa bởi ${user.username}`,
                     status: 0,
                     belong_user: responsible_user,
                     link: `${deletedTask.belong_project.project_name}?id=${deletedTask.belong_project._id}`
@@ -424,7 +424,7 @@ module.exports = (io) => {
 
             if(user && task) {
                 var newActivity = new Activity({
-                    action: `${user.username} changed position a Task (${task.task_name}) from ${taskStatus[data.result.source.droppableId]} to ${taskStatus[data.result.destination.droppableId]}`,
+                    action: `${user.username} đã thay vị trí của công việc (${task.task_name}) từ ${taskStatus[data.result.source.droppableId]} đến ${taskStatus[data.result.destination.droppableId]}`,
                     belong_project: data.projectID,
                     belong_user: socket.userID
                 });
