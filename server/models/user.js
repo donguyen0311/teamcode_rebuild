@@ -48,21 +48,10 @@ var userSchema = new Schema({
         type: String,
         default: "/assets/images/no_image.jpg"
     },
-    docker: {
-        type: [{
-            dockername: String,
-            hostname: String,
-            portSSH: Number
-        }]
-    },
     level: {
         type: String,
         required: false
     },
-    // time_available: {
-    //     type: String,
-    //     required: false
-    // },
     studied_at: {
         type: [String],
         required: false

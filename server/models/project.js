@@ -43,6 +43,14 @@ var projectSchema = new Schema({
         ref: 'User',
         required: true
     },
+    point_list: {
+        type: Array,
+        required: false
+    },
+    warning_list: {
+        type: Schema.Types.Mixed,
+        required: false
+    },
     users: [{type: Schema.Types.ObjectId, ref: 'User'}],
     tasks: [{type: Schema.Types.ObjectId, ref: 'Task'}]
 }, {

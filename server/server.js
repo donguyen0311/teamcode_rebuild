@@ -10,6 +10,7 @@ const logger = require('morgan');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+const compression = require('compression');
 const ejs = require('ejs');
 const subdomain = require('express-subdomain');
 const routes = require('./routes');
@@ -23,7 +24,15 @@ mongoose.connect(`mongodb://${encodeURIComponent(config.mongo.user)}:${encodeURI
         throw err;
     }
 );
+function shouldCompress(req, res) {
+    if (req.headers['x-no-compression']) {
+        // don't compress responses with this request header
+        return false;
+    }
 
+    // fallback to standard filter function
+    return compression.filter(req, res);
+}
 
 
 app.set('secretKey', config.secret_key);
@@ -39,6 +48,8 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(cookieParser());
 app.use(logger('dev'));
+
+app.use(compression({filter: shouldCompress}));
 
 app.use('/assets', express.static(path.join(__dirname, '../client/assets')));
 app.use('/app', express.static(path.join(__dirname, '../client/app')));

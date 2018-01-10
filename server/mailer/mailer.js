@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+﻿const nodemailer = require('nodemailer');
 
 function sendMail(receiver, content) {
     // Create a SMTP transporter object

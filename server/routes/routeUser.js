@@ -25,29 +25,6 @@ let upload = multer({
     })
 });
 
-// get all will be deleted soon, this is for testing purpose
-// router.get('/company/:id', (req, res) => {
-//     User.find({
-//         current_company: req.params.id
-//     }, {
-//         password: false,
-//         salt: false
-//     }, (err, users) => {
-//         if (err) console.log(err);
-//         if (!users) {
-//             return res.json({
-//                 success: false,
-//                 message: 'Something wrong.'
-//             });
-//         }
-//         return res.json({
-//             success: true,
-//             message: 'all users info',
-//             users: users
-//         });
-//     });
-// });
-
 router.get('/company/:id', (req, res) => {
     User.find({
             current_company: req.params.id
@@ -163,6 +140,37 @@ router.get('/all/company/:id', (req, res) => {
             users: users
         });
     });
+});
+
+router.post('/replace', async (req, res) => { // updating...
+    var users = req.body.users;
+    var projectID = req.body.projectID;
+    var usersDetail = [];
+    var usersReplace = [];
+    for(let user of users) {
+        let userTemp = await User.findById(user._id).exec();
+        usersDetail.push(userTemp);
+    }
+    for(let user of usersDetail) {
+        let userTemp = await User.find({
+            analyst_capability: {
+                $gte: user.analyst_capability
+            },
+            programmer_capability: {
+                $gte: user.programmer_capability
+            },
+            application_experience: {
+                $gte: user.application_experience
+            },
+            platform_experience: {
+                $gte: user.platform_experience
+            },
+            language_and_toolset_experience: {
+                $gte: user.language_and_toolset_experience
+            } // add condition
+        }).exec();
+        usersReplace.push(userTemp);
+    }
 });
 
 // create with current company
@@ -382,23 +390,6 @@ router.put('/:id/skill', (req, res) => {
         });
 });
 
-// this function not useful right now
-// router.delete('/:id', (req, res) => {
-//     User.findByIdAndRemove(req.params.id, (err, user) => {
-//         if (err) console.log(err);
-//         if (!user) {
-//             return res.json({
-//                 success: false,
-//                 message: 'Delete user failed.'
-//             });
-//         }
-//         return res.json({
-//             success: true,
-//             message: 'Delete user successful.'
-//         });
-//     });
-// });
-
 router.delete('/:id', (req, res) => {
     User.findOneAndRemove({
         _id: req.params.id
@@ -416,31 +407,6 @@ router.delete('/:id', (req, res) => {
         });
     });
 });
-
-// router.get('/:email', (req, res) => {
-//     User.findOne({
-//         email: req.params.email
-//     }, {
-//         password: false,
-//         salt: false
-//     })
-//     .populate('current_company')
-//     .populate('belong_project')
-//     .exec((err, user) => {
-//         if (err) console.log(err);
-//         if (!user) {
-//             return res.json({
-//                 success: false,
-//                 message: 'Email not found.'
-//             });
-//         }
-//         return res.json({
-//             success: true,
-//             message: 'Your user info',
-//             user: user
-//         });
-//     });
-// });
 
 router.put('/image/:id', upload.any(), async(req, res) => {
     var userUpdated = await User.findByIdAndUpdate(req.params.id, {

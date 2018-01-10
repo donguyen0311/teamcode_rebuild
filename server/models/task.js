@@ -28,6 +28,14 @@ taskSchema = new Schema({
         type: String,
         required: false
     },
+    start_day: {
+        type: Date,
+        required: true
+    },
+    end_day: {
+        type: Date,
+        required: true
+    },
     labels: {
         type: Array,
         required: false
