@@ -8,6 +8,8 @@ const Activity = require('../models/activity');
 const User = require('../models/user');
 const Chat = require('../models/chat');
 const _ = require('lodash');
+const schedule = require('node-schedule');
+const moment = require('moment');
 
 const taskStatus = {
     'TODO': 'Việc cần làm',
@@ -44,14 +46,6 @@ module.exports = (io) => {
     io.on('connection', function (socket) {
         console.log('a new username connected');
         //-------------VIDEO CALL-----------------//
-
-        // function log() {
-        //     var array = [">>> Message from server: "];
-        //     for (var i = 0; i < arguments.length; i++) {
-        //         array.push(arguments[i]);
-        //     }
-        //     socket.emit('log', array);
-        // }
     
         socket.on('message', function (message) {
             console.log('Got message: ', message);
@@ -153,7 +147,7 @@ module.exports = (io) => {
         });
 
         socket.on('Task:addTask', async(data) => {
-            console.log(userOnlineList);
+            // console.log(userOnlineList);
             console.log(data);
             var newTask = new Task({
                 position: data.position,
@@ -212,13 +206,34 @@ module.exports = (io) => {
                         belong_user: responsible_user,
                         link: `${createdTaskMoreInfo.belong_project.project_name}?id=${createdTaskMoreInfo.belong_project._id}`
                     });
-                    var createdNotification = await newNotification.save();
+                    let createdNotification = await newNotification.save();
                     for (let userOnline of userOnlineList) {
                         if (userOnline.userID === responsible_user) {
                             io.to(userOnline.id).emit('Notification:updateNotification', createdNotification);
                         }
                     }
                 }
+                // schedule to notify deadline, notify warning before 1 hour
+                var scheduleDate = moment(data.end_day).subtract(1, 'hour');
+                var j = schedule.scheduleJob(scheduleDate, async function() {
+                    // add notification
+                    for (let responsible_user of data.responsible_user) {
+                        let newNotification = new Notification({
+                            title: `Từ dự án ${createdTaskMoreInfo.belong_project.project_name}`,
+                            content: `Công việc (${data.task_name}) của bạn sắp hết thời gian, bạn còn 1 giờ.`,
+                            status: 0,
+                            belong_user: responsible_user,
+                            link: `${createdTaskMoreInfo.belong_project.project_name}?id=${createdTaskMoreInfo.belong_project._id}`
+                        });
+                        let createdNotification = await newNotification.save();
+                        for (let userOnline of userOnlineList) {
+                            if (userOnline.userID === responsible_user) {
+                                io.to(userOnline.id).emit('Notification:updateNotification', createdNotification);
+                            }
+                        }
+                    }
+                });
+
                 // update project task
                 var project = await Project.findById(data.belong_project);
                 project.tasks.push(createdTask._id);

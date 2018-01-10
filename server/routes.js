@@ -21,6 +21,7 @@ const routeActivity = require('./routes/routeActivity');
 const routeChat = require('./routes/routeChat');
 const routeEstimate = require('./routes/routeEstimate');
 const _ = require('lodash');
+const schedule = require('node-schedule');
 
 const routeTree = require('./routes/routeTree');
 
@@ -223,7 +224,7 @@ router.post('/register', (req, res) => {
 
 });
 
-router.get('/caculate_project_warning', async(req, res) => { // updating...
+var j = schedule.scheduleJob({hour: 23}, async function() {
     var currentDate = new Date();
     var projects = await Project
         .find({})
@@ -241,7 +242,7 @@ router.get('/caculate_project_warning', async(req, res) => { // updating...
                 }
                 let statusSaved = await project.save();
                 if (!statusSaved) {
-                    return res.json({success: false, message: 'Save point list failed.'});
+                    console.log('Save point list failed.');
                 }
             }
         }
@@ -256,10 +257,49 @@ router.get('/caculate_project_warning', async(req, res) => { // updating...
         }
         let statusSaved = await project.save();
         if (!statusSaved) {
-            return res.json({success: false, message: 'Save point list failed.'});
+            console.log('Save point list failed.');
         }
     }
-    return res.json({success: true, message: 'Caculate Successful.'});
+    console.log('Caculate Successful.');
 });
+
+// router.get('/caculate_project_warning', async(req, res) => { // updating...
+//     var currentDate = new Date();
+//     var projects = await Project
+//         .find({})
+//         .exec();
+//     for (let project of projects) {
+//         var tasks = await Task
+//             .find({belong_project: project._id})
+//             .exec();
+//         for (let task of tasks) {
+//             if (currentDate > new Date(task.end_day) && (task.status == 'TODO' || task.status == 'INPROGRESS')) {
+//                 for (let responsible_user of task.responsible_user) {
+//                     project
+//                         .point_list
+//                         .push({id: responsible_user});
+//                 }
+//                 let statusSaved = await project.save();
+//                 if (!statusSaved) {
+//                     return res.json({success: false, message: 'Save point list failed.'});
+//                 }
+//             }
+//         }
+//         var arrayPoint = _.countBy(project.point_list, 'id');
+//         for (let pointById in arrayPoint) {
+//             if (arrayPoint[pointById] > 5) {
+//                 project.warning_list = {
+//                     ...project.warning_list,
+//                     [pointById]: arrayPoint[pointById]
+//                 };
+//             }
+//         }
+//         let statusSaved = await project.save();
+//         if (!statusSaved) {
+//             return res.json({success: false, message: 'Save point list failed.'});
+//         }
+//     }
+//     return res.json({success: true, message: 'Caculate Successful.'});
+// });
 
 module.exports = router;
