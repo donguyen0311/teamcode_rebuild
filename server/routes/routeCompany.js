@@ -3,9 +3,13 @@ var router = express.Router();
 const config = require('../config/default');
 const helper = require('../helper');
 const Company = require('../models/company');
+const User = require('../models/user');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+
+// const TimelineHelper = require('../helper/TimelineHelper');
+const StaffHelper = require('../helper/StaffHelper');
 
 let upload = multer({
     storage: multer.diskStorage({
@@ -42,6 +46,43 @@ router.get('/', (req, res) => {
                 success: true,
                 message: 'all companies info',
                 companies: companies
+            });
+        });
+});
+
+router.get('/allStaffTimeline/:companyId', (req, res) => {
+    // console.log(req.query);
+    
+    let projectWillCreate = {
+        start_day: new Date(req.query.start_day),
+        end_day: new Date(req.query.end_day)
+    };
+
+    User
+        .find({
+            current_company: req.params.companyId
+            // current_company: '5a1bc4ef5671cd2fa8beb87f'
+        })
+        .exec((err, allStaffInCompany) => {
+            if (err) console.log(err);
+            if (!allStaffInCompany) {
+                return res.json({
+                    success: false,
+                    message: 'Something wrong.'
+                });
+            }
+            
+            let staffsWithSalaryForOneHoursOffice = StaffHelper.staffOneHourOffice(allStaffInCompany);
+            let staffsWithSalaryForOneHoursOverTime = StaffHelper.staffOneHourOvertime(allStaffInCompany);
+            let sortedStaffsSalary = StaffHelper.sortOfficeAndOvertimeAscending(staffsWithSalaryForOneHoursOffice,staffsWithSalaryForOneHoursOverTime);
+
+            let staffsWithTimeline = StaffHelper.staffsWithTimeline(sortedStaffsSalary,projectWillCreate);
+
+            return res.json({
+                success: true,
+                message: 'All staff with timeline in your company',
+                staffsWithTimeline: staffsWithTimeline
+
             });
         });
 });
