@@ -4,6 +4,7 @@ const config = require('./config/development');
 const fs = require('fs');
 const path = require('path');
 const socket = require('socket.io');
+const redis = require('socket.io-redis');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
@@ -75,6 +76,7 @@ var server = app.listen(config.port, config.hostname, () => {
 
 // socket route
 const io = socket.listen(server);
+io.adapter(redis({ host: 'localhost', port: 6379 }));
 require('./routes/routeSocket')(io);
 
 
