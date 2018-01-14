@@ -72,8 +72,8 @@ function CaculateStaff(staffs, projectDuration, personMonths /*Effort*/, perform
         return staff;
     });
 
-    let listStaffsPrePick;
-    let prePickStaffsWithSalaryForOneHoursOffice;
+    let listStaffsPrePick = [];
+    let prePickStaffsWithSalaryForOneHoursOffice = [];
     if(prePickStaffsInfo.length > 0)
     {
         listStaffsPrePick = prePickStaffsInfo.map(prePickStaff => prePickStaff._doc); // get only data info of user
@@ -83,6 +83,7 @@ function CaculateStaff(staffs, projectDuration, personMonths /*Effort*/, perform
             prePickStaff.typeWork = 'OFFICE';
             return prePickStaff;
         });
+        
         // let prePickStaffsWithSalaryForOneHoursOverTime = _.map(_.cloneDeep(listStaffsPrePick), (prePickStaff) => {
         //     prePickStaff.salaryForOneHours = (prePickStaff.salary / 152) * 2;
         //     prePickStaff.typeWork = 'OVERTIME';
@@ -107,7 +108,6 @@ function CaculateStaff(staffs, projectDuration, personMonths /*Effort*/, perform
             // console.log('prePickStaffsWithSalaryForOneHoursOffice',prePickStaffsWithSalaryForOneHoursOffice);
             let sumTimeOfNStaffs = SumTimeOfNStaffs(prePickStaffsWithSalaryForOneHoursOffice, projectDuration, performanceList, projectWillCreate);
             if (sumTimeOfNStaffs >= projectByHours) {
-                // console.log('ENOUGH');
                 let extraTime = sumTimeOfNStaffs - projectByHours;
                 prePickStaffsWithSalaryForOneHoursOffice = _.map(prePickStaffsWithSalaryForOneHoursOffice, (staff) => {
                     // console.log('inside map',staff);
@@ -134,7 +134,7 @@ function CaculateStaff(staffs, projectDuration, personMonths /*Effort*/, perform
             for (let iStaff = 0; iStaff < filterStaffs.length; iStaff++) {
 
                 let chosenStaffs = _.slice(filterStaffs, 0, iStaff + 1);
-                let staffWillAdd = 
+                // let staffWillAdd = 
                 // console.log(chosenStaffs);
                 chosenStaffs = chosenStaffs.concat(prePickStaffsWithSalaryForOneHoursOffice);
                 // console.log('---------------------------------------');
@@ -291,25 +291,6 @@ function CaculateTimeOfLastStaff(lastStaff, extraTime, performanceList) {
     }
 }
 
-function getPrePickStaffInfos(prePickStaffsId, filterStaffs)
-{
-    console.log('prePickStaffsId',prePickStaffsId);
-    let prePickStaffsInfo = [];
-
-    for(let prePickStaffId of prePickStaffsId)
-    {
-        for(let filterStaff of filterStaffs)
-        {
-            if(prePickStaffId == filterStaff._id)
-            {
-                prePickStaffsInfo.push(filterStaff);
-            }
-        }
-    }
-    console.log('prePickStaffsInfo',prePickStaffsInfo);
-    return prePickStaffsInfo;
-}
-
 function removeDuplicateWhenPrePickStaff(satisfiedRequirementStaffs, prePickStaffsInfo)
 {
     for(let [prePickStaffInfoIndex, prePickStaffInfo] of prePickStaffsInfo.entries())
@@ -354,6 +335,7 @@ function SumTimeOfNStaffs(staffs, projectDuration, performanceList, projectWillC
         let timeline = GenerateTimeline(staffs[i], projectWillCreate);
         //caculate available time
         let arrayAvailableHour = CombineAvailableHourToTimeline(staffs[i], timeline);
+
         sumTime += SumAvailableHour(staffs[i], performanceList, arrayAvailableHour, staffs[i].typeWork);
     }
     return sumTime;

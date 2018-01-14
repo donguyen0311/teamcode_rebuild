@@ -76,7 +76,7 @@ var server = app.listen(config.port, config.hostname, () => {
 
 // socket route
 const io = socket.listen(server);
-io.adapter(redis({ host: 'localhost', port: 6379 }));
+//io.adapter(redis({ host: 'localhost', port: 6379 }));
 require('./routes/routeSocket')(io);
 
 
