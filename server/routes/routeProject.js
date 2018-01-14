@@ -175,7 +175,7 @@ router.post("/", (req, res) => {
         if (err) 
             console.log(err);
         if (project) {
-            return res.json({success: false, message: 'Project name already exists.'});
+            return res.json({success: false, message: 'Tên dự án đã bị trùng.'});
         } else {
             var newProject = new Project({
                 project_name: req.body.project_name,
