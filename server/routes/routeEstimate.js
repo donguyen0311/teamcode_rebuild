@@ -72,8 +72,8 @@ function CaculateStaff(staffs, projectDuration, personMonths /*Effort*/, perform
         return staff;
     });
 
-    let listStaffsPrePick = [];
-    let prePickStaffsWithSalaryForOneHoursOffice = [];
+    let listStaffsPrePick;
+    let prePickStaffsWithSalaryForOneHoursOffice;
     if(prePickStaffsInfo.length > 0)
     {
         listStaffsPrePick = prePickStaffsInfo.map(prePickStaff => prePickStaff._doc); // get only data info of user
